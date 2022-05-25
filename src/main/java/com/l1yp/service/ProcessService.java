@@ -573,6 +573,8 @@ public class ProcessService {
         SysUser loginUser = RequestUtils.getLoginUser();
         String tableName = ProcessModelUtil.getProcessModelTableName(processKey);
         List<ProcessFieldDefinition> processFields = processFieldDefinitionMapper.selectFieldsByProcessKey(processKey);
+        Map<Long, ProcessFieldDefinition> fieldDefinitionMap = processFields.stream().collect(Collectors.toMap(ProcessFieldDefinition::getId, it -> it));
+
         Map<String, Object> processInfo = processModelMapper.findProcessInfoById(tableName, id);
         String processInstanceId = (String) processInfo.get("process_instance_id");
         Long processBpmnId = (Long) processInfo.get("process_bpmn_id");
@@ -697,7 +699,6 @@ public class ProcessService {
                 processInfo.put("page_info", null);
             } else {
                 List<ProcessModelPageScheme> pageScheme = processModelPageSchemeMapper.findPageScheme(pageInfo.getProcessModelPageId());
-                Map<Long, ProcessFieldDefinition> fieldDefinitionMap = processFields.stream().collect(Collectors.toMap(ProcessFieldDefinition::getId, it -> it));
                 pageScheme.forEach(it -> it.setField(fieldDefinitionMap.get(it.getFieldId())));
                 ProcessModelPageInfoView view = buildProcessModelPageInfoView(pageInfo, pageScheme);
                 processInfo.put("page_info", view);
@@ -734,7 +735,6 @@ public class ProcessService {
             processInfo.put("page_info", null);
         } else {
             List<ProcessModelPageScheme> pageScheme = processModelPageSchemeMapper.findPageScheme(pageInfo.getProcessModelPageId());
-            Map<Long, ProcessFieldDefinition> fieldDefinitionMap = processFields.stream().collect(Collectors.toMap(ProcessFieldDefinition::getId, it -> it));
             pageScheme.forEach(it -> it.setField(fieldDefinitionMap.get(it.getFieldId())));
             ProcessModelPageInfoView view = buildProcessModelPageInfoView(pageInfo, pageScheme);
             processInfo.put("page_info", view);
@@ -763,7 +763,7 @@ public class ProcessService {
                 continue;
             }
             List<ProcessModelPageScheme> pageScheme = processModelPageSchemeMapper.findPageScheme(pageInfo.getProcessModelPageId());
-
+            pageScheme.forEach(it -> it.setField(fieldDefinitionMap.get(it.getFieldId())));
             outcome.page = buildProcessModelPageInfoView(pageInfo, pageScheme);
 
             outcomes.add(outcome);
@@ -883,6 +883,7 @@ public class ProcessService {
                     writeableFields.forEach(it -> it.setField(fieldMap.get(it.getFieldId())));
                     Map<String, Object> fields = new HashMap<>();
                     for (ProcessModelPageScheme writeableField : writeableFields) {
+                        // TODO: 处理列表字段
                         fields.put(writeableField.getField().getName(), param.params.get(writeableField.getField().getName()));
                     }
                     // TODO: add UPDATE BEFORE interceptor
