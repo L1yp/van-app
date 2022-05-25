@@ -6,6 +6,7 @@ import com.l1yp.model.common.ResultData;
 import com.l1yp.model.param.process.ProcessTaskCompleteParam;
 import com.l1yp.model.param.process.TaskClaimParam;
 import com.l1yp.model.param.process.view.ProcessTodoTaskView;
+import com.l1yp.model.view.ProcessModelPageInfoView;
 import com.l1yp.model.view.ProcessTaskView;
 import com.l1yp.service.ProcessService;
 import org.flowable.engine.TaskService;
@@ -107,6 +108,11 @@ public class ProcessController {
     @PostMapping("/task/complete")
     public ResultData<Void> completeTask(@RequestBody ProcessTaskCompleteParam param) {
         return processService.completeTask(param);
+    }
+
+    @GetMapping("/start/form")
+    public ResultData<ProcessModelPageInfoView> getStartFormPage(@RequestParam String processKey) {
+        return processService.getStartFormInfo(processKey);
     }
 
 }

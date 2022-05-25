@@ -1,6 +1,7 @@
 package com.l1yp.service;
 
 import com.l1yp.conf.constants.process.ProcessConstants;
+import com.l1yp.conf.constants.process.ProcessConstants.PublishState;
 import com.l1yp.mapper.ProcessFieldDefinitionMapper;
 import com.l1yp.mapper.ProcessModelBpmnMapper;
 import com.l1yp.mapper.ProcessModelMapper;
@@ -196,7 +197,7 @@ public class ProcessModelService {
         SysUser loginUser = RequestUtils.getLoginUser();
 
         ProcessModelBpmnBase pmb = processModelBpmnMapper.selectByPrimaryKey(param.getId());
-        if (pmb.getState().equals(ProcessConstants.PUBLISHED)) {
+        if (pmb.getState().equals(PublishState.PUBLISHED)) {
             return ResultData.err(400, "不能修改已发布的流程");
         }
 
@@ -255,7 +256,7 @@ public class ProcessModelService {
     public ResultData<Void> stopProcessModelBpmn(Long processModelBpmnId) {
         SysUser loginUser = RequestUtils.getLoginUser();
         ProcessModelBpmnBase item = processModelBpmnMapper.selectByPrimaryKey(processModelBpmnId);
-        if (item.getState().equals(ProcessConstants.UNPUBLISHED)) {
+        if (item.getState().equals(PublishState.UNPUBLISHED)) {
             return ResultData.err(400, "不能停用未发布的流程");
         }
 

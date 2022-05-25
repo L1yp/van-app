@@ -22,7 +22,7 @@ public class ProcessFieldDefinition {
 
     private String description;
 
-    private Long componentType;
+    private Integer componentType;
     private String dbFieldType;
     private String dbDefaultValue;
 
@@ -78,11 +78,11 @@ public class ProcessFieldDefinition {
     }
 
 
-    public Long getComponentType() {
+    public Integer getComponentType() {
         return componentType;
     }
 
-    public void setComponentType(Long componentType) {
+    public void setComponentType(Integer componentType) {
         this.componentType = componentType;
     }
 

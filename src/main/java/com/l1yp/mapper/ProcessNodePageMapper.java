@@ -1,5 +1,6 @@
 package com.l1yp.mapper;
 
+import com.l1yp.conf.constants.process.ProcessConstants;
 import com.l1yp.model.db.ProcessModelNodePage;
 import com.l1yp.model.db.ProcessModelPage;
 import com.l1yp.model.db.ProcessModelPageScheme;
@@ -28,6 +29,9 @@ public interface ProcessNodePageMapper extends Mapper<ProcessModelNodePage> {
 
     @Select("SELECT * FROM process_model_node_page WHERE node_id = #{nodeId} AND process_bpmn_id = #{bpmnId}")
     ProcessModelNodePage findByBpmnIdAndNodeId(@Param("bpmnId") Long bpmnId, @Param("nodeId") String nodeId);
+
+    @Select("SELECT * FROM process_model_node_page WHERE process_key = #{processKey} AND node_id = '" + ProcessConstants.PROCESS_START_FORM_KEY + "'")
+    ProcessModelNodePage findStartPage(@Param("processKey") String processKey);
 
 
 }

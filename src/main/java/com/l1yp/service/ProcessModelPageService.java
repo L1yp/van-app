@@ -1,5 +1,6 @@
 package com.l1yp.service;
 
+import com.l1yp.conf.constants.process.ProcessConstants;
 import com.l1yp.mapper.*;
 import com.l1yp.model.common.ResultData;
 import com.l1yp.model.db.*;
@@ -115,6 +116,10 @@ public class ProcessModelPageService {
      * 流程节点绑定界面
      */
     public ResultData<Void> bindProcessModelBpmnPage(BindProcessModelNodePageParam param) {
+        // TODO: 需要新增一个 入口 绑定启动表单
+        if (ProcessConstants.PROCESS_START_FORM_KEY.equals(param.getNodeId())) {
+            return ResultData.err(400, "节点标识与启动表单标识冲突，请更换");
+        }
         SysUser loginUser = RequestUtils.getLoginUser();
         ProcessModelNodePage page = new ProcessModelNodePage();
         BeanUtils.copyProperties(param, page);

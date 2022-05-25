@@ -17,6 +17,3 @@ create table wf_change_budget
     end_monthly           tinyint                                null comment '是否月结调整'
 )
     comment '预算调整流程';
-
-INSERT INTO van.wf_change_budget (id, process_bpmn_id, process_definition_id, process_instance_id, name, creator, update_by, update_time, create_time, hq_high_leader, sub_high_leader, sub_finance, hq_finance, end_monthly) VALUES (1, 2, 'change_budget:1:5bcbdf5b-d855-11ec-aa63-00e0705f49db', '803ca36c-d855-11ec-aa63-00e0705f49db', '202205预算调整', 'A52738', 'A52738', '2022-05-20 23:57:07', '2022-05-20 23:57:07', '4', '3', '2', '5', 40);
-INSERT INTO van.wf_change_budget (id, process_bpmn_id, process_definition_id, process_instance_id, name, creator, update_by, update_time, create_time, hq_high_leader, sub_high_leader, sub_finance, hq_finance, end_monthly) VALUES (2, 2, 'change_budget:1:5bcbdf5b-d855-11ec-aa63-00e0705f49db', 'dfcc2344-d9dd-11ec-a1be-00e0705f49db', '202205预算调整', 'admin', 'admin', '2022-05-22 22:45:50', '2022-05-22 22:45:50', '4', '3', '2', '5', 40);

@@ -13,6 +13,3 @@ create table wf_field_dict
         unique (process_key, wf_id, field_id, dict_id)
 )
     comment '字典字段关联表';
-
-INSERT INTO van.wf_field_dict (id, process_key, wf_id, field_id, dict_id, update_by, update_time, create_time) VALUES (1, 'change_budget', 1, 5, 40, 'A52738', '2022-05-20 23:57:07', '2022-05-20 23:57:07');
-INSERT INTO van.wf_field_dict (id, process_key, wf_id, field_id, dict_id, update_by, update_time, create_time) VALUES (2, 'change_budget', 2, 5, 40, 'admin', '2022-05-22 22:45:50', '2022-05-22 22:45:50');

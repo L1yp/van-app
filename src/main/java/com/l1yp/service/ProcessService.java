@@ -1,5 +1,6 @@
 package com.l1yp.service;
 
+import com.l1yp.conf.constants.process.ProcessConstants;
 import com.l1yp.mapper.*;
 import com.l1yp.model.bpmn.HistoricActivityInstanceView;
 import com.l1yp.model.bpmn.ProcessCreateParam;
@@ -19,6 +20,8 @@ import org.flowable.engine.*;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.impl.HistoricActivityInstanceQueryProperty;
+import org.flowable.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.TaskInfo;
@@ -127,6 +130,7 @@ public class ProcessService {
             ProcessInstance processInstance = runtimeService.startProcessInstanceById(publishVersion.getProcessDefinitionId(), pci.getId().toString());
 
             List<ProcessFieldDefinition> processFieldDefinitions = processFieldDefinitionMapper.selectFieldsByProcessKey(param.getProcessKey());
+            Map<String, ProcessFieldDefinition> fieldMap = processFieldDefinitions.stream().collect(Collectors.toMap(ProcessFieldDefinition::getName, it -> it));
             Set<String> nameSet = processFieldDefinitions.stream().map(ProcessFieldDefinition::getName).collect(Collectors.toSet());
             Map<String, Object> params = new HashMap<>();
             Set<Entry<String, Object>> entries = param.getParams().entrySet(); // TODO 过滤 特殊字段：creator update_by update_time
@@ -139,7 +143,7 @@ public class ProcessService {
             params.put("process_instance_id", processInstance.getProcessInstanceId());
             params.put("process_bpmn_id", publishVersion.getId());
             params.put("process_definition_id", publishVersion.getProcessDefinitionId());
-            processModelMapper.updateFields(tableName, pci.getId(), params);
+            processModelMapper.updateFields(tableName, pci.getId(), fieldMap, params);
             // 设置 wf表的字段 数据
 
             updateAssociationTable(processFieldDefinitions, pci.getId(), param.getProcessKey(), params);
@@ -701,6 +705,7 @@ public class ProcessService {
                 List<ProcessModelPageScheme> pageScheme = processModelPageSchemeMapper.findPageScheme(pageInfo.getProcessModelPageId());
                 pageScheme.forEach(it -> it.setField(fieldDefinitionMap.get(it.getFieldId())));
                 ProcessModelPageInfoView view = buildProcessModelPageInfoView(pageInfo, pageScheme);
+                view.fields = processFields;
                 processInfo.put("page_info", view);
             }
             return ResultData.ok(processInfo);
@@ -737,6 +742,7 @@ public class ProcessService {
             List<ProcessModelPageScheme> pageScheme = processModelPageSchemeMapper.findPageScheme(pageInfo.getProcessModelPageId());
             pageScheme.forEach(it -> it.setField(fieldDefinitionMap.get(it.getFieldId())));
             ProcessModelPageInfoView view = buildProcessModelPageInfoView(pageInfo, pageScheme);
+            view.fields = processFields;
             processInfo.put("page_info", view);
         }
 
@@ -765,6 +771,7 @@ public class ProcessService {
             List<ProcessModelPageScheme> pageScheme = processModelPageSchemeMapper.findPageScheme(pageInfo.getProcessModelPageId());
             pageScheme.forEach(it -> it.setField(fieldDefinitionMap.get(it.getFieldId())));
             outcome.page = buildProcessModelPageInfoView(pageInfo, pageScheme);
+            outcome.page.fields = processFields;
 
             outcomes.add(outcome);
             // FIXME: 若无关联界面，则只关注comment字段
@@ -843,6 +850,7 @@ public class ProcessService {
         // 查询流程字段列表
         List<ProcessFieldDefinition> processFieldDefinitions = processFieldDefinitionMapper.selectFieldsByProcessKey(param.processKey);
         Map<Long, ProcessFieldDefinition> fieldMap = processFieldDefinitions.stream().collect(Collectors.toMap(ProcessFieldDefinition::getId, it -> it));
+        Map<String, ProcessFieldDefinition> fieldNameMap = processFieldDefinitions.stream().collect(Collectors.toMap(ProcessFieldDefinition::getName, it -> it));
 
         // 获取当前用户的任务
         Task task = taskService.createTaskQuery().processInstanceId(param.processInstanceId).taskAssignee(String.valueOf(loginUser.getId())).singleResult();
@@ -883,11 +891,10 @@ public class ProcessService {
                     writeableFields.forEach(it -> it.setField(fieldMap.get(it.getFieldId())));
                     Map<String, Object> fields = new HashMap<>();
                     for (ProcessModelPageScheme writeableField : writeableFields) {
-                        // TODO: 处理列表字段
                         fields.put(writeableField.getField().getName(), param.params.get(writeableField.getField().getName()));
                     }
                     // TODO: add UPDATE BEFORE interceptor
-                    processModelMapper.updateFields(tableName, processCommonInfo.getId(), fields); // 更新的字段
+                    processModelMapper.updateFields(tableName, processCommonInfo.getId(), fieldNameMap, fields); // 更新的字段
                     List<ProcessFieldDefinition> fieldDefinitions = writeableFields.stream().map(ProcessModelPageScheme::getField).collect(Collectors.toList());
                     updateAssociationTable(fieldDefinitions, processCommonInfo.getId(), param.processKey, fields);
                     // TODO: add UPDATE AFTER interceptor
@@ -911,5 +918,24 @@ public class ProcessService {
         return ResultData.OK;
     }
 
+    public ResultData<ProcessModelPageInfoView> getStartFormInfo(String processKey) {
+        ProcessModelNodePage nodePage = processNodePageMapper.findStartPage(processKey);
+        if (nodePage == null) {
+            return ResultData.err(500, "请先配置启动界面");
+        }
+
+        List<ProcessFieldDefinition> processFieldDefinitions = processFieldDefinitionMapper.selectFieldsByProcessKey(processKey);
+        Map<Long, ProcessFieldDefinition> fieldDefinitionMap = processFieldDefinitions.stream().collect(Collectors.toMap(ProcessFieldDefinition::getId, it -> it));
+
+        List<ProcessModelPageScheme> pageScheme = processModelPageSchemeMapper.findPageScheme(nodePage.getProcessModelPageId());
+        pageScheme.forEach(it -> it.setField(fieldDefinitionMap.get(it.getFieldId())));
+
+        if (CollectionUtils.isEmpty(pageScheme)) {
+            return ResultData.err(500, "启动界面尚未配置字段");
+        }
+        ProcessModelPageInfoView pageInfoView = buildProcessModelPageInfoView(nodePage, pageScheme);
+        pageInfoView.fields = processFieldDefinitions;
+        return ResultData.ok(pageInfoView);
+    }
 
 }

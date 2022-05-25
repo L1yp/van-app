@@ -32,5 +32,14 @@ public class Main {
         Map<Integer, List<Demo>> map = demos.stream().collect(Collectors.groupingBy(Demo::getId, Collectors.toList()));
         System.out.println("map = " + map);
 
+        List<Object> arr = new ArrayList<>();
+        arr.add(Long.valueOf("8"));
+        arr.add(Integer.valueOf("4"));
+        arr.add(Short.valueOf("2"));
+        arr.add(Byte.valueOf("1"));
+        for (Object obj : arr) {
+            Number number = (Number) obj;
+            System.out.println(number.intValue());
+        }
     }
 }
