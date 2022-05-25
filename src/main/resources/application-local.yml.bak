@@ -1,0 +1,68 @@
+server:
+  port: 8082
+  address: 0.0.0.0
+  servlet:
+    session:
+      timeout: 24h
+
+spring:
+  datasource:
+    url: "jdbc:mysql://localhost:3306/van?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&nullCatalogMeansCurrent=true"
+    username: debian-sys-maint
+    password: jIsCzDjUAkSEpoWB
+    hikari:
+      maximum-pool-size: 4
+      minimum-idle: 1
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    property-naming-strategy: SNAKE_CASE
+  redis:
+    host: localhost
+    port: 6379
+    password: ry-lg-redis-pass
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: -1
+        min-idle: 0
+    database: 2
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath*:mybatis/**/*.xml
+
+logging:
+  level:
+    root: INFO
+  config: classpath:logback-spring.xml
+  lyp:
+    name: van
+    root: logs
+mapper:
+  style: camelhumpAndLowercase
+
+
+flowable:
+  cmmn:
+    enabled: false
+  dmn:
+    enabled: false
+  idm:
+    enabled: false
+    ldap:
+      enabled: false
+  form:
+    enabled: false
+  database-schema-update: true
+  history-level: full
+management:
+  endpoint:
+    flowable:
+      enabled: false
+
+app:
+  schedule: disabled

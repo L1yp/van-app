@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <springProperty scope="context" name="logRootDir" source="logging.lyp.root"></springProperty>
+    <springProperty scope="context" name="logFileName" source="logging.lyp.name"></springProperty>
+
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+    <property name="FILE_LOG_PATTERN" value="${FILE_LOG_PATTERN:-%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--  轮转前日志将会输出到该文件 -->
+        <file>${logRootDir}/${logFileName}.log</file>
+
+        <!--  基于时间来定义轮转  -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 按分轮转 -->
+            <fileNamePattern>${logRootDir}/%d{yyyy/MM, aux}/${logFileName}-%d{yyyy-MM-dd_HH-mm}.gz</fileNamePattern>
+            <!--  控制最多保留多少数量的归档文件 -->
+            <maxHistory>30</maxHistory>
+            <!--  控制所有归档文件总的大小
+                  当达到这个大小后，旧的归档文件将会被异步的删除。使用这个属性时还需要设置 maxHistory 属性，
+                  maxHistory 将会被作为第一条件，该属性作为第二条件。-->
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+
+        <!--  基于大小与时间来定义轮转  -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 按天轮转 -->
+            <fileNamePattern>${logRootDir}/%d{yyyy/MM, aux}/${logFileName}-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <!-- 日志文件达到了 maxFileSize 指定的大小，会进行归档，递增索引从 0 开始-->
+            <maxFileSize>50MB</maxFileSize>
+            <!-- 保存几个周期的日志，这里的周期只轮转周期 -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="rollingFileError" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <!--  轮转前日志将会输出到该文件 -->
+        <file>${logRootDir}/err-${logFileName}.log</file>
+
+        <!--  基于时间来定义轮转  -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 按分轮转 -->
+            <fileNamePattern>${logRootDir}/%d{yyyy/MM, aux}/err-${logFileName}-%d{yyyy-MM-dd_HH-mm}.gz</fileNamePattern>
+            <!--  控制最多保留多少数量的归档文件 -->
+            <maxHistory>30</maxHistory>
+            <!--  控制所有归档文件总的大小
+                  当达到这个大小后，旧的归档文件将会被异步的删除。使用这个属性时还需要设置 maxHistory 属性，
+                  maxHistory 将会被作为第一条件，该属性作为第二条件。-->
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+
+        <!--  基于大小与时间来定义轮转  -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 按天轮转 -->
+            <fileNamePattern>${logRootDir}/%d{yyyy/MM, aux}/${logFileName}-error-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <!-- 日志文件达到了 maxFileSize 指定的大小，会进行归档，递增索引从 0 开始-->
+            <maxFileSize>50MB</maxFileSize>
+            <!-- 保存几个周期的日志，这里的周期只轮转周期 -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <springProfile name="local">
+        <logger name="root" level="INFO" additivity="false">
+            <!-- 存储日式文件 -->
+            <appender-ref ref="rollingFile"/>
+            <appender-ref ref="rollingFileError"/>
+            <appender-ref ref="console"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="default">
+        <logger name="root" level="INFO" additivity="false">
+            <!-- 存储日式文件 -->
+            <appender-ref ref="rollingFile"/>
+            <appender-ref ref="rollingFileError"/>
+            <appender-ref ref="console"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="dev">
+        <logger name="root" level="INFO" additivity="false">
+            <!-- 存储日式文件 -->
+            <appender-ref ref="rollingFile"/>
+            <appender-ref ref="rollingFileError"/>
+            <appender-ref ref="console"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="pro">
+        <logger name="root" level="INFO" additivity="false">
+            <!-- 存储日式文件 -->
+            <appender-ref ref="rollingFile"/>
+            <appender-ref ref="rollingFileError"/>
+            <appender-ref ref="console"/>
+        </logger>
+    </springProfile>
+
+
+</configuration>

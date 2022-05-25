@@ -1,0 +1,6 @@
+org.flowable.job.service.impl.persistence.entity.TimerJobEntityImpl.selectTimerJobsToExecute
+org.flowable.job.service.impl.persistence.entity.JobEntityImpl.selectJobsToExecute
+org.flowable.job.service.impl.persistence.entity.ExternalWorkerJobEntityImpl.selectExpiredExternalWorkerJobs
+org.flowable.job.service.impl.persistence.entity.TimerJobEntityImpl.selectExpiredTimerJobs
+org.flowable.job.service.impl.persistence.entity.JobEntityImpl.selectExpiredJobs
+org.flowable.job.service.impl.persistence.entity.JobEntityImpl.selectJobByQueryCriteria
