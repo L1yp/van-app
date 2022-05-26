@@ -10,8 +10,6 @@ public class ConfigProcessStartPageParam {
 
     private String labelWidth;
 
-    private Integer comment;
-
     public String getProcessKey() {
         return processKey;
     }
@@ -44,11 +42,4 @@ public class ConfigProcessStartPageParam {
         this.labelWidth = labelWidth;
     }
 
-    public Integer getComment() {
-        return comment;
-    }
-
-    public void setComment(Integer comment) {
-        this.comment = comment;
-    }
 }
