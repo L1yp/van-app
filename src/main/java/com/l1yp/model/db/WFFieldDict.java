@@ -16,6 +16,8 @@ public class WFFieldDict {
 
     private Long wfId;
 
+    private String processInstanceId;
+
     private Long fieldId;
 
     private Long dictId;
@@ -44,6 +46,14 @@ public class WFFieldDict {
 
     public void setWfId(Long wfId) {
         this.wfId = wfId;
+    }
+
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
 
     public Long getFieldId() {

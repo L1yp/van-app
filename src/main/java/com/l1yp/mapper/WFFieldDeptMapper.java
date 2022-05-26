@@ -18,6 +18,10 @@ public interface WFFieldDeptMapper extends Mapper<WFFieldDept>, InsertListMapper
     List<Long> listDeptIdByWFID(@Param("processKey") String processKey,
                                 @Param("wfId") Long wfId);
 
+    @Select("SELECT dept_id FROM wf_field_dept WHERE process_key = #{processKey} AND process_instance_id = #{processInstanceId}")
+    List<Long> listDeptIdByProcessInstanceId(@Param("processKey") String processKey,
+                                             @Param("processInstanceId") String processInstanceId);
+
     @Select("SELECT * FROM wf_field_dept WHERE process_key = #{processKey} AND wf_id = #{wfId}")
     List<WFFieldDept> listByWFID(@Param("processKey") String processKey,
                                 @Param("wfId") Long wfId);

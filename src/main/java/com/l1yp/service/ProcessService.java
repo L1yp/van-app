@@ -1,6 +1,7 @@
 package com.l1yp.service;
 
 import com.l1yp.conf.constants.process.ProcessConstants;
+import com.l1yp.conf.constants.process.ProcessConstants.ComponentType;
 import com.l1yp.mapper.*;
 import com.l1yp.model.bpmn.HistoricActivityInstanceView;
 import com.l1yp.model.bpmn.ProcessCreateParam;
@@ -146,7 +147,7 @@ public class ProcessService {
             processModelMapper.updateFields(tableName, pci.getId(), fieldMap, params);
             // 设置 wf表的字段 数据
 
-            updateAssociationTable(processFieldDefinitions, pci.getId(), param.getProcessKey(), params);
+            updateAssociationTable(processFieldDefinitions, pci.getId(), processInstance.getProcessInstanceId(), param.getProcessKey(), params);
         } finally {
             Authentication.setAuthenticatedUserId(null);
         }
@@ -155,19 +156,20 @@ public class ProcessService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public void updateAssociationTable(List<ProcessFieldDefinition> processFieldDefinitions, Long processId, String processKey, Map<String, Object> params) {
+    public void updateAssociationTable(List<ProcessFieldDefinition> processFieldDefinitions, Long processId, String processInstanceId, String processKey, Map<String, Object> params) {
         SysUser loginUser = RequestUtils.getLoginUser();
         List<WFFieldUser> wfFieldUsers = new ArrayList<>();
         List<WFFieldDept> wfFieldDepts = new ArrayList<>();
         List<WFFieldDict> wfFieldDicts = new ArrayList<>();
         for (ProcessFieldDefinition processFieldDefinition : processFieldDefinitions) {
-            if (processFieldDefinition.getComponentType() == 7) {
+            if (processFieldDefinition.getComponentType() == ComponentType.MULTI_USER) {
                 if (params.containsKey(processFieldDefinition.getName())) {
                     List<Object> userIds = (List<Object>) params.get(processFieldDefinition.getName());
                     for (Object userId : userIds) {
                         WFFieldUser fieldUser = new WFFieldUser();
                         fieldUser.setProcessKey(processKey);
                         fieldUser.setWfId(processId);
+                        fieldUser.setProcessInstanceId(processInstanceId);
                         fieldUser.setFieldId(processFieldDefinition.getId());
                         fieldUser.setUserId(((Number) userId).longValue());
                         fieldUser.setUpdateBy(loginUser.getUsername());
@@ -175,60 +177,65 @@ public class ProcessService {
                     }
                 }
             }
-            else if (processFieldDefinition.getComponentType() == 6) {
+            else if (processFieldDefinition.getComponentType() == ComponentType.SINGLE_USER) {
                 if (params.containsKey(processFieldDefinition.getName())) {
                     Number userId = (Number) params.get(processFieldDefinition.getName());
                     WFFieldUser fieldUser = new WFFieldUser();
                     fieldUser.setProcessKey(processKey);
                     fieldUser.setWfId(processId);
+                    fieldUser.setProcessInstanceId(processInstanceId);
                     fieldUser.setFieldId(processFieldDefinition.getId());
                     fieldUser.setUserId(userId.longValue());
                     fieldUser.setUpdateBy(loginUser.getUsername());
                     wfFieldUsers.add(fieldUser);
                 }
             }
-            else if (processFieldDefinition.getComponentType() == 9) {
+            else if (processFieldDefinition.getComponentType() == ComponentType.SINGLE_DEPT) {
                 if (params.containsKey(processFieldDefinition.getName())) {
                     Number deptId = (Number) params.get(processFieldDefinition.getName());
                     WFFieldDept fieldDept = new WFFieldDept();
                     fieldDept.setProcessKey(processKey);
                     fieldDept.setWfId(processId);
+                    fieldDept.setProcessInstanceId(processInstanceId);
                     fieldDept.setFieldId(processFieldDefinition.getId());
                     fieldDept.setDeptId(deptId.longValue());
                     fieldDept.setUpdateBy(loginUser.getUsername());
                     wfFieldDepts.add(fieldDept);
                 }
             }
-            else if (processFieldDefinition.getComponentType() == 10) {
+            else if (processFieldDefinition.getComponentType() == ComponentType.MULTI_DEPT) {
                 if (params.containsKey(processFieldDefinition.getName())) {
                     Number deptId = (Number) params.get(processFieldDefinition.getName());
                     WFFieldDept fieldDept = new WFFieldDept();
                     fieldDept.setProcessKey(processKey);
                     fieldDept.setWfId(processId);
+                    fieldDept.setProcessInstanceId(processInstanceId);
                     fieldDept.setFieldId(processFieldDefinition.getId());
                     fieldDept.setDeptId(deptId.longValue());
                     fieldDept.setUpdateBy(loginUser.getUsername());
                     wfFieldDepts.add(fieldDept);
                 }
             }
-            else if (processFieldDefinition.getComponentType() == 3) {
+            else if (processFieldDefinition.getComponentType() == ComponentType.SINGLE_DICT) {
                 if (params.containsKey(processFieldDefinition.getName())) {
                     Number dictId = (Number) params.get(processFieldDefinition.getName());
                     WFFieldDict fieldDict = new WFFieldDict();
                     fieldDict.setProcessKey(processKey);
                     fieldDict.setWfId(processId);
+                    fieldDict.setProcessInstanceId(processInstanceId);
                     fieldDict.setFieldId(processFieldDefinition.getId());
                     fieldDict.setDictId(dictId.longValue());
                     fieldDict.setUpdateBy(loginUser.getUsername());
                     wfFieldDicts.add(fieldDict);
                 }
             }
-            else if (processFieldDefinition.getComponentType() == 4) {
+            else if (processFieldDefinition.getComponentType() == ComponentType.MULTI_DICT) {
                 if (params.containsKey(processFieldDefinition.getName())) {
                     Number deptId = (Number) params.get(processFieldDefinition.getName());
                     WFFieldDict fieldDict = new WFFieldDict();
                     fieldDict.setProcessKey(processKey);
                     fieldDict.setWfId(processId);
+                    fieldDict.setProcessInstanceId(processInstanceId);
                     fieldDict.setFieldId(processFieldDefinition.getId());
                     fieldDict.setDictId(deptId.longValue());
                     fieldDict.setUpdateBy(loginUser.getUsername());

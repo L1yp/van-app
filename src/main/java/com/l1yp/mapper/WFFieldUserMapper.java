@@ -18,6 +18,10 @@ public interface WFFieldUserMapper extends Mapper<WFFieldUser>, InsertListMapper
     List<Long> listUserIdByWFID(@Param("processKey") String processKey,
                                 @Param("wfId") Long wfId);
 
+    @Select("SELECT user_id FROM wf_field_user WHERE process_key = #{processKey} AND process_instance_id = #{processInstanceId}")
+    List<Long> listDictIdByProcessInstanceId(@Param("processKey") String processKey, @Param("processInstanceId") String processInstanceId);
+
+
     @Select("SELECT * FROM wf_field_user WHERE process_key = #{processKey} AND wf_id = #{wfId}")
     List<WFFieldUser> listByWFID(@Param("processKey") String processKey,
                                 @Param("wfId") Long wfId);
