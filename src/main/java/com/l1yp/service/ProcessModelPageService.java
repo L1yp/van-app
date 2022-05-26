@@ -8,6 +8,7 @@ import com.l1yp.model.param.process.model.AddProcessModelPageParam;
 import com.l1yp.model.param.process.model.AddProcessModelPageSchemeParam;
 import com.l1yp.model.param.process.model.AddProcessModelPageSchemeParam.PageFieldScheme;
 import com.l1yp.model.param.process.model.BindProcessModelNodePageParam;
+import com.l1yp.model.param.process.model.ConfigProcessStartPageParam;
 import com.l1yp.model.view.ProcessModelPageSchemeView;
 import com.l1yp.util.RequestUtils;
 import org.slf4j.Logger;
@@ -55,7 +56,7 @@ public class ProcessModelPageService {
 
         ProcessModelDefinition definition = processModelMapper.findByProcessKey(param.getProcessKey());
         if (definition == null) {
-            return ResultData.err(401, "processKey参数有误");
+            return ResultData.err(400, "processKey参数有误");
         }
 
         ProcessModelPage page = new ProcessModelPage();
@@ -66,11 +67,19 @@ public class ProcessModelPageService {
         return ResultData.OK;
     }
 
+    /**
+     * 查询流程的页面列表
+     * @param processKey 流程标识
+     */
     public ResultData<List<ProcessModelPage>> listProcessPage(String processKey) {
         List<ProcessModelPage> processModelPages = processModelPageMapper.listProcessPage(processKey);
         return ResultData.ok(processModelPages);
     }
 
+    /**
+     * 查询BPMN流程节点绑定的页面列表
+     * @param bpmnId BPMN流程Id
+     */
     public ResultData<List<ProcessModelNodePage>> listProcessPageByBpmnId(Long bpmnId) {
         List<ProcessModelNodePage> processModelPages = processNodePageMapper.listProcessPageByBpmnId(bpmnId);
         return ResultData.ok(processModelPages);
@@ -116,7 +125,6 @@ public class ProcessModelPageService {
      * 流程节点绑定界面
      */
     public ResultData<Void> bindProcessModelBpmnPage(BindProcessModelNodePageParam param) {
-        // TODO: 需要新增一个 入口 绑定启动表单
         if (ProcessConstants.PROCESS_START_FORM_KEY.equals(param.getNodeId())) {
             return ResultData.err(400, "节点标识与启动表单标识冲突，请更换");
         }
@@ -130,6 +138,21 @@ public class ProcessModelPageService {
 
         return ResultData.OK;
     }
+
+    /**
+     * 配置流程启动表单页面
+     */
+    public ResultData<Void> configProcessModelStartPage(ConfigProcessStartPageParam param) {
+        SysUser loginUser = RequestUtils.getLoginUser();
+        ProcessModelNodePage page = new ProcessModelNodePage();
+        BeanUtils.copyProperties(param, page);
+        page.setUpdateBy(loginUser.getUpdateBy());
+        page.setNodeId(ProcessConstants.PROCESS_START_FORM_KEY);
+
+        processNodePageMapper.insertUpdate(page);
+        return ResultData.OK;
+    }
+
 
     /**
      * 查询流程界面定义

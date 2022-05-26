@@ -8,6 +8,7 @@ import com.l1yp.model.db.ProcessModelPageScheme;
 import com.l1yp.model.param.process.model.AddProcessModelPageParam;
 import com.l1yp.model.param.process.model.AddProcessModelPageSchemeParam;
 import com.l1yp.model.param.process.model.BindProcessModelNodePageParam;
+import com.l1yp.model.param.process.model.ConfigProcessStartPageParam;
 import com.l1yp.model.view.ProcessModelPageSchemeView;
 import com.l1yp.service.ProcessModelPageService;
 import org.springframework.validation.annotation.Validated;
@@ -44,8 +45,7 @@ public class ProcessModelPageController {
      */
     @PostMapping("/create")
     public ResultData<Void> createPage(@RequestBody AddProcessModelPageParam param) {
-        processModelPageService.createPage(param);
-        return ResultData.OK;
+        return processModelPageService.createPage(param);
     }
 
     @GetMapping("/scheme/{pageId}")
@@ -58,8 +58,7 @@ public class ProcessModelPageController {
      */
     @PostMapping("/scheme/create")
     public ResultData<Void> createPageScheme(@RequestBody AddProcessModelPageSchemeParam param) {
-        processModelPageService.createPageScheme(param);
-        return ResultData.OK;
+        return processModelPageService.createPageScheme(param);
     }
 
     /**
@@ -67,8 +66,16 @@ public class ProcessModelPageController {
      */
     @PostMapping("/bind")
     public ResultData<Void> bindProcessNode(@RequestBody BindProcessModelNodePageParam param) {
-        processModelPageService.bindProcessModelBpmnPage(param);
-        return ResultData.OK;
+        return processModelPageService.bindProcessModelBpmnPage(param);
+    }
+
+    /**
+     * 配置流程启动表单
+     */
+    @PostMapping("/start/config")
+    public ResultData<Void> configProcessStartPage(@RequestBody ConfigProcessStartPageParam param) {
+        return processModelPageService.configProcessModelStartPage(param);
+
     }
 
 }

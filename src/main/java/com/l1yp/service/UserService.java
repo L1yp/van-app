@@ -59,26 +59,18 @@ public class UserService {
      */
     public ResultData<UserLoginSuccessView> menu() {
         SysUser loginUser = RequestUtils.getLoginUser();
-        if (loginUser != null) {
-            List<SysMenuView> menus = menuService.findUserMenu();
-            UserLoginSuccessView userLoginSuccessView = new UserLoginSuccessView();
-            userLoginSuccessView.setMenus(menus);
-            UserInfo userInfo = new UserInfo();
-            BeanUtils.copyProperties(loginUser, userInfo);
-            userLoginSuccessView.setUserInfo(userInfo);
-            return ResultData.ok(userLoginSuccessView);
-        } else {
-            return ResultData.err(401, "请先登录");
-        }
+        List<SysMenuView> menus = menuService.findUserMenu();
+        UserLoginSuccessView userLoginSuccessView = new UserLoginSuccessView();
+        userLoginSuccessView.setMenus(menus);
+        UserInfo userInfo = new UserInfo();
+        BeanUtils.copyProperties(loginUser, userInfo);
+        userLoginSuccessView.setUserInfo(userInfo);
+        return ResultData.ok(userLoginSuccessView);
     }
 
     public ResultData<List<String>> permission() {
         SysUser loginUser = RequestUtils.getLoginUser();
-        if (loginUser != null) {
-            return ResultData.ok(userMapper.permissions(loginUser.getId()));
-        } else {
-            return ResultData.err(401, "请先登录");
-        }
+        return ResultData.ok(userMapper.permissions(loginUser.getId()));
     }
 
     /**

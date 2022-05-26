@@ -8,10 +8,11 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.common.special.InsertListMapper;
 
 import java.util.List;
 
-public interface ProcessNodePageMapper extends Mapper<ProcessModelNodePage> {
+public interface ProcessNodePageMapper extends Mapper<ProcessModelNodePage>, InsertListMapper<ProcessModelNodePage> {
 
 
     @Insert("""

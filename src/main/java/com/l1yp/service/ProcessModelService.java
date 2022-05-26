@@ -2,15 +2,9 @@ package com.l1yp.service;
 
 import com.l1yp.conf.constants.process.ProcessConstants;
 import com.l1yp.conf.constants.process.ProcessConstants.PublishState;
-import com.l1yp.mapper.ProcessFieldDefinitionMapper;
-import com.l1yp.mapper.ProcessModelBpmnMapper;
-import com.l1yp.mapper.ProcessModelMapper;
+import com.l1yp.mapper.*;
 import com.l1yp.model.common.ResultData;
-import com.l1yp.model.db.ProcessFieldDefinition;
-import com.l1yp.model.db.ProcessModelBpmn;
-import com.l1yp.model.db.ProcessModelBpmnBase;
-import com.l1yp.model.db.ProcessModelDefinition;
-import com.l1yp.model.db.SysUser;
+import com.l1yp.model.db.*;
 import com.l1yp.model.param.process.AddProcessFieldDefinitionParam;
 import com.l1yp.model.param.process.UpdateProcessFieldDefinitionParam;
 import com.l1yp.model.param.process.model.AddProcessModelBpmnParam;
@@ -43,6 +37,9 @@ public class ProcessModelService {
 
     @Resource
     ProcessModelBpmnMapper processModelBpmnMapper;
+
+    @Resource
+    ProcessNodePageMapper processNodePageMapper;
 
     @Resource
     RepositoryService repositoryService;
@@ -123,9 +120,6 @@ public class ProcessModelService {
      */
     public ResultData<Void> createProcessBpmn(AddProcessModelBpmnParam param) {
         SysUser loginUser = RequestUtils.getLoginUser();
-        if (loginUser == null) {
-            return ResultData.err(401, "请先登录");
-        }
 
         Integer maxVersion = processModelBpmnMapper.findMaxVersionByProcessKey(param.getProcessKey());
         if (maxVersion == null) {
@@ -164,9 +158,6 @@ public class ProcessModelService {
      */
     public ResultData<Void> copyProcessBpmn(CopyProcessModelBpmnParam param) {
         SysUser loginUser = RequestUtils.getLoginUser();
-        if (loginUser == null) {
-            return ResultData.err(401, "请先登录");
-        }
 
         ProcessModelBpmn pmb = processModelBpmnMapper.find(param.getProcessModelBpmnId());
         if (pmb == null) {
@@ -177,8 +168,6 @@ public class ProcessModelService {
             maxVersion = 0;
         }
 
-        // TODO: 复制 页面 审核人配置
-
         pmb.setId(null);
         pmb.setState(0);
         pmb.setVersion(maxVersion + 1);
@@ -187,6 +176,19 @@ public class ProcessModelService {
         pmb.setUpdateTime(null);
         pmb.setCreateTime(null);
         processModelBpmnMapper.insertProcessModelBPMN(pmb);
+
+        List<ProcessModelNodePage> processModelPages = processNodePageMapper.listProcessPageByBpmnId(pmb.getId());
+
+        processModelPages.forEach(it -> {
+            it.setId(null);
+            it.setProcessBpmnId(pmb.getId());
+            it.setUpdateBy(loginUser.getUsername());
+            it.setCreateTime(null);
+            it.setUpdateTime(null);
+        });
+
+        processNodePageMapper.insertList(processModelPages);
+
         return ResultData.OK;
     }
 
@@ -210,9 +212,6 @@ public class ProcessModelService {
      */
     public ResultData<Void> publishProcessModelBpmn(ProcessModelBPMNPublishParam param) {
         SysUser loginUser = RequestUtils.getLoginUser();
-        if (loginUser == null) {
-            return ResultData.err(401, "请先登录");
-        }
 
         ProcessModelBpmn pmb = processModelBpmnMapper.find(param.getProcessModelBpmnId());
         if (pmb == null) {

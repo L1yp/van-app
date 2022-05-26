@@ -1,6 +1,7 @@
 package com.l1yp.util;
 
 import com.l1yp.conf.constants.process.ProcessConstants;
+import com.l1yp.conf.constants.process.ProcessConstants.ComponentType;
 import com.l1yp.mapper.*;
 import com.l1yp.model.db.ProcessFieldDefinition;
 import org.flowable.engine.delegate.DelegateExecution;
@@ -47,13 +48,13 @@ public class ProcessModelReader {
         }
 
         if (multiRefIdSet.contains(processFieldDefinition.getComponentType())) {
-            if (processFieldDefinition.getComponentType() == ProcessConstants.ComponentType.MULTI_DEPT) {
+            if (processFieldDefinition.getComponentType() == ComponentType.MULTI_DEPT) {
                 return wfFieldDeptMapper.listDeptIdByProcessInstanceId(processKey, processInstanceId);
             }
-            else if (processFieldDefinition.getComponentType() == ProcessConstants.ComponentType.MULTI_DICT) {
+            else if (processFieldDefinition.getComponentType() == ComponentType.MULTI_DICT) {
                 return wfFieldDictMapper.listDictIdByProcessInstanceId(processKey, processInstanceId);
             }
-            else if (processFieldDefinition.getComponentType() == ProcessConstants.ComponentType.MULTI_USER) {
+            else if (processFieldDefinition.getComponentType() == ComponentType.MULTI_USER) {
                 return wfFieldUserMapper.listDictIdByProcessInstanceId(processKey, processInstanceId);
             }
         }

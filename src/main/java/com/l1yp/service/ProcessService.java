@@ -104,9 +104,6 @@ public class ProcessService {
     @Transactional
     public ResultData<Void> createProcess(ProcessCreateParam param) {
         SysUser loginUser = RequestUtils.getLoginUser();
-        if (loginUser == null) {
-            return ResultData.err(401, "请先登录");
-        }
 
         ProcessModelBpmnBase publishVersion = processModelBpmnMapper.findPublishBPMNVersionByProcessKey(param.getProcessKey());
         if (publishVersion == null) {
@@ -266,9 +263,6 @@ public class ProcessService {
      */
     public ResultData<List<ProcessTaskView>> listAssigneeTask() {
         SysUser loginUser = RequestUtils.getLoginUser();
-        if (loginUser == null) {
-            return ResultData.err(401, "请先登录");
-        }
 
         List<Task> tasks = taskService.createTaskQuery().taskAssignee(loginUser.getId().toString()).active().list();
         return ResultData.ok(buildTaskView(loginUser.getId(), tasks));
@@ -280,9 +274,6 @@ public class ProcessService {
      */
     public ResultData<List<ProcessTaskView>> listCandidateTask() {
         SysUser loginUser = RequestUtils.getLoginUser();
-        if (loginUser == null) {
-            return ResultData.err(401, "请先登录");
-        }
 
         List<Task> tasks = taskService.createTaskQuery().taskCandidateUser(loginUser.getId().toString()).active().list();
         return ResultData.ok(buildTaskView(loginUser.getId(), tasks));
@@ -339,9 +330,6 @@ public class ProcessService {
      */
     public ResultData<Void> claimTask(String taskId) {
         SysUser loginUser = RequestUtils.getLoginUser();
-        if (loginUser == null) {
-            return ResultData.err(401, "请先登录");
-        }
 
         taskService.claim(taskId, loginUser.getId().toString()); // task 必须是 candidateUser Task
 //        taskService.setAssignee();
@@ -355,9 +343,6 @@ public class ProcessService {
      */
     public ResultData<Void> unclaimTask(String taskId) {
         SysUser loginUser = RequestUtils.getLoginUser();
-        if (loginUser == null) {
-            return ResultData.err(401, "请先登录");
-        }
 
         taskService.unclaim(taskId); // task 必须是 candidateUser Task
 //        taskService.setAssignee();
@@ -903,7 +888,7 @@ public class ProcessService {
                     // TODO: add UPDATE BEFORE interceptor
                     processModelMapper.updateFields(tableName, processCommonInfo.getId(), fieldNameMap, fields); // 更新的字段
                     List<ProcessFieldDefinition> fieldDefinitions = writeableFields.stream().map(ProcessModelPageScheme::getField).collect(Collectors.toList());
-                    updateAssociationTable(fieldDefinitions, processCommonInfo.getId(), param.processKey, fields);
+                    updateAssociationTable(fieldDefinitions, processCommonInfo.getId(), param.processInstanceId, param.processKey, fields);
                     // TODO: add UPDATE AFTER interceptor
                 }
             }
