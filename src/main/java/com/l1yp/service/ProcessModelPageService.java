@@ -148,6 +148,7 @@ public class ProcessModelPageService {
         BeanUtils.copyProperties(param, page);
         page.setUpdateBy(loginUser.getUpdateBy());
         page.setNodeId(ProcessConstants.PROCESS_START_FORM_KEY);
+        page.setProcessBpmnId(0L);
 
         processNodePageMapper.insertUpdate(page);
         return ResultData.OK;

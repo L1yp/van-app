@@ -418,9 +418,9 @@ public class ProcessService {
         }
 
         Set<String> creators = processList.stream().map(ProcessCommonInfo::getCreator).collect(Collectors.toSet());
-        List<SysUserView> userList = userMapper.listByUsername(creators);
+        List<SysUserView> userList = userMapper.listByUsername(List.copyOf(creators));
         Map<String, SysUserView> userMap = userList.stream().collect(Collectors.toMap(SysUserView::getUsername, it -> it));
-        result.forEach(it -> it.creator = userMap.get(it.creator));
+        result.forEach(it -> it.creator = userMap.get(String.valueOf(it.creator)));
 
         return ResultData.ok(result);
 
@@ -494,7 +494,7 @@ public class ProcessService {
         }
 
         Set<String> creators = processList.stream().map(ProcessCommonInfo::getCreator).collect(Collectors.toSet());
-        List<SysUserView> userList = userMapper.listByUsername(creators);
+        List<SysUserView> userList = userMapper.listByUsername(List.copyOf(creators));
         Map<String, SysUserView> userMap = userList.stream().collect(Collectors.toMap(SysUserView::getUsername, it -> it));
         result.forEach(it -> it.creator = userMap.get(it.creator));
 
@@ -543,7 +543,7 @@ public class ProcessService {
 
         List<SysUserView> userViews = userMapper.listByIdList(userIds);
         Map<Long, SysUserView> userIdMap = userViews.stream().collect(Collectors.toMap(SysUserView::getId, it -> it));
-        List<SysUserView> userViews2 = userMapper.listByUsername(userNames);
+        List<SysUserView> userViews2 = userMapper.listByUsername(List.copyOf(userNames));
         Map<String, SysUserView> userNameMap = userViews2.stream().collect(Collectors.toMap(SysUserView::getUsername, it -> it));
         for (Map<String, Object> map : list) {
             String creator = (String) map.get("creator");
@@ -875,7 +875,9 @@ public class ProcessService {
                     return ResultData.err(400, "请填写评论");
                 }
             } else {
-                List<ProcessModelPageScheme> writeableFields = pageScheme.stream().filter(it -> it.getWriteable().equals(1)).toList();
+                List<ProcessModelPageScheme> writeableFields = pageScheme.stream()
+                        .filter(it -> it.getWriteable().equals(1) && param.device.equals(it.getDevice()))
+                        .toList();
                 if (CollectionUtils.isEmpty(writeableFields)) {
                     // 没有可写字段
                 } else {

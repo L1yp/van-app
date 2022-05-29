@@ -18,6 +18,7 @@ import tk.mybatis.mapper.common.Mapper;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public interface UserMapper extends Mapper<SysUser> {
 
@@ -35,7 +36,7 @@ public interface UserMapper extends Mapper<SysUser> {
     List<SysUserView> listByIdList(@Param("userIds") Collection<Long> userIds);
 
     @SelectProvider(type = Provider.class, method = "listByUsername")
-    List<SysUserView> listByUsername(@Param("userNames") Collection<String> userNames);
+    List<SysUserView> listByUsername(@Param("userNames") List<String> userNames);
 
 
     @Delete("DELETE FROM sys_user_role WHERE uid = #{uid}")
@@ -104,17 +105,17 @@ public interface UserMapper extends Mapper<SysUser> {
             return userIds.stream().map(String::valueOf).collect(Collectors.joining(",", "SELECT id,username,nickname,phone,email,avatar,register_ip,status,update_by FROM sys_user WHERE id IN (", ")"));
         }
 
-        public String listByUsername(Collection<String> userNames) {
+        public String listByUsername(List<String> userNames) {
             if (CollectionUtils.isEmpty(userNames)) {
                 return null;
             }
-            return userNames.stream()
-                    .map(it -> "'" + it + "'")
-                    .collect(Collectors.joining(
-                                    ",",
+
+            return IntStream.range(0, userNames.size())
+                            .mapToObj(it -> "#{userNames[" + it + "]}")
+                            .collect(Collectors.joining(",",
                                     "SELECT id,username,nickname,phone,email,avatar,register_ip,status,update_by FROM sys_user WHERE username IN (",
-                                    ")")
-                    );
+                                    ")"));
+
         }
 
         public String pageList(UserListFindParam param) {
