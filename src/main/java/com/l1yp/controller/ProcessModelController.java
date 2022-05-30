@@ -8,6 +8,7 @@ import com.l1yp.model.param.process.AddProcessFieldDefinitionParam;
 import com.l1yp.model.param.process.UpdateProcessFieldDefinitionParam;
 import com.l1yp.model.param.process.model.AddProcessModelBpmnParam;
 import com.l1yp.model.param.process.model.AddProcessModelDefinitionParam;
+import com.l1yp.model.param.process.model.AddWFColumnParam;
 import com.l1yp.model.param.process.model.CopyProcessModelBpmnParam;
 import com.l1yp.model.param.process.model.ProcessModelBPMNPublishParam;
 import com.l1yp.model.param.process.model.UpdateProcessModelBpmnParam;
@@ -113,8 +114,8 @@ public class ProcessModelController {
      * 创建流程模型字段
      */
     @PostMapping("/field/definition/create")
-    public ResultData<Void> addProcessFieldDefinition(@RequestBody AddProcessFieldDefinitionParam param) {
-        processModelService.createProcessField(param);
+    public ResultData<Void> addProcessFieldDefinition(@RequestBody AddWFColumnParam param) {
+        processModelService.addColumn(param);
         return ResultData.OK;
     }
 

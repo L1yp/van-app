@@ -1,8 +1,11 @@
 package com.l1yp.mapper;
 
 import com.l1yp.model.db.ProcessFieldDefinition;
+import com.l1yp.model.param.process.model.AddWFColumnParam;
+import com.l1yp.util.ProcessModelUtil;
 import org.apache.ibatis.annotations.*;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.Collection;
@@ -24,6 +27,10 @@ public interface ProcessFieldDefinitionMapper extends Mapper<ProcessFieldDefinit
     @SelectProvider(type = Provider.class, method = "selectFieldsByIds")
     List<ProcessFieldDefinition> selectFieldsByIds(@Param("ids") Collection<Long> ids);
 
+
+    @UpdateProvider(type = Provider.class, method = "addColumn")
+    int addColumn(AddWFColumnParam param);
+
     class Provider {
 
         public String batchDelete(List<Long> ids) {
@@ -37,6 +44,28 @@ public interface ProcessFieldDefinitionMapper extends Mapper<ProcessFieldDefinit
             }
             return "SELECT * FROM process_model_field_definition WHERE id IN " +
                     ids.stream().map(String::valueOf).collect(Collectors.joining(",", "(", ")"));
+        }
+
+        public String addColumn(AddWFColumnParam param) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("ALTER TABLE ").append(ProcessModelUtil.getProcessModelTableName(param.getProcessKey())).append(" ");
+            sb.append("ADD ").append(param.getColumnName()).append(" ");
+            sb.append(param.getDbType()).append(" ");
+            if (StringUtils.hasText(param.getDefaultVal())) {
+                sb.append("DEFAULT ").append(param.getDefaultVal()).append(" ");
+            }
+            if (!param.nullable) {
+                sb.append("NOT ");
+            }
+            sb.append("NULL ");
+            if (StringUtils.hasText(param.getComment())) {
+                sb.append("COMMENT '").append(param.getComment()).append("' ");
+            }
+//
+//            if (StringUtils.hasText(param.getAfterColumn())) {
+//                sb.append("AFTER `").append(param.getAfterColumn()).append("`");
+//            }
+            return sb.toString();
         }
 
     }

@@ -1,6 +1,6 @@
 package com.l1yp.service;
 
-import com.l1yp.conf.constants.process.ProcessConstants;
+import com.l1yp.conf.constants.process.ProcessConstants.ComponentType;
 import com.l1yp.conf.constants.process.ProcessConstants.PublishState;
 import com.l1yp.mapper.*;
 import com.l1yp.model.common.ResultData;
@@ -9,6 +9,7 @@ import com.l1yp.model.param.process.AddProcessFieldDefinitionParam;
 import com.l1yp.model.param.process.UpdateProcessFieldDefinitionParam;
 import com.l1yp.model.param.process.model.AddProcessModelBpmnParam;
 import com.l1yp.model.param.process.model.AddProcessModelDefinitionParam;
+import com.l1yp.model.param.process.model.AddWFColumnParam;
 import com.l1yp.model.param.process.model.CopyProcessModelBpmnParam;
 import com.l1yp.model.param.process.model.ProcessModelBPMNPublishParam;
 import com.l1yp.model.param.process.model.UpdateProcessModelBpmnParam;
@@ -22,11 +23,16 @@ import org.flowable.engine.repository.ProcessDefinition;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
+import java.sql.JDBCType;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -87,6 +93,9 @@ public class ProcessModelService {
         processModelMapper.insertSelective(pmd);
 
         createProcessBpmn(new AddProcessModelBpmnParam(param.getProcessKey()));
+
+        initProcessFieldDefinition(param.getProcessKey());
+        initProcessWFTable(param.getProcessKey(), param.getTitle());
 
         return ResultData.OK;
     }
@@ -277,22 +286,114 @@ public class ProcessModelService {
         return processFieldDefinitionMapper.selectFieldsByProcessKey(processKey);
     }
 
-    /**
-     * 创建流程模型字段信息
-     */
-    public void createProcessField(AddProcessFieldDefinitionParam param) {
+    public void initProcessFieldDefinition(String processKey) {
+        SysUser loginUser = RequestUtils.getLoginUser();
         ProcessFieldDefinition pfd = new ProcessFieldDefinition();
-        BeanUtils.copyProperties(param, pfd);
+        pfd.setProcessKey(processKey);
+        pfd.setUpdateBy(loginUser.getUsername());
+
+        pfd.setId(null);
+        pfd.setName("id");
+        pfd.setOrderNo(1);
+        pfd.setLabel("id");
+        pfd.setDescription("主键");
+        pfd.setComponentType(ComponentType.NUMBER);
+        pfd.setDbFieldType(JDBCType.BIGINT.getName());
+        processFieldDefinitionMapper.insertSelective(pfd);
+
+        pfd.setId(null);
+        pfd.setName("process_bpmn_id");
+        pfd.setOrderNo(2);
+        pfd.setLabel("版本ID");
+        pfd.setDescription("流程版本ID");
+        pfd.setComponentType(ComponentType.NUMBER);
+        pfd.setDbFieldType(JDBCType.BIGINT.getName());
+        processFieldDefinitionMapper.insertSelective(pfd);
+
+        pfd.setId(null);
+        pfd.setName("process_definition_id");
+        pfd.setOrderNo(3);
+        pfd.setLabel("定义ID");
+        pfd.setDescription("流程定义ID");
+        pfd.setComponentType(ComponentType.SINGLE_LINE_TEXT);
+        pfd.setDbFieldType("VARCHAR(128)");
+        processFieldDefinitionMapper.insertSelective(pfd);
+
+        pfd.setId(null);
+        pfd.setName("process_instance_id");
+        pfd.setOrderNo(4);
+        pfd.setLabel("实例ID");
+        pfd.setDescription("流程实例ID");
+        pfd.setComponentType(ComponentType.SINGLE_LINE_TEXT);
+        pfd.setDbFieldType("VARCHAR(36)");
+        processFieldDefinitionMapper.insertSelective(pfd);
+
+        pfd.setId(null);
+        pfd.setName("name");
+        pfd.setOrderNo(5);
+        pfd.setLabel("名称");
+        pfd.setDescription("流程名称");
+        pfd.setComponentType(ComponentType.SINGLE_LINE_TEXT);
+        pfd.setDbFieldType("VARCHAR(64)");
+        processFieldDefinitionMapper.insertSelective(pfd);
+
+        pfd.setId(null);
+        pfd.setName("creator");
+        pfd.setOrderNo(6);
+        pfd.setLabel("创建者");
+        pfd.setDescription("流程发起者");
+        pfd.setComponentType(ComponentType.SINGLE_LINE_TEXT);
+        pfd.setDbFieldType("VARCHAR(64)");
+        processFieldDefinitionMapper.insertSelective(pfd);
+
+        pfd.setId(null);
+        pfd.setName("update_by");
+        pfd.setOrderNo(7);
+        pfd.setLabel("更新人");
+        pfd.setDescription("最后更新人");
+        pfd.setComponentType(ComponentType.SINGLE_LINE_TEXT);
+        pfd.setDbFieldType("VARCHAR(64)");
+        processFieldDefinitionMapper.insertSelective(pfd);
+
+        pfd.setId(null);
+        pfd.setName("update_time");
+        pfd.setOrderNo(8);
+        pfd.setLabel("更新时间");
+        pfd.setDescription("最后更新时间");
+        pfd.setComponentType(ComponentType.DATETIME);
+        pfd.setDbFieldType("DATETIME");
+        processFieldDefinitionMapper.insertSelective(pfd);
+
+        pfd.setId(null);
+        pfd.setName("create_time");
+        pfd.setOrderNo(9);
+        pfd.setLabel("创建时间");
+        pfd.setDescription("创建时间");
+        pfd.setComponentType(ComponentType.DATETIME);
+        pfd.setDbFieldType("DATETIME");
         processFieldDefinitionMapper.insertSelective(pfd);
     }
+
+    public void initProcessWFTable(String processKey, String description) {
+        processModelMapper.initWFTable(processKey, StringUtils.hasText(description) ? description : " ");
+    }
+
+    private final static Set<String> protectedFields = Set.of(
+            "id", "process_bpmn_id", "process_definition_id", "process_instance_id", "name",
+            "creator", "update_by", "update_time", "create_time"
+    );
 
     /**
      * 更新流程字段信息
      */
-    public void updateProcessField(UpdateProcessFieldDefinitionParam param) {
+    public ResultData<Void> updateProcessField(UpdateProcessFieldDefinitionParam param) {
+        if (protectedFields.contains(param.getName())) {
+            return ResultData.err(400, "不能操作受保护字段");
+        }
         ProcessFieldDefinition pfd = new ProcessFieldDefinition();
         BeanUtils.copyProperties(param, pfd);
         processFieldDefinitionMapper.updateByPrimaryKeySelective(pfd);
+        return ResultData.OK;
     }
 
     /**
@@ -307,6 +408,43 @@ public class ProcessModelService {
      */
     public void batchDeleteByProcessField(List<Long> ids) {
         processFieldDefinitionMapper.batchDelete(ids);
+    }
+
+    public ResultData<Void> addColumn(AddWFColumnParam param) {
+        SysUser loginUser = RequestUtils.getLoginUser();
+
+        ProcessModelDefinition processModelDefinition = processModelMapper.findByProcessKey(param.getProcessKey());
+        if (processModelDefinition == null) {
+            return ResultData.err(400, "processKey有错误");
+        }
+
+        List<ProcessFieldDefinition> processFieldDefinitions = processFieldDefinitionMapper.selectFieldsByProcessKey(param.getProcessKey());
+        Set<String> columnNames = processFieldDefinitions.stream().map(ProcessFieldDefinition::getName).collect(Collectors.toSet());
+        if (columnNames.contains(param.getColumnName())) {
+            return ResultData.err(400, String.format("列[%s]已存在", param.getColumnName()));
+        }
+        Integer maxOrderNo = processFieldDefinitions.stream().map(ProcessFieldDefinition::getOrderNo).max(Integer::compareTo).get();
+
+        ProcessFieldDefinition pfd = new ProcessFieldDefinition();
+        pfd.setProcessKey(param.getProcessKey());
+        pfd.setUpdateBy(loginUser.getUsername());
+
+        pfd.setName(param.getColumnName());
+        pfd.setOrderNo(maxOrderNo + 1);
+        pfd.setLabel(param.getLabel());
+        pfd.setDescription(param.getComment());
+        pfd.setComponentType(param.getComponentType());
+        pfd.setDbFieldType(param.getDbType());
+        pfd.setDbDefaultValue(param.getDefaultVal());
+        pfd.setNullable(param.nullable);
+        pfd.setDictIdent(param.getDictScope());
+        pfd.setDictIdent(param.getDictIdent());
+
+        processFieldDefinitionMapper.insertSelective(pfd);
+
+        processFieldDefinitionMapper.addColumn(param);
+
+        return ResultData.OK;
     }
 
 }

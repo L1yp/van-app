@@ -75,6 +75,23 @@ public interface ProcessModelMapper extends Mapper<ProcessModelDefinition> {
                      @Param("params") Map<String, Object> params);
 
 
+    @Update("""
+            CREATE TABLE wf_${processKey}
+                (
+                    id                    BIGINT AUTO_INCREMENT PRIMARY KEY,
+                    process_bpmn_id       BIGINT       DEFAULT 0                 NOT NULL COMMENT '流程版本ID',
+                    process_definition_id VARCHAR(128) DEFAULT ''                NOT NULL COMMENT '流程定义ID',
+                    process_instance_id   VARCHAR(36)                            NULL COMMENT '流程实例ID',
+                    name                  VARCHAR(64)                            NULL,
+                    creator               VARCHAR(64)                            NOT NULL,
+                    update_by             VARCHAR(64)                            NOT NULL,
+                    update_time           DATETIME     DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+                    create_time           DATETIME     DEFAULT CURRENT_TIMESTAMP NOT NULL
+                )
+                    COMMENT '${description}';
+            """)
+    int initWFTable(@Param("processKey") String processKey,
+                    @Param("description") String description);
 
 
     class Provider {

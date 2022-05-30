@@ -17,3 +17,7 @@ create table wf_field_user
 )
     comment '用户关联表';
 
+INSERT INTO van.wf_field_user (id, process_key, wf_id, process_instance_id, field_id, user_id, update_by, update_time, create_time) VALUES (37, 'change_budget', 2, '3a4dc08e-df29-11ec-8327-00e0705f49db', 1, 1, 'admin', '2022-05-29 16:36:12', '2022-05-29 16:36:12');
+INSERT INTO van.wf_field_user (id, process_key, wf_id, process_instance_id, field_id, user_id, update_by, update_time, create_time) VALUES (38, 'change_budget', 2, '3a4dc08e-df29-11ec-8327-00e0705f49db', 2, 1, 'admin', '2022-05-29 16:36:12', '2022-05-29 16:36:12');
+INSERT INTO van.wf_field_user (id, process_key, wf_id, process_instance_id, field_id, user_id, update_by, update_time, create_time) VALUES (39, 'change_budget', 2, '3a4dc08e-df29-11ec-8327-00e0705f49db', 3, 1, 'admin', '2022-05-29 16:36:12', '2022-05-29 16:36:12');
+INSERT INTO van.wf_field_user (id, process_key, wf_id, process_instance_id, field_id, user_id, update_by, update_time, create_time) VALUES (40, 'change_budget', 2, '3a4dc08e-df29-11ec-8327-00e0705f49db', 4, 1, 'admin', '2022-05-29 16:36:12', '2022-05-29 16:36:12');

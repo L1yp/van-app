@@ -21,6 +21,8 @@ public interface ProcessConstants {
         int SINGLE_DEPT = 9;
         int MULTI_DEPT = 10;
         int DATETIME = 11;
+
+        int DATE = 12;
     }
 
 
