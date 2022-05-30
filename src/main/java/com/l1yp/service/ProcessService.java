@@ -572,6 +572,9 @@ public class ProcessService {
         Map<Long, ProcessFieldDefinition> fieldDefinitionMap = processFields.stream().collect(Collectors.toMap(ProcessFieldDefinition::getId, it -> it));
 
         Map<String, Object> processInfo = processModelMapper.findProcessInfoById(tableName, id);
+        if (processInfo == null) {
+            return ResultData.err(400, "获取不到流程信息");
+        }
         String processInstanceId = (String) processInfo.get("process_instance_id");
         Long processBpmnId = (Long) processInfo.get("process_bpmn_id");
 
@@ -618,7 +621,7 @@ public class ProcessService {
         for (ProcessFieldDefinition processField : processFields) {
             if (processField.isUserType()) {
                 List<WFFieldUser> wfFieldUsers = WFFieldUsers.stream().filter(it -> it.getFieldId().equals(processField.getId())).toList();
-                if (processField.getComponentType() == 6) {
+                if (processField.getComponentType() == ComponentType.SINGLE_USER) {
                     if (CollectionUtils.isEmpty(wfFieldUsers)) {
                         processInfo.put(processField.getName(), null);
                     }
@@ -627,7 +630,7 @@ public class ProcessService {
                         processInfo.put(processField.getName(), userMap.get(wfFieldUsers.get(0).getUserId()));
                     }
                 }
-                else if (processField.getComponentType() == 7) {
+                else if (processField.getComponentType() == ComponentType.MULTI_USER) {
                     if (CollectionUtils.isEmpty(wfFieldUsers)) {
                         processInfo.put(processField.getName(), Collections.emptyList());
                     } else {
@@ -640,7 +643,7 @@ public class ProcessService {
             } // 用户类型
             else if (processField.isDictType()) {
                 List<WFFieldDict> wfFieldDicts = WFFieldDicts.stream().filter(it -> it.getFieldId().equals(processField.getId())).toList();
-                if (processField.getComponentType() == 3) {
+                if (processField.getComponentType() == ComponentType.SINGLE_DICT) {
                     if (CollectionUtils.isEmpty(wfFieldDicts)) {
                         processInfo.put(processField.getName(), null);
                     }
@@ -649,7 +652,7 @@ public class ProcessService {
                         processInfo.put(processField.getName(), dictMap.get(wfFieldDicts.get(0).getDictId()));
                     }
                 }
-                else if (processField.getComponentType() == 4) {
+                else if (processField.getComponentType() == ComponentType.MULTI_DICT) {
                     if (CollectionUtils.isEmpty(wfFieldDicts)) {
                         processInfo.put(processField.getName(), Collections.emptyList());
                     }
@@ -663,14 +666,14 @@ public class ProcessService {
             }  // 字典类型
             else if (processField.isDeptType()) {
                 List<WFFieldDept> wfFieldDepts = WFFieldDepts.stream().filter(it -> it.getFieldId().equals(processField.getId())).toList();
-                if (processField.getComponentType() == 9) {
+                if (processField.getComponentType() == ComponentType.SINGLE_DEPT) {
                     if (CollectionUtils.isEmpty(wfFieldDepts)) {
                         processInfo.put(processField.getName(), null);
                     } else {
                         // size 必须是1
                         processInfo.put(processField.getName(), dictMap.get(wfFieldDepts.get(0).getDeptId()));
                     }
-                } else if (processField.getComponentType() == 10) {
+                } else if (processField.getComponentType() == ComponentType.MULTI_DEPT) {
                     if (CollectionUtils.isEmpty(wfFieldDepts)) {
                         processInfo.put(processField.getName(), Collections.emptyList());
                     } else {
