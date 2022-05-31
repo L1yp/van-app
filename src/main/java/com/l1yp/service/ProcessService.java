@@ -1,15 +1,39 @@
 package com.l1yp.service;
 
-import com.l1yp.conf.constants.process.ProcessConstants;
 import com.l1yp.conf.constants.process.ProcessConstants.ComponentType;
-import com.l1yp.mapper.*;
+import com.l1yp.mapper.ProcessFieldDefinitionMapper;
+import com.l1yp.mapper.ProcessModelBpmnMapper;
+import com.l1yp.mapper.ProcessModelMapper;
+import com.l1yp.mapper.ProcessModelPageSchemeMapper;
+import com.l1yp.mapper.ProcessNodePageMapper;
+import com.l1yp.mapper.SysDeptMapper;
+import com.l1yp.mapper.SysDictValueMapper;
+import com.l1yp.mapper.UserMapper;
+import com.l1yp.mapper.WFFieldDeptMapper;
+import com.l1yp.mapper.WFFieldDictMapper;
+import com.l1yp.mapper.WFFieldUserMapper;
 import com.l1yp.model.bpmn.HistoricActivityInstanceView;
 import com.l1yp.model.bpmn.ProcessCreateParam;
 import com.l1yp.model.common.ResultData;
-import com.l1yp.model.db.*;
+import com.l1yp.model.db.ProcessCommonInfo;
+import com.l1yp.model.db.ProcessFieldDefinition;
+import com.l1yp.model.db.ProcessModelBpmnBase;
+import com.l1yp.model.db.ProcessModelDefinition;
+import com.l1yp.model.db.ProcessModelNodePage;
+import com.l1yp.model.db.ProcessModelPageScheme;
+import com.l1yp.model.db.SysDept;
+import com.l1yp.model.db.SysDictValue;
+import com.l1yp.model.db.SysUser;
+import com.l1yp.model.db.WFFieldDept;
+import com.l1yp.model.db.WFFieldDict;
+import com.l1yp.model.db.WFFieldUser;
 import com.l1yp.model.param.process.ProcessTaskCompleteParam;
 import com.l1yp.model.param.process.view.ProcessTodoTaskView;
-import com.l1yp.model.view.*;
+import com.l1yp.model.view.ProcessModelPageInfoView;
+import com.l1yp.model.view.ProcessModelPageSchemeView;
+import com.l1yp.model.view.ProcessOutComeView;
+import com.l1yp.model.view.ProcessTaskView;
+import com.l1yp.model.view.SysUserView;
 import com.l1yp.util.ProcessModelUtil;
 import com.l1yp.util.RequestUtils;
 import org.flowable.bpmn.model.BpmnModel;
@@ -17,12 +41,14 @@ import org.flowable.bpmn.model.FlowElement;
 import org.flowable.bpmn.model.FlowNode;
 import org.flowable.bpmn.model.SequenceFlow;
 import org.flowable.common.engine.impl.identity.Authentication;
-import org.flowable.engine.*;
+import org.flowable.engine.HistoryService;
+import org.flowable.engine.ProcessEngine;
+import org.flowable.engine.RepositoryService;
+import org.flowable.engine.RuntimeService;
+import org.flowable.engine.TaskService;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.impl.HistoricActivityInstanceQueryProperty;
-import org.flowable.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.TaskInfo;
@@ -40,8 +66,16 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -628,16 +662,17 @@ public class ProcessService {
         boolean hasUserField = processFields.stream().anyMatch(ProcessFieldDefinition::isUserType);
         Map<Long, SysUserView> userMap = Collections.emptyMap();
         List<WFFieldUser> WFFieldUsers = Collections.emptyList();
+        Set<Long> userIds = new HashSet<>();
         if (hasUserField) {
             Object WFId = processInfo.get("id");
             WFFieldUsers = wfFieldUserMapper.listByWFID(processKey, ((Number) WFId).longValue());
-            Set<Long> userIds = new HashSet<>();
             userIds.add(Long.parseLong(creator));
             WFFieldUsers.stream().map(WFFieldUser::getUserId).forEach(userIds::add);
-            List<SysUserView> userViews = userMapper.listByIdList(userIds);
-            userMap = userViews.stream().collect(Collectors.toMap(SysUserView::getId, it -> it));
-            processInfo.put("creator", userMap.get(Long.parseLong(creator)));
+
         }
+        List<SysUserView> userViews = userMapper.listByIdList(userIds);
+        userMap = userViews.stream().collect(Collectors.toMap(SysUserView::getId, it -> it));
+        processInfo.put("creator", userMap.get(Long.parseLong(creator)));
 
         boolean hasDeptField = processFields.stream().anyMatch(ProcessFieldDefinition::isDeptType);
         List<WFFieldDept> WFFieldDepts = Collections.emptyList();
@@ -666,7 +701,9 @@ public class ProcessService {
                 List<WFFieldUser> wfFieldUsers = WFFieldUsers.stream().filter(it -> it.getFieldId().equals(processField.getId())).toList();
                 if (processField.getComponentType() == ComponentType.SINGLE_USER) {
                     if (CollectionUtils.isEmpty(wfFieldUsers)) {
-                        processInfo.put(processField.getName(), null);
+                        if (!NOT_CLIENT_INPUT_FIELDS.contains(processField.getName())) {
+                            processInfo.put(processField.getName(), null);
+                        }
                     }
                     else {
                         // size 必须是1
@@ -711,7 +748,9 @@ public class ProcessService {
                 List<WFFieldDept> wfFieldDepts = WFFieldDepts.stream().filter(it -> it.getFieldId().equals(processField.getId())).toList();
                 if (processField.getComponentType() == ComponentType.SINGLE_DEPT) {
                     if (CollectionUtils.isEmpty(wfFieldDepts)) {
-                        processInfo.put(processField.getName(), null);
+                        if (!NOT_CLIENT_INPUT_FIELDS.contains(processField.getName())) {
+                            processInfo.put(processField.getName(), null);
+                        }
                     } else {
                         // size 必须是1
                         processInfo.put(processField.getName(), dictMap.get(wfFieldDepts.get(0).getDeptId()));
