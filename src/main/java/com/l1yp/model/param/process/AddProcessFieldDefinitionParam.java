@@ -14,11 +14,13 @@ public class AddProcessFieldDefinitionParam {
 
     private String description;
 
-    private Long componentType;
+    private Integer componentType;
 
     private String dbFieldType;
 
     private String dbDefaultValue;
+
+    private Integer nullable;
 
     private String dictScope;
 
@@ -64,11 +66,11 @@ public class AddProcessFieldDefinitionParam {
         this.description = description;
     }
 
-    public Long getComponentType() {
+    public Integer getComponentType() {
         return componentType;
     }
 
-    public void setComponentType(Long componentType) {
+    public void setComponentType(Integer componentType) {
         this.componentType = componentType;
     }
 
@@ -86,6 +88,14 @@ public class AddProcessFieldDefinitionParam {
 
     public void setDbDefaultValue(String dbDefaultValue) {
         this.dbDefaultValue = dbDefaultValue;
+    }
+
+    public Integer getNullable() {
+        return nullable;
+    }
+
+    public void setNullable(Integer nullable) {
+        this.nullable = nullable;
     }
 
     public String getDictScope() {

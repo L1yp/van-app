@@ -39,6 +39,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -104,23 +105,28 @@ public class ProcessService {
     @Transactional
     public ResultData<Void> createProcess(ProcessCreateParam param) {
         SysUser loginUser = RequestUtils.getLoginUser();
-
+        ProcessModelDefinition processModel = processModelMapper.findByProcessKey(param.getProcessKey());
+        if (processModel == null) {
+            return ResultData.err(400, "不存在该流程");
+        }
         ProcessModelBpmnBase publishVersion = processModelBpmnMapper.findPublishBPMNVersionByProcessKey(param.getProcessKey());
         if (publishVersion == null) {
             return ResultData.err(400, "请先发布一个该流程的流程版本");
         }
 
+        String maxCode = genCode(processModel);
+
         try {
-            // TODO validate processKey
             Authentication.setAuthenticatedUserId(loginUser.getId().toString());
             String tableName = ProcessModelUtil.getProcessModelTableName(param.getProcessKey());
             ProcessCommonInfo pci = new ProcessCommonInfo();
-            pci.setName((String) param.getParams().get("name")); // FIXME: 校验
-            pci.setCreator(loginUser.getUsername());
-            pci.setUpdateBy(loginUser.getUsername());
-            pci.setTableName(tableName);
             pci.setProcessBpmnId(publishVersion.getId());
             pci.setProcessDefinitionId(publishVersion.getProcessDefinitionId());
+            pci.setCode(maxCode); // TODO: gen code
+            pci.setName((String) param.getParams().get("name")); // FIXME: 校验
+            pci.setCreator(loginUser.getId());
+            pci.setUpdateBy(loginUser.getUsername());
+            pci.setTableName(tableName);
             processModelMapper.createProcess(pci);
             log.info("create process success, insert id: {}", pci.getId());
 
@@ -150,6 +156,32 @@ public class ProcessService {
         }
 
         return ResultData.OK;
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public String genCode(ProcessModelDefinition processModelDefinition) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(processModelDefinition.getCodePrefix());
+        sb.append(processModelDefinition.getCodeJoiner());
+        SimpleDateFormat df = new SimpleDateFormat(processModelDefinition.getCodeTimePattern());
+        sb.append(df.format(new Date()));
+        sb.append(processModelDefinition.getCodeJoiner2());
+        String codePrefix = sb.toString();
+
+        String codeSuffix = processModelDefinition.getCodeSuffix(); // ##
+        int suffixLen = codeSuffix.length();
+        // share lock
+        String maxCode = processModelMapper.findMaxCode(ProcessModelUtil.getProcessModelTableName(processModelDefinition.getProcessKey()), codePrefix);
+        if (maxCode == null) {
+            sb.append(String.format("%0" + suffixLen + "d", 1));
+        } else {
+            String maxSeq = maxCode.substring(maxCode.length() - suffixLen);
+            String seq = String.format("%0" + suffixLen + "d", Integer.parseInt(maxSeq) + 1);
+            sb.append(seq);
+        }
+
+        return sb.toString();
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -417,8 +449,8 @@ public class ProcessService {
             }
         }
 
-        Set<String> creators = processList.stream().map(ProcessCommonInfo::getCreator).collect(Collectors.toSet());
-        List<SysUserView> userList = userMapper.listByUsername(List.copyOf(creators));
+        Set<Long> creators = processList.stream().map(ProcessCommonInfo::getCreator).collect(Collectors.toSet());
+        List<SysUserView> userList = userMapper.listByIdList(List.copyOf(creators));
         Map<String, SysUserView> userMap = userList.stream().collect(Collectors.toMap(SysUserView::getUsername, it -> it));
         result.forEach(it -> it.creator = userMap.get(String.valueOf(it.creator)));
 
@@ -493,14 +525,12 @@ public class ProcessService {
             }
         }
 
-        Set<String> creators = processList.stream().map(ProcessCommonInfo::getCreator).collect(Collectors.toSet());
-        List<SysUserView> userList = userMapper.listByUsername(List.copyOf(creators));
+        Set<Long> creators = processList.stream().map(ProcessCommonInfo::getCreator).collect(Collectors.toSet());
+        List<SysUserView> userList = userMapper.listByIdList(List.copyOf(creators));
         Map<String, SysUserView> userMap = userList.stream().collect(Collectors.toMap(SysUserView::getUsername, it -> it));
         result.forEach(it -> it.creator = userMap.get(it.creator));
 
         return ResultData.ok(result);
-
-
     }
 
 
@@ -516,11 +546,10 @@ public class ProcessService {
         }
 
         Set<Long> userIds = new HashSet<>();
-        Set<String> userNames = new HashSet<>();
 
         for (Map<String, Object> map : list) {
-            String creator = (String) map.get("creator");
-            userNames.add(creator);
+            Number creator = (Number) map.get("creator");
+            userIds.add(creator.longValue());
 
             String processInstanceId = (String) map.get("process_instance_id");
 
@@ -543,12 +572,10 @@ public class ProcessService {
 
         List<SysUserView> userViews = userMapper.listByIdList(userIds);
         Map<Long, SysUserView> userIdMap = userViews.stream().collect(Collectors.toMap(SysUserView::getId, it -> it));
-        List<SysUserView> userViews2 = userMapper.listByUsername(List.copyOf(userNames));
-        Map<String, SysUserView> userNameMap = userViews2.stream().collect(Collectors.toMap(SysUserView::getUsername, it -> it));
+
         for (Map<String, Object> map : list) {
-            String creator = (String) map.get("creator");
-            SysUserView sysUserView = userNameMap.get(creator);
-            map.put("creator", sysUserView);
+            Number creator = (Number) map.get("creator");
+            map.put("creator", userIdMap.get(creator.longValue()));
 
             String processInstanceId = (String) map.get("process_instance_id");
             String assignee = (String) map.get("assignee");

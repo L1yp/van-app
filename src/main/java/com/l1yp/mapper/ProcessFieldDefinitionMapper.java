@@ -1,6 +1,8 @@
 package com.l1yp.mapper;
 
+import com.l1yp.conf.constants.dict.DictConstants.YesNo;
 import com.l1yp.model.db.ProcessFieldDefinition;
+import com.l1yp.model.param.process.AddProcessFieldDefinitionParam;
 import com.l1yp.model.param.process.model.AddWFColumnParam;
 import com.l1yp.util.ProcessModelUtil;
 import org.apache.ibatis.annotations.*;
@@ -29,7 +31,7 @@ public interface ProcessFieldDefinitionMapper extends Mapper<ProcessFieldDefinit
 
 
     @UpdateProvider(type = Provider.class, method = "addColumn")
-    int addColumn(AddWFColumnParam param);
+    int addColumn(AddProcessFieldDefinitionParam param);
 
     class Provider {
 
@@ -46,20 +48,20 @@ public interface ProcessFieldDefinitionMapper extends Mapper<ProcessFieldDefinit
                     ids.stream().map(String::valueOf).collect(Collectors.joining(",", "(", ")"));
         }
 
-        public String addColumn(AddWFColumnParam param) {
+        public String addColumn(AddProcessFieldDefinitionParam param) {
             StringBuilder sb = new StringBuilder();
             sb.append("ALTER TABLE ").append(ProcessModelUtil.getProcessModelTableName(param.getProcessKey())).append(" ");
-            sb.append("ADD ").append(param.getColumnName()).append(" ");
-            sb.append(param.getDbType()).append(" ");
-            if (StringUtils.hasText(param.getDefaultVal())) {
-                sb.append("DEFAULT ").append(param.getDefaultVal()).append(" ");
+            sb.append("ADD ").append(param.getName()).append(" ");
+            sb.append(param.getDbFieldType()).append(" ");
+            if (StringUtils.hasText(param.getDbDefaultValue())) {
+                sb.append("DEFAULT ").append(param.getDbDefaultValue()).append(" ");
             }
-            if (!param.nullable) {
+            if (param.getNullable() == YesNo.NO) {
                 sb.append("NOT ");
             }
             sb.append("NULL ");
-            if (StringUtils.hasText(param.getComment())) {
-                sb.append("COMMENT '").append(param.getComment()).append("' ");
+            if (StringUtils.hasText(param.getDescription())) {
+                sb.append("COMMENT '").append(param.getDescription()).append("' ");
             }
 //
 //            if (StringUtils.hasText(param.getAfterColumn())) {

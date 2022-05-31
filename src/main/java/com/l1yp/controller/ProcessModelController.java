@@ -114,7 +114,7 @@ public class ProcessModelController {
      * 创建流程模型字段
      */
     @PostMapping("/field/definition/create")
-    public ResultData<Void> addProcessFieldDefinition(@RequestBody AddWFColumnParam param) {
+    public ResultData<Void> addProcessFieldDefinition(@RequestBody AddProcessFieldDefinitionParam param) {
         processModelService.addColumn(param);
         return ResultData.OK;
     }

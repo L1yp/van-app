@@ -26,7 +26,7 @@ public class ProcessFieldDefinition {
     private String dbFieldType;
     private String dbDefaultValue;
 
-    private Boolean nullable;
+    private Integer nullable;
 
     private String dictScope;
 
@@ -104,11 +104,11 @@ public class ProcessFieldDefinition {
         this.dbDefaultValue = dbDefaultValue;
     }
 
-    public Boolean getNullable() {
+    public Integer getNullable() {
         return nullable;
     }
 
-    public void setNullable(Boolean nullable) {
+    public void setNullable(Integer nullable) {
         this.nullable = nullable;
     }
 

@@ -16,6 +16,7 @@ import com.l1yp.model.param.process.model.UpdateProcessModelBpmnParam;
 import com.l1yp.model.param.process.model.UpdateProcessModelDefinitionParam;
 import com.l1yp.model.view.ProcessModelBPMNView;
 import com.l1yp.model.view.ProcessModelTreeView;
+import com.l1yp.util.ProcessModelUtil;
 import com.l1yp.util.RequestUtils;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.repository.Deployment;
@@ -342,8 +343,8 @@ public class ProcessModelService {
         pfd.setOrderNo(6);
         pfd.setLabel("创建者");
         pfd.setDescription("流程发起者");
-        pfd.setComponentType(ComponentType.SINGLE_LINE_TEXT);
-        pfd.setDbFieldType("VARCHAR(64)");
+        pfd.setComponentType(ComponentType.SINGLE_USER);
+        pfd.setDbFieldType("BIGINT");
         processFieldDefinitionMapper.insertSelective(pfd);
 
         pfd.setId(null);
@@ -375,11 +376,11 @@ public class ProcessModelService {
     }
 
     public void initProcessWFTable(String processKey, String description) {
-        processModelMapper.initWFTable(processKey, StringUtils.hasText(description) ? description : " ");
+        processModelMapper.initWFTable(ProcessModelUtil.getProcessModelTableName(processKey), StringUtils.hasText(description) ? description : " ");
     }
 
     private final static Set<String> protectedFields = Set.of(
-            "id", "process_bpmn_id", "process_definition_id", "process_instance_id", "name",
+            "id", "process_bpmn_id", "process_definition_id", "process_instance_id", "code", "name",
             "creator", "update_by", "update_time", "create_time"
     );
 
@@ -410,7 +411,7 @@ public class ProcessModelService {
         processFieldDefinitionMapper.batchDelete(ids);
     }
 
-    public ResultData<Void> addColumn(AddWFColumnParam param) {
+    public ResultData<Void> addColumn(AddProcessFieldDefinitionParam param) {
         SysUser loginUser = RequestUtils.getLoginUser();
 
         ProcessModelDefinition processModelDefinition = processModelMapper.findByProcessKey(param.getProcessKey());
@@ -420,8 +421,8 @@ public class ProcessModelService {
 
         List<ProcessFieldDefinition> processFieldDefinitions = processFieldDefinitionMapper.selectFieldsByProcessKey(param.getProcessKey());
         Set<String> columnNames = processFieldDefinitions.stream().map(ProcessFieldDefinition::getName).collect(Collectors.toSet());
-        if (columnNames.contains(param.getColumnName())) {
-            return ResultData.err(400, String.format("列[%s]已存在", param.getColumnName()));
+        if (columnNames.contains(param.getName())) {
+            return ResultData.err(400, String.format("列[%s]已存在", param.getName()));
         }
         Integer maxOrderNo = processFieldDefinitions.stream().map(ProcessFieldDefinition::getOrderNo).max(Integer::compareTo).get();
 
@@ -429,14 +430,14 @@ public class ProcessModelService {
         pfd.setProcessKey(param.getProcessKey());
         pfd.setUpdateBy(loginUser.getUsername());
 
-        pfd.setName(param.getColumnName());
+        pfd.setName(param.getName());
         pfd.setOrderNo(maxOrderNo + 1);
         pfd.setLabel(param.getLabel());
-        pfd.setDescription(param.getComment());
+        pfd.setDescription(param.getDescription());
         pfd.setComponentType(param.getComponentType());
-        pfd.setDbFieldType(param.getDbType());
-        pfd.setDbDefaultValue(param.getDefaultVal());
-        pfd.setNullable(param.nullable);
+        pfd.setDbFieldType(param.getDbFieldType());
+        pfd.setDbDefaultValue(param.getDbDefaultValue());
+        pfd.setNullable(param.getNullable());
         pfd.setDictIdent(param.getDictScope());
         pfd.setDictIdent(param.getDictIdent());
 

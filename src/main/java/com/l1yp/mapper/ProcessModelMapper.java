@@ -27,6 +27,9 @@ import java.util.stream.IntStream;
 
 public interface ProcessModelMapper extends Mapper<ProcessModelDefinition> {
 
+    @Select("SELECT CODE FROM ${tableName} WHERE CODE LIKE '${prefix}%' ORDER BY CODE DESC LIMIT 1 LOCK IN SHARE MODE")
+    String findMaxCode(@Param("tableName") String tableName,
+                       @Param("prefix") String prefix);
 
     @Select("SELECT * FROM process_model_definition WHERE process_key = #{processKey}")
     ProcessModelDefinition findByProcessKey(@Param("processKey") String processKey);
@@ -40,7 +43,7 @@ public interface ProcessModelMapper extends Mapper<ProcessModelDefinition> {
                      @Param("field") String field);
 
 
-    @Select("SELECT id,name,process_bpmn_id,process_definition_id,process_instance_id,creator,create_time FROM ${tableName} WHERE process_instance_id = #{processInstanceId}")
+    @Select("SELECT id,code,name,process_bpmn_id,process_definition_id,process_instance_id,creator,create_time FROM ${tableName} WHERE process_instance_id = #{processInstanceId}")
     ProcessCommonInfo findProcessInfoByProcessInstanceId(@Param("tableName") String tableName,
                                                          @Param("processInstanceId") String processInstanceId);
 
@@ -54,8 +57,8 @@ public interface ProcessModelMapper extends Mapper<ProcessModelDefinition> {
 
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     @Insert("""
-            INSERT INTO ${tableName}(name, process_bpmn_id, process_definition_id, creator, update_by)
-            VALUES(#{name}, #{processBpmnId}, #{processDefinitionId}, #{creator}, #{creator})
+            INSERT INTO ${tableName}(code, name, process_bpmn_id, process_definition_id, creator, update_by)
+            VALUES(#{code}, #{name}, #{processBpmnId}, #{processDefinitionId}, #{creator}, #{creator})
             """)
     int createProcess(ProcessCommonInfo processCommonInfo);
 
@@ -76,21 +79,24 @@ public interface ProcessModelMapper extends Mapper<ProcessModelDefinition> {
 
 
     @Update("""
-            CREATE TABLE wf_${processKey}
-                (
-                    id                    BIGINT AUTO_INCREMENT PRIMARY KEY,
-                    process_bpmn_id       BIGINT       DEFAULT 0                 NOT NULL COMMENT '流程版本ID',
-                    process_definition_id VARCHAR(128) DEFAULT ''                NOT NULL COMMENT '流程定义ID',
-                    process_instance_id   VARCHAR(36)                            NULL COMMENT '流程实例ID',
-                    name                  VARCHAR(64)                            NULL,
-                    creator               VARCHAR(64)                            NOT NULL,
-                    update_by             VARCHAR(64)                            NOT NULL,
-                    update_time           DATETIME     DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
-                    create_time           DATETIME     DEFAULT CURRENT_TIMESTAMP NOT NULL
-                )
-                    COMMENT '${description}';
+            CREATE TABLE ${tableName}(
+                id                    BIGINT AUTO_INCREMENT PRIMARY KEY,
+                process_bpmn_id       BIGINT       DEFAULT 0                 NOT NULL COMMENT '流程版本ID',
+                process_definition_id VARCHAR(128) DEFAULT ''                NOT NULL COMMENT '流程定义ID',
+                process_instance_id   VARCHAR(36)                            NULL COMMENT '流程实例ID',
+                code                  VARCHAR(64)                            NOT NULL,
+                name                  VARCHAR(64)                            NOT NULL,
+                creator               VARCHAR(64)                            NOT NULL,
+                update_by             VARCHAR(64)                            NOT NULL,
+                update_time           DATETIME     DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+                create_time           DATETIME     DEFAULT CURRENT_TIMESTAMP NOT NULL
+                constraint code_uindex unique (code),
+                constraint process_instance_id_uindex unique (process_instance_id)
+            ) COMMENT '${description}';
+            create index process_bpmn_id_index on ${tableName}(process_bpmn_id);
+            create index process_definition_id_index on ${tableName}(process_definition_id);
             """)
-    int initWFTable(@Param("processKey") String processKey,
+    int initWFTable(@Param("tableName") String tableName,
                     @Param("description") String description);
 
 
@@ -144,7 +150,7 @@ public interface ProcessModelMapper extends Mapper<ProcessModelDefinition> {
 
         public String selectProcessInfoByProcessInstanceId(@Param("tableName") String tableName,
                                                            @Param("processInstanceIds") List<String> processInstanceIds) {
-            return "SELECT id,name,process_instance_id,creator,create_time FROM ${tableName} WHERE process_instance_id IN " +
+            return "SELECT id,code,name,process_instance_id,creator,create_time FROM ${tableName} WHERE process_instance_id IN " +
                     IntStream.range(0, processInstanceIds.size())
                             .mapToObj(it -> "#{processInstanceIds[" + it + "]}")
                             .collect(Collectors.joining(",","(",")"));

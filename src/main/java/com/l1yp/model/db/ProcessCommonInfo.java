@@ -11,6 +11,8 @@ public class ProcessCommonInfo {
     @KeySql(useGeneratedKeys = true)
     private Long id;
 
+    private String code;
+
     private String name;
 
     private Long processBpmnId;
@@ -23,7 +25,7 @@ public class ProcessCommonInfo {
 
     private String tableName;
 
-    private String creator;
+    private Long creator;
 
     private Date createTime;
 
@@ -59,6 +61,14 @@ public class ProcessCommonInfo {
         this.processInstanceId = processInstanceId;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public String getName() {
         return name;
     }
@@ -83,11 +93,11 @@ public class ProcessCommonInfo {
         this.tableName = tableName;
     }
 
-    public String getCreator() {
+    public Long getCreator() {
         return creator;
     }
 
-    public void setCreator(String creator) {
+    public void setCreator(Long creator) {
         this.creator = creator;
     }
 

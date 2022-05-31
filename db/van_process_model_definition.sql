@@ -17,5 +17,5 @@ create table process_model_definition
 create index process_definition_process_key_index
     on process_model_definition (process_key);
 
-INSERT INTO van.process_model_definition (id, process_key, title, code_prefix, code_time_pattern, code_joiner, code_joiner2, code_suffix, update_time, create_time) VALUES (1, 'change_budget', '预算调整流程', 'CB', 'yyyyMMdd', '-', '-', '#####', '2022-04-29 22:02:36', '2022-04-27 14:23:49');
-INSERT INTO van.process_model_definition (id, process_key, title, code_prefix, code_time_pattern, code_joiner, code_joiner2, code_suffix, update_time, create_time) VALUES (3, 'holiday', '请假流程', 'HL', 'yyyyMMdd', '-', '-', '#####', '2022-05-30 21:02:28', '2022-05-30 21:02:28');
+INSERT INTO van.process_model_definition (id, process_key, title, code_prefix, code_time_pattern, code_joiner, code_joiner2, code_suffix, update_time, create_time) VALUES (1, 'change_budget', '预算调整流程', 'CB', 'yyyyMMdd', '', '', '#####', '2022-05-31 09:13:45', '2022-04-27 14:23:49');
+INSERT INTO van.process_model_definition (id, process_key, title, code_prefix, code_time_pattern, code_joiner, code_joiner2, code_suffix, update_time, create_time) VALUES (3, 'holiday', '请假流程', 'HL', 'yyyyMMdd', '', '', '#####', '2022-05-31 09:13:45', '2022-05-30 21:02:28');

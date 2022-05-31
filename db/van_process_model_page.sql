@@ -17,3 +17,4 @@ INSERT INTO van.process_model_page (id, process_key, name, remark, update_by, up
 INSERT INTO van.process_model_page (id, process_key, name, remark, update_by, update_time, create_time) VALUES (4, 'change_budget', '基础信息', '基础信息', 'admin', '2022-05-19 22:52:12', '2022-05-19 22:52:12');
 INSERT INTO van.process_model_page (id, process_key, name, remark, update_by, update_time, create_time) VALUES (5, 'change_budget', '填写调整信息 - 提交', '填写调整信息 - 页面', 'admin', '2022-05-24 20:57:03', '2022-05-24 20:57:03');
 INSERT INTO van.process_model_page (id, process_key, name, remark, update_by, update_time, create_time) VALUES (6, 'change_budget', 'START', '启动界面', 'admin', '2022-05-25 20:42:51', '2022-05-25 20:42:51');
+INSERT INTO van.process_model_page (id, process_key, name, remark, update_by, update_time, create_time) VALUES (7, 'holiday', 'START', '启动', 'admin', '2022-05-31 09:45:06', '2022-05-31 09:45:06');
