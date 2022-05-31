@@ -42,6 +42,10 @@ public interface ProcessModelMapper extends Mapper<ProcessModelDefinition> {
                      @Param("processInstanceId") String processInstanceId,
                      @Param("field") String field);
 
+    @Select("SELECT ${field} FROM ${tableName} WHERE id = #{wfId}")
+    Object findFieldByWFID(@Param("tableName") String tableName,
+                     @Param("wfId") Long wfId,
+                     @Param("field") String field);
 
     @Select("SELECT id,code,name,process_bpmn_id,process_definition_id,process_instance_id,creator,create_time FROM ${tableName} WHERE process_instance_id = #{processInstanceId}")
     ProcessCommonInfo findProcessInfoByProcessInstanceId(@Param("tableName") String tableName,

@@ -16,3 +16,4 @@ create table wf_field_dict
         unique (process_key, wf_id, field_id, dict_id)
 )
     comment '字典字段关联表';
+

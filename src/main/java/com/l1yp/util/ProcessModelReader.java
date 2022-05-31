@@ -31,17 +31,19 @@ public class ProcessModelReader {
     private static final Set<Integer> multiRefIdSet = new HashSet<>(Arrays.asList(ProcessConstants.ComponentType.MULTI_DICT, ProcessConstants.ComponentType.MULTI_DEPT, ProcessConstants.ComponentType.MULTI_USER));
 
     public Object read(String processKey, String field, DelegateExecution execution) throws Exception {
-        return readField(processKey, field, execution.getProcessInstanceId());
+        String businessKey = execution.getProcessInstanceBusinessKey();
+        return readExecutionField(processKey, field, businessKey);
     }
 
     public Object read(String processKey, String field, DelegateTask task) throws Exception {
-        return readField(processKey, field, task.getProcessInstanceId());
+        return readTaskField(processKey, field, task.getProcessInstanceId());
     }
 
-    private Object readField(String processKey, String field, String processInstanceId) throws NoSuchFieldException {
+    private Object readTaskField(String processKey, String field, String processInstanceId) throws NoSuchFieldException {
         List<ProcessFieldDefinition> fields = processFieldDefinitionMapper.selectFieldsByProcessKey(processKey);
         Map<String, ProcessFieldDefinition> fieldDefinitionMap = fields.stream().collect(Collectors.toMap(ProcessFieldDefinition::getName, it -> it));
 
+        // execution.getProcessInstanceBusinessKey()
         ProcessFieldDefinition processFieldDefinition = fieldDefinitionMap.get(field);
         if (processFieldDefinition == null) {
             throw new NoSuchFieldException(String.format("ProcessModelReader.read(%s, %s, %s)", processKey, field, processInstanceId));
@@ -60,6 +62,32 @@ public class ProcessModelReader {
         }
 
         return processModelMapper.findField("wf_" + processKey, processInstanceId, field);
+    }
+
+    private Object readExecutionField(String processKey, String field, String businessKey) throws NoSuchFieldException {
+        Long wfId = Long.valueOf(businessKey);
+        List<ProcessFieldDefinition> fields = processFieldDefinitionMapper.selectFieldsByProcessKey(processKey);
+        Map<String, ProcessFieldDefinition> fieldDefinitionMap = fields.stream().collect(Collectors.toMap(ProcessFieldDefinition::getName, it -> it));
+
+        // execution.getProcessInstanceBusinessKey()
+        ProcessFieldDefinition processFieldDefinition = fieldDefinitionMap.get(field);
+        if (processFieldDefinition == null) {
+            throw new NoSuchFieldException(String.format("ProcessModelReader.read(%s, %s, %s)", processKey, field, businessKey));
+        }
+
+        if (multiRefIdSet.contains(processFieldDefinition.getComponentType())) {
+            if (processFieldDefinition.getComponentType() == ComponentType.MULTI_DEPT) {
+                return wfFieldDeptMapper.listDeptIdByFieldAndWFID(processKey, processFieldDefinition.getId(), wfId);
+            }
+            else if (processFieldDefinition.getComponentType() == ComponentType.MULTI_DICT) {
+                return wfFieldDictMapper.listDictIdByFieldAndWFID(processKey, processFieldDefinition.getId(), wfId);
+            }
+            else if (processFieldDefinition.getComponentType() == ComponentType.MULTI_USER) {
+                return wfFieldUserMapper.listUserIdByFieldAndWFID(processKey, processFieldDefinition.getId(), wfId);
+            }
+        }
+
+        return processModelMapper.findFieldByWFID("wf_" + processKey, wfId, field);
     }
 
 }

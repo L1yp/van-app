@@ -24,6 +24,7 @@ import org.flowable.engine.repository.ProcessDefinition;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -178,20 +179,25 @@ public class ProcessModelService {
             maxVersion = 0;
         }
 
-        pmb.setId(null);
-        pmb.setState(0);
-        pmb.setVersion(maxVersion + 1);
-        pmb.setProcessDefinitionId(null);
-        pmb.setUpdateBy(loginUser.getUsername());
-        pmb.setUpdateTime(null);
-        pmb.setCreateTime(null);
-        processModelBpmnMapper.insertProcessModelBPMN(pmb);
+        ProcessModelBpmn newVersionPmb = new ProcessModelBpmn();
+        BeanUtils.copyProperties(pmb, newVersionPmb);
+        newVersionPmb.setId(null);
+        newVersionPmb.setState(PublishState.UNPUBLISHED);
+        newVersionPmb.setVersion(maxVersion + 1);
+        newVersionPmb.setProcessDefinitionId(null);
+        newVersionPmb.setUpdateBy(loginUser.getUsername());
+        newVersionPmb.setUpdateTime(null);
+        newVersionPmb.setCreateTime(null);
+        processModelBpmnMapper.insertProcessModelBPMN(newVersionPmb);
 
         List<ProcessModelNodePage> processModelPages = processNodePageMapper.listProcessPageByBpmnId(pmb.getId());
+        if (CollectionUtils.isEmpty(processModelPages)) {
+            return ResultData.OK;
+        }
 
         processModelPages.forEach(it -> {
             it.setId(null);
-            it.setProcessBpmnId(pmb.getId());
+            it.setProcessBpmnId(newVersionPmb.getId());
             it.setUpdateBy(loginUser.getUsername());
             it.setCreateTime(null);
             it.setUpdateTime(null);

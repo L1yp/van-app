@@ -11,11 +11,12 @@ create table process_model_node_page
     comment               tinyint     default 0                 null comment '0: 不需要备注, 1: 可选, 2: 必填',
     update_by             varchar(32) default 'admin'           not null,
     update_time           datetime    default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
-    create_time           datetime    default CURRENT_TIMESTAMP null,
-    constraint page_bound_uindex
-        unique (process_bpmn_id, node_id)
+    create_time           datetime    default CURRENT_TIMESTAMP null
 )
     comment '页面配置';
+
+create index page_bound_uindex
+    on process_model_node_page (process_bpmn_id, node_id);
 
 create index page_bound_uindex2
     on process_model_node_page (process_key, node_id);
@@ -40,5 +41,13 @@ INSERT INTO van.process_model_node_page (id, process_key, process_bpmn_id, node_
 INSERT INTO van.process_model_node_page (id, process_key, process_bpmn_id, node_id, process_model_page_id, page_width, label_width, comment, update_by, update_time, create_time) VALUES (37, 'change_budget', 3, 'sid-7D7875DA-09BC-4720-ABC6-398E6B62790F', 4, '851px', '120px', 1, 'admin', '2022-05-24 21:15:56', '2022-05-24 21:15:56');
 INSERT INTO van.process_model_node_page (id, process_key, process_bpmn_id, node_id, process_model_page_id, page_width, label_width, comment, update_by, update_time, create_time) VALUES (38, 'change_budget', 3, 'Event_0cfphnc', 4, '851px', '120px', 1, 'admin', '2022-05-24 21:16:00', '2022-05-24 21:16:00');
 INSERT INTO van.process_model_node_page (id, process_key, process_bpmn_id, node_id, process_model_page_id, page_width, label_width, comment, update_by, update_time, create_time) VALUES (39, 'change_budget', 3, 'sid-F99CA3CA-785B-46CF-BB2B-8DB534AE3FAF', 1, '851px', '120px', 1, 'admin', '2022-05-24 21:22:26', '2022-05-24 21:22:26');
-INSERT INTO van.process_model_node_page (id, process_key, process_bpmn_id, node_id, process_model_page_id, page_width, label_width, comment, update_by, update_time, create_time) VALUES (40, 'change_budget', 0, '$$START_PAGE_KEY$$', 6, '852px', '120px', null, 'admin', '2022-05-29 16:05:49', '2022-05-25 21:31:44');
+INSERT INTO van.process_model_node_page (id, process_key, process_bpmn_id, node_id, process_model_page_id, page_width, label_width, comment, update_by, update_time, create_time) VALUES (40, 'change_budget', 0, '$$START_PAGE_KEY$$', 7, '850px', '120px', null, 'admin', '2022-05-31 11:23:46', '2022-05-25 21:31:44');
 INSERT INTO van.process_model_node_page (id, process_key, process_bpmn_id, node_id, process_model_page_id, page_width, label_width, comment, update_by, update_time, create_time) VALUES (43, 'change_budget', 3, 'sid-4889166D-2091-42A2-83CC-EACE1250842C', 1, '851px', '120px', 1, 'admin', '2022-05-29 16:14:13', '2022-05-29 16:14:13');
+INSERT INTO van.process_model_node_page (id, process_key, process_bpmn_id, node_id, process_model_page_id, page_width, label_width, comment, update_by, update_time, create_time) VALUES (51, 'holiday', 0, '$$START_PAGE_KEY$$', 7, '850px', '120px', null, 'admin', '2022-05-31 11:34:29', '2022-05-31 11:34:29');
+INSERT INTO van.process_model_node_page (id, process_key, process_bpmn_id, node_id, process_model_page_id, page_width, label_width, comment, update_by, update_time, create_time) VALUES (52, 'change_budget', 0, '$$START_PAGE_KEY$$', 6, '850px', '120px', null, 'admin', '2022-05-31 11:34:51', '2022-05-31 11:34:51');
+INSERT INTO van.process_model_node_page (id, process_key, process_bpmn_id, node_id, process_model_page_id, page_width, label_width, comment, update_by, update_time, create_time) VALUES (101, 'holiday', 13, 'Activity_1q5ylfn', 8, '851px', '120px', 1, 'admin', '2022-05-31 14:15:20', '2022-05-31 14:15:20');
+INSERT INTO van.process_model_node_page (id, process_key, process_bpmn_id, node_id, process_model_page_id, page_width, label_width, comment, update_by, update_time, create_time) VALUES (102, 'holiday', 13, 'Flow_0g0bb7a', 9, '851px', '120px', 1, 'admin', '2022-05-31 14:15:24', '2022-05-31 14:15:24');
+INSERT INTO van.process_model_node_page (id, process_key, process_bpmn_id, node_id, process_model_page_id, page_width, label_width, comment, update_by, update_time, create_time) VALUES (103, 'holiday', 13, 'Activity_0zsqisd', 8, '851px', '120px', 1, 'admin', '2022-05-31 14:15:27', '2022-05-31 14:15:27');
+INSERT INTO van.process_model_node_page (id, process_key, process_bpmn_id, node_id, process_model_page_id, page_width, label_width, comment, update_by, update_time, create_time) VALUES (104, 'holiday', 13, 'Activity_1ylj3fi', 8, '851px', '120px', 1, 'admin', '2022-05-31 14:15:30', '2022-05-31 14:15:30');
+INSERT INTO van.process_model_node_page (id, process_key, process_bpmn_id, node_id, process_model_page_id, page_width, label_width, comment, update_by, update_time, create_time) VALUES (105, 'holiday', 13, 'Activity_18ueswk', 8, '851px', '120px', 1, 'admin', '2022-05-31 14:15:33', '2022-05-31 14:15:33');
+INSERT INTO van.process_model_node_page (id, process_key, process_bpmn_id, node_id, process_model_page_id, page_width, label_width, comment, update_by, update_time, create_time) VALUES (106, 'holiday', 13, 'Event_01vzvdx', 8, '851px', '120px', 1, 'admin', '2022-05-31 14:15:38', '2022-05-31 14:15:38');

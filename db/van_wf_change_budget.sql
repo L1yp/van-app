@@ -28,3 +28,4 @@ create index process_bpmn_id_index
 
 create index process_definition_id_index
     on wf_change_budget (process_definition_id);
+

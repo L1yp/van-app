@@ -99,6 +99,11 @@ public class ProcessService {
     @Resource
     SysDictValueMapper sysDictValueMapper;
 
+    private final static Set<String> NOT_CLIENT_INPUT_FIELDS = Set.of(
+            "id", "process_bpmn_id", "process_definition_id", "process_instance_id", "code",
+            "creator", "update_by", "update_time", "create_time"
+    );
+
     /**
      * 启动流程
      */
@@ -130,27 +135,30 @@ public class ProcessService {
             processModelMapper.createProcess(pci);
             log.info("create process success, insert id: {}", pci.getId());
 
-
-            ProcessInstance processInstance = runtimeService.startProcessInstanceById(publishVersion.getProcessDefinitionId(), pci.getId().toString());
-
             List<ProcessFieldDefinition> processFieldDefinitions = processFieldDefinitionMapper.selectFieldsByProcessKey(param.getProcessKey());
             Map<String, ProcessFieldDefinition> fieldMap = processFieldDefinitions.stream().collect(Collectors.toMap(ProcessFieldDefinition::getName, it -> it));
-            Set<String> nameSet = processFieldDefinitions.stream().map(ProcessFieldDefinition::getName).collect(Collectors.toSet());
             Map<String, Object> params = new HashMap<>();
             Set<Entry<String, Object>> entries = param.getParams().entrySet(); // TODO 过滤 特殊字段：creator update_by update_time
             for (Entry<String, Object> entry : entries) {
-                if (nameSet.contains(entry.getKey())) {
+                if (!NOT_CLIENT_INPUT_FIELDS.contains(entry.getKey())) {
                     params.put(entry.getKey(), entry.getValue());
                 }
             }
-
-            params.put("process_instance_id", processInstance.getProcessInstanceId());
             params.put("process_bpmn_id", publishVersion.getId());
             params.put("process_definition_id", publishVersion.getProcessDefinitionId());
-            processModelMapper.updateFields(tableName, pci.getId(), fieldMap, params);
-            // 设置 wf表的字段 数据
+            Map<String, Object> variables = new HashMap<>(params);
+            processModelMapper.updateFields(tableName, pci.getId(), fieldMap, variables);
 
-            updateAssociationTable(processFieldDefinitions, pci.getId(), processInstance.getProcessInstanceId(), param.getProcessKey(), params);
+            updateAssociationTable(processFieldDefinitions, pci.getId(), null, param.getProcessKey(), params);
+
+
+            ProcessInstance processInstance = runtimeService.startProcessInstanceById(publishVersion.getProcessDefinitionId(), pci.getId().toString());
+            variables.clear();
+            variables.put("process_instance_id", processInstance.getProcessInstanceId());
+            processModelMapper.updateFields(tableName, pci.getId(), fieldMap, variables);
+
+            updateAssociationTableProcessInstanceId(processModel.getProcessKey(), pci.getId(), processInstance.getProcessInstanceId());
+
         } finally {
             Authentication.setAuthenticatedUserId(null);
         }
@@ -287,6 +295,12 @@ public class ProcessService {
             wfFieldDictMapper.deleteFields(processId, fieldIds);
             wfFieldDictMapper.insertList(wfFieldDicts);
         }
+    }
+
+    public void updateAssociationTableProcessInstanceId(String processKey, Long wfId, String processInstanceId) {
+        wfFieldUserMapper.updateProcessInstanceId(processKey, wfId, processInstanceId);
+        wfFieldDeptMapper.updateProcessInstanceId(processKey, wfId, processInstanceId);
+        wfFieldDictMapper.updateProcessInstanceId(processKey, wfId, processInstanceId);
     }
 
     /**
@@ -560,7 +574,9 @@ public class ProcessService {
             } else {
                 Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
                 String assignee = task.getAssignee();
-                userIds.add(Long.valueOf(assignee));
+                if (assignee != null) {
+                    userIds.add(Long.valueOf(assignee));
+                }
                 map.put("assignee", assignee);
             }
 
@@ -736,7 +752,7 @@ public class ProcessService {
 
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
         final Map<Long, SysUserView> localMap = userMap;
-        List<Long> assignees = tasks.stream().map(TaskInfo::getAssignee).map(Long::valueOf).toList();
+        List<Long> assignees = tasks.stream().filter(task -> task.getAssignee() != null).map(TaskInfo::getAssignee).map(Long::valueOf).toList();
         List<Long> notExistUserIds = assignees.stream().filter(it -> !localMap.containsKey(it)).toList();
         if (!CollectionUtils.isEmpty(notExistUserIds)) {
             List<SysUserView> assigneeUserViews = userMapper.listByIdList(notExistUserIds);
@@ -831,8 +847,11 @@ public class ProcessService {
                 .asc().list();
 
         Set<Long> userIds = activityInstances.stream().filter(it -> it.getAssignee() != null).map(HistoricActivityInstance::getAssignee).map(Long::valueOf).collect(Collectors.toSet());
-        List<SysUserView> userViews = userMapper.listByIdList(userIds);
-        Map<String, SysUserView> userMap = userViews.stream().collect(Collectors.toMap(it -> String.valueOf(it.getId()), it -> it));
+        Map<String, SysUserView> userMap = Collections.emptyMap();
+        if (!CollectionUtils.isEmpty(userIds)) {
+            List<SysUserView> userViews = userMapper.listByIdList(userIds);
+            userMap = userViews.stream().collect(Collectors.toMap(it -> String.valueOf(it.getId()), it -> it));
+        }
 
         List<HistoricActivityInstanceView> historyViews = new ArrayList<>();
         for (HistoricActivityInstance activity : activityInstances) {

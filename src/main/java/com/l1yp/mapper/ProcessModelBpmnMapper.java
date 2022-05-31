@@ -2,12 +2,7 @@ package com.l1yp.mapper;
 
 import com.l1yp.model.db.ProcessModelBpmn;
 import com.l1yp.model.db.ProcessModelBpmnBase;
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectKey;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.ArrayList;
@@ -42,6 +37,7 @@ public interface ProcessModelBpmnMapper extends Mapper<ProcessModelBpmnBase> {
     Integer findMaxVersionByProcessKey(@Param("processKey") String processKey);
 
 
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     @InsertProvider(type = Provider.class, method = "insertProcessModelBPMN")
     int insertProcessModelBPMN(ProcessModelBpmn pmb);
 
