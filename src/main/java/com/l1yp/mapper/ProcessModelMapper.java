@@ -93,17 +93,19 @@ public interface ProcessModelMapper extends Mapper<ProcessModelDefinition> {
                 creator               VARCHAR(64)                            NOT NULL,
                 update_by             VARCHAR(64)                            NOT NULL,
                 update_time           DATETIME     DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
-                create_time           DATETIME     DEFAULT CURRENT_TIMESTAMP NOT NULL
+                create_time           DATETIME     DEFAULT CURRENT_TIMESTAMP NOT NULL,
                 constraint code_uindex unique (code),
                 constraint process_instance_id_uindex unique (process_instance_id)
-            ) COMMENT '${description}';
-            create index process_bpmn_id_index on ${tableName}(process_bpmn_id);
-            create index process_definition_id_index on ${tableName}(process_definition_id);
+            ) COMMENT '${description}'
             """)
     int initWFTable(@Param("tableName") String tableName,
                     @Param("description") String description);
 
+    @Insert("create index process_bpmn_id_index on ${tableName}(process_bpmn_id)")
+    int initBpmnIndex(@Param("tableName") String tableName);
 
+    @Insert("create index process_definition_id_index on ${tableName}(process_definition_id)")
+    int initProcessDefinitionIdIndex(@Param("tableName") String tableName);
     class Provider {
 
         private static final Set<Integer> multiRefIdSet = new HashSet<>(Arrays.asList(ComponentType.MULTI_DICT, ComponentType.MULTI_DEPT, ComponentType.MULTI_USER));

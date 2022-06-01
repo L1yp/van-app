@@ -383,6 +383,8 @@ public class ProcessModelService {
 
     public void initProcessWFTable(String processKey, String description) {
         processModelMapper.initWFTable(ProcessModelUtil.getProcessModelTableName(processKey), StringUtils.hasText(description) ? description : " ");
+        processModelMapper.initBpmnIndex(ProcessModelUtil.getProcessModelTableName(processKey));
+        processModelMapper.initProcessDefinitionIdIndex(ProcessModelUtil.getProcessModelTableName(processKey));
     }
 
     private final static Set<String> protectedFields = Set.of(
