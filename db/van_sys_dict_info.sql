@@ -21,3 +21,4 @@ INSERT INTO van.sys_dict_info (id, name, scope, ident, status, type, remark, cre
 INSERT INTO van.sys_dict_info (id, name, scope, ident, status, type, remark, create_time) VALUES (6, '控件类型', 'global', 'component_type', 0, 1, '控件类型', '2022-04-15 14:15:18');
 INSERT INTO van.sys_dict_info (id, name, scope, ident, status, type, remark, create_time) VALUES (8, '是否', 'global', 'yesno', 0, 1, '', '2022-04-24 22:01:54');
 INSERT INTO van.sys_dict_info (id, name, scope, ident, status, type, remark, create_time) VALUES (9, '发布状态', 'global', 'publish', 0, 1, '', '2022-04-27 13:36:18');
+INSERT INTO van.sys_dict_info (id, name, scope, ident, status, type, remark, create_time) VALUES (10, '通过状态', 'global', 'pass_status', 0, 1, '通过/首次不通过/多次不通过', '2022-06-03 10:41:50');

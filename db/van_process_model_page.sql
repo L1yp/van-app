@@ -20,3 +20,6 @@ INSERT INTO van.process_model_page (id, process_key, name, remark, update_by, up
 INSERT INTO van.process_model_page (id, process_key, name, remark, update_by, update_time, create_time) VALUES (7, 'holiday', 'START', '启动', 'admin', '2022-05-31 09:45:06', '2022-05-31 09:45:06');
 INSERT INTO van.process_model_page (id, process_key, name, remark, update_by, update_time, create_time) VALUES (8, 'holiday', '基本信息', '基本信息', 'admin', '2022-05-31 11:23:55', '2022-05-31 11:23:55');
 INSERT INTO van.process_model_page (id, process_key, name, remark, update_by, update_time, create_time) VALUES (9, 'holiday', '请假明细提交', '请假明细提交', 'admin', '2022-05-31 11:27:17', '2022-05-31 11:27:17');
+INSERT INTO van.process_model_page (id, process_key, name, remark, update_by, update_time, create_time) VALUES (10, 'zhicheng', '启动表单', null, 'admin', '2022-06-03 10:44:24', '2022-06-03 10:44:24');
+INSERT INTO van.process_model_page (id, process_key, name, remark, update_by, update_time, create_time) VALUES (11, 'zhicheng', '基本信息', null, 'admin', '2022-06-03 10:45:20', '2022-06-03 10:45:20');
+INSERT INTO van.process_model_page (id, process_key, name, remark, update_by, update_time, create_time) VALUES (12, 'zhicheng', '专家审核界面', null, 'admin', '2022-06-03 10:46:42', '2022-06-03 10:46:42');

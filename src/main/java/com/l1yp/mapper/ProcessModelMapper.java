@@ -90,7 +90,7 @@ public interface ProcessModelMapper extends Mapper<ProcessModelDefinition> {
                 process_instance_id   VARCHAR(36)                            NULL COMMENT '流程实例ID',
                 code                  VARCHAR(64)                            NOT NULL,
                 name                  VARCHAR(64)                            NOT NULL,
-                creator               VARCHAR(64)                            NOT NULL,
+                creator               BIGINT                                 NOT NULL,
                 update_by             VARCHAR(64)                            NOT NULL,
                 update_time           DATETIME     DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
                 create_time           DATETIME     DEFAULT CURRENT_TIMESTAMP NOT NULL,

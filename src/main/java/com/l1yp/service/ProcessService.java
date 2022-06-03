@@ -691,8 +691,12 @@ public class ProcessService {
         if (hasDictField) {
             Object WFId = processInfo.get("id");
             WFFieldDicts = wfFieldDictMapper.listByWFID(processKey, ((Number) WFId).longValue());
-            List<SysDictValue> depts = sysDictValueMapper.listByIdList(WFFieldDicts.stream().map(WFFieldDict::getDictId).collect(Collectors.toSet()));
-            dictMap = depts.stream().collect(Collectors.toMap(SysDictValue::getId, it -> it));
+            if (CollectionUtils.isEmpty(WFFieldDicts)) {
+                dictMap = Collections.emptyMap();
+            } else {
+                List<SysDictValue> depts = sysDictValueMapper.listByIdList(WFFieldDicts.stream().map(WFFieldDict::getDictId).collect(Collectors.toSet()));
+                dictMap = depts.stream().collect(Collectors.toMap(SysDictValue::getId, it -> it));
+            }
         }
 
 

@@ -28,4 +28,3 @@ create index wf_holiday_process_bpmn_id_index
 create index wf_holiday_process_definition_id_index
     on wf_holiday (process_definition_id);
 
-INSERT INTO van.wf_holiday (id, process_bpmn_id, process_definition_id, process_instance_id, code, name, creator, update_by, update_time, create_time, dept_leader, hq_leaders, supervisor, days) VALUES (1, 13, 'Process_0dm6mw4:1:08fdcc68-e0ac-11ec-9764-d8bbc132d9b2', '106035b9-e0ac-11ec-9764-d8bbc132d9b2', 'HL2022053100001', 'test', 1, '1', '2022-05-31 14:37:00', '2022-05-31 14:36:55', 1, '2,3,4,5,6,7,8,9,10,12,13,14', 1, 11);
