@@ -22,4 +22,6 @@ public class HistoricActivityInstanceView {
     public String calledProcessInstanceId;
     public Map<String, Object> variables;
 
+    public String outcome;
+
 }

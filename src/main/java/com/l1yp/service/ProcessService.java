@@ -36,10 +36,12 @@ import com.l1yp.model.view.ProcessTaskView;
 import com.l1yp.model.view.SysUserView;
 import com.l1yp.util.ProcessModelUtil;
 import com.l1yp.util.RequestUtils;
+import org.flowable.bpmn.model.BaseElement;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.bpmn.model.FlowElement;
 import org.flowable.bpmn.model.FlowNode;
 import org.flowable.bpmn.model.SequenceFlow;
+import org.flowable.bpmn.model.UserTask;
 import org.flowable.common.engine.impl.identity.Authentication;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.ProcessEngine;
@@ -55,6 +57,7 @@ import org.flowable.task.api.TaskInfo;
 import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.flowable.task.api.history.HistoricTaskInstanceQuery;
+import org.flowable.variable.api.history.HistoricVariableInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -437,6 +440,9 @@ public class ProcessService {
     public ResultData<List<ProcessTodoTaskView>> listTodoTasks() {
         SysUser loginUser = RequestUtils.getLoginUser();
         TaskQuery taskQuery = taskService.createTaskQuery().taskAssignee(String.valueOf(loginUser.getId()));
+
+        taskService.createTaskQuery().taskCandidateGroup("总经理");
+
         long count = taskQuery.count();
         if (count == 0) {
             return ResultData.ok(Collections.emptyList());
@@ -604,14 +610,12 @@ public class ProcessService {
             long count = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).count();
             if (count == 0L) {
                 // 流程已完结
-                map.put("assignee", null);
+                map.put("assignee", Collections.emptyList());
             } else {
-                Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
-                String assignee = task.getAssignee();
-                if (assignee != null) {
-                    userIds.add(Long.valueOf(assignee));
-                }
-                map.put("assignee", assignee);
+                List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
+                List<String> assigneeUserIds = tasks.stream().map(TaskInfo::getAssignee).toList();
+                userIds.addAll(assigneeUserIds.stream().map(Long::valueOf).toList());
+                map.put("assignee", assigneeUserIds);
             }
 
         }
@@ -627,13 +631,11 @@ public class ProcessService {
             Number creator = (Number) map.get("creator");
             map.put("creator", userIdMap.get(creator.longValue()));
 
-            String processInstanceId = (String) map.get("process_instance_id");
-            String assignee = (String) map.get("assignee");
-            if (assignee != null) {
-                SysUserView userView = userIdMap.get(Long.valueOf(assignee));
-                map.put("assignee", userView);
+            List<String> assigneeUserIds = (List<String>) map.get("assignee");
+            if (assigneeUserIds != null) {
+                List<SysUserView> assignees = assigneeUserIds.stream().map(Long::valueOf).map(userIdMap::get).toList();
+                map.put("assignee", assignees);
             }
-
         }
 
         return ResultData.ok(list);
@@ -888,6 +890,9 @@ public class ProcessService {
                 .processInstanceId(processInstanceId)
                 .orderBy(HistoricActivityInstanceQueryProperty.START)
                 .asc().list();
+        if (CollectionUtils.isEmpty(activityInstances)) {
+            return ResultData.ok(Collections.emptyList());
+        }
 
         Set<Long> userIds = activityInstances.stream().filter(it -> it.getAssignee() != null).map(HistoricActivityInstance::getAssignee).map(Long::valueOf).collect(Collectors.toSet());
         Map<String, SysUserView> userMap = Collections.emptyMap();
@@ -896,8 +901,12 @@ public class ProcessService {
             userMap = userViews.stream().collect(Collectors.toMap(it -> String.valueOf(it.getId()), it -> it));
         }
 
+        String processDefinitionId = activityInstances.get(0).getProcessDefinitionId();
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
+
         List<HistoricActivityInstanceView> historyViews = new ArrayList<>();
-        for (HistoricActivityInstance activity : activityInstances) {
+        for (int i = 0; i < activityInstances.size(); i++) {
+            HistoricActivityInstance activity = activityInstances.get(i);
             HistoricActivityInstanceView view = new HistoricActivityInstanceView();
             view.id = activity.getId();
             view.activityId = activity.getActivityId();
@@ -913,9 +922,36 @@ public class ProcessService {
             view.assignee = userMap.get(activity.getAssignee());
             view.taskId = activity.getTaskId();
             view.calledProcessInstanceId = activity.getCalledProcessInstanceId();
-            historyViews.add(view);
-        }
+            FlowElement flowElement = bpmnModel.getFlowElement(activity.getActivityId());
+            if (flowElement instanceof UserTask userTask) {
+                if (userTask.hasMultiInstanceLoopCharacteristics()) {
+                    HistoricVariableInstance historicVariableInstance = historyService.createHistoricVariableInstanceQuery()
+                            .processInstanceId(processInstanceId)
+                            .variableName("MI:" + activity.getTaskId() + ":" + activity.getAssignee())
+                            .singleResult();
+                    if (historicVariableInstance != null) {
+                        view.outcome = (String) historicVariableInstance.getValue();
+                    }
+                } else {
+                    if (i + 1 < activityInstances.size()) {
+                        List<SequenceFlow> outgoingFlows = userTask.getOutgoingFlows();
+                        Set<String> outgoingFlowIds = outgoingFlows.stream().map(BaseElement::getId).collect(Collectors.toSet());
+                        for (int j = i + 1; j < activityInstances.size(); j++) {
+                            HistoricActivityInstance nextActivity = activityInstances.get(j);
+                            FlowElement nextFlowElement = bpmnModel.getFlowElement(nextActivity.getActivityId());
+                            if (outgoingFlowIds.contains(nextFlowElement.getId())) {
+                                view.outcome = nextFlowElement.getName();
+                                break;
+                            }
+                        }
+                    }
 
+                }
+
+            }
+            historyViews.add(view);
+
+        }
         return ResultData.ok(historyViews);
 
     }

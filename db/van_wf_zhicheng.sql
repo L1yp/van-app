@@ -13,6 +13,8 @@ create table wf_zhicheng
     create_time           datetime     default CURRENT_TIMESTAMP not null,
     judges                varchar(128)                           null comment '评委用户列表',
     expert_status         bigint                                 null comment '专家审核',
+    expert_reject_count   int          default 0                 not null comment '专家退回次数',
+    form_reject_count     int          default 0                 not null comment '形式审查退回次数',
     constraint code_uindex
         unique (code),
     constraint process_instance_id_uindex
@@ -26,6 +28,3 @@ create index process_bpmn_id_index
 create index process_definition_id_index
     on wf_zhicheng (process_definition_id);
 
-INSERT INTO van.wf_zhicheng (id, process_bpmn_id, process_definition_id, process_instance_id, code, name, creator, update_by, update_time, create_time, judges, expert_status) VALUES (1, 17, 'Process_0dm6mw4:1:f4ffb253-e2ec-11ec-a472-00e0705f49db', '027a51b4-e2ed-11ec-a472-00e0705f49db', 'ZL2022060300001', '测试职称', 5, '5', '2022-06-03 11:31:10', '2022-06-03 11:26:51', '1,2,3,4,5,6', 43);
-INSERT INTO van.wf_zhicheng (id, process_bpmn_id, process_definition_id, process_instance_id, code, name, creator, update_by, update_time, create_time, judges, expert_status) VALUES (2, 17, 'Process_0dm6mw4:1:f4ffb253-e2ec-11ec-a472-00e0705f49db', '7d19f72c-e2ee-11ec-9cfd-00e0705f49db', 'ZL2022060300002', '测试2', 1, '1', '2022-06-03 11:37:48', '2022-06-03 11:37:27', '2,3,4,5,6,7', 43);
-INSERT INTO van.wf_zhicheng (id, process_bpmn_id, process_definition_id, process_instance_id, code, name, creator, update_by, update_time, create_time, judges, expert_status) VALUES (3, 17, 'Process_0dm6mw4:1:f4ffb253-e2ec-11ec-a472-00e0705f49db', '01a934dc-e2ef-11ec-bc7d-00e0705f49db', 'ZL2022060300003', '测试34', 1, '1', '2022-06-03 11:41:58', '2022-06-03 11:41:09', '2,3,4,5,6,7', 43);
