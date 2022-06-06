@@ -115,28 +115,29 @@ public interface ProcessModelMapper extends Mapper<ProcessModelDefinition> {
             StringBuilder sb = new StringBuilder();
             sb.append("UPDATE ").append(tableName).append(" SET ");
 
-            Set<Entry<String, Object>> entries = params.entrySet();
-            for (Entry<String, Object> entry : entries) {
-                String field = entry.getKey();
+            if (fieldMap != null) {
+                Set<Entry<String, Object>> entries = params.entrySet();
+                for (Entry<String, Object> entry : entries) {
+                    String field = entry.getKey();
 
-                ProcessFieldDefinition processFieldDefinition = fieldMap.get(field);
-                if (processFieldDefinition == null) {
-                    continue;
-                }
-
-                // 重置  id列表的值
-                if (multiRefIdSet.contains(processFieldDefinition.getComponentType())) {
-                    List<Object> ids = (List<Object>) entry.getValue();
-                    for (Object itemId : ids) {
-                        if (!(itemId instanceof Number)) {
-                            throw new TypeMismatchException(itemId, Number.class);
-                        }
+                    ProcessFieldDefinition processFieldDefinition = fieldMap.get(field);
+                    if (processFieldDefinition == null) {
+                        continue;
                     }
-                    String newVal = ids.stream().map(Objects::toString).collect(Collectors.joining(","));
-                    params.put(field, newVal);
+
+                    // 重置  id列表的值
+                    if (multiRefIdSet.contains(processFieldDefinition.getComponentType())) {
+                        List<Object> ids = (List<Object>) entry.getValue();
+                        for (Object itemId : ids) {
+                            if (!(itemId instanceof Number)) {
+                                throw new TypeMismatchException(itemId, Number.class);
+                            }
+                        }
+                        String newVal = ids.stream().map(Objects::toString).collect(Collectors.joining(","));
+                        params.put(field, newVal);
+                    }
+
                 }
-
-
             }
 
             String setFields = params.keySet().stream().map(key -> String.format("%s = #{params.%s}", key, key)).collect(Collectors.joining(", "));
