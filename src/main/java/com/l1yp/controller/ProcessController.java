@@ -7,9 +7,7 @@ import com.l1yp.model.param.process.ProcessTaskCompleteParam;
 import com.l1yp.model.param.process.TaskClaimParam;
 import com.l1yp.model.param.process.view.ProcessTodoTaskView;
 import com.l1yp.model.view.ProcessModelPageInfoView;
-import com.l1yp.model.view.ProcessTaskView;
 import com.l1yp.service.ProcessService;
-import org.flowable.engine.TaskService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +15,6 @@ import javax.annotation.Resource;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -39,19 +36,12 @@ public class ProcessController {
         return processService.createProcess(param);
     }
 
-    /**
-     * 我的待办任务列表
-     */
-    @GetMapping("/task/assignee/list")
-    public ResultData<List<ProcessTaskView>> listAssigneeTask() {
-        return processService.listAssigneeTask();
-    }
 
     /**
      * 我的待认领任务列表
      */
     @GetMapping("/task/candidate/list")
-    public ResultData<List<ProcessTaskView>> listCandidateTask() {
+    public ResultData<List<ProcessTodoTaskView>> listCandidateTask() {
         return processService.listCandidateTask();
     }
 

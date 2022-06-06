@@ -1,7 +1,5 @@
 package com.l1yp.model.param.process.view;
 
-import com.l1yp.model.view.SysUserView;
-
 import java.util.Date;
 
 public class ProcessTodoTaskView {
@@ -14,6 +12,10 @@ public class ProcessTodoTaskView {
     public String processDefinitionId;
 
     public Long processBpmnId;
+
+    public String taskId;
+
+    public Date claimTime;
 
     public String name;
 

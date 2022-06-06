@@ -8,6 +8,7 @@ import com.l1yp.mapper.ProcessModelPageSchemeMapper;
 import com.l1yp.mapper.ProcessNodePageMapper;
 import com.l1yp.mapper.SysDeptMapper;
 import com.l1yp.mapper.SysDictValueMapper;
+import com.l1yp.mapper.SysRoleMapper;
 import com.l1yp.mapper.UserMapper;
 import com.l1yp.mapper.WFFieldDeptMapper;
 import com.l1yp.mapper.WFFieldDictMapper;
@@ -32,7 +33,6 @@ import com.l1yp.model.param.process.view.ProcessTodoTaskView;
 import com.l1yp.model.view.ProcessModelPageInfoView;
 import com.l1yp.model.view.ProcessModelPageSchemeView;
 import com.l1yp.model.view.ProcessOutComeView;
-import com.l1yp.model.view.ProcessTaskView;
 import com.l1yp.model.view.SysUserView;
 import com.l1yp.util.ProcessModelUtil;
 import com.l1yp.util.RequestUtils;
@@ -340,108 +340,23 @@ public class ProcessService {
         wfFieldDictMapper.updateProcessInstanceId(processKey, wfId, processInstanceId);
     }
 
-    /**
-     * 我的任务列表
-     * @return
-     */
-    public ResultData<List<ProcessTaskView>> listAssigneeTask() {
-        SysUser loginUser = RequestUtils.getLoginUser();
 
-        List<Task> tasks = taskService.createTaskQuery().taskAssignee(loginUser.getId().toString()).active().list();
-        return ResultData.ok(buildTaskView(loginUser.getId(), tasks));
-    }
-
+    @Resource
+    SysRoleMapper sysRoleMapper;
 
     /**
      * 我的待认领任务列表
      */
-    public ResultData<List<ProcessTaskView>> listCandidateTask() {
+    public ResultData<List<ProcessTodoTaskView>> listCandidateTask() {
         SysUser loginUser = RequestUtils.getLoginUser();
+        List<String> userRoleNames = sysRoleMapper.findUserRoleNames(loginUser.getId());
+        TaskQuery taskQuery = taskService.createTaskQuery()
+                .or()
+                .taskCandidateGroupIn(userRoleNames)
+                .taskCandidateUser(String.valueOf(loginUser.getId()))
+                .endOr()
+                .active();
 
-        List<Task> tasks = taskService.createTaskQuery().taskCandidateUser(loginUser.getId().toString()).active().list();
-        return ResultData.ok(buildTaskView(loginUser.getId(), tasks));
-    }
-
-    /**
-     * 构建任务视图
-     * @param userId 用户ID可为null
-     * @param tasks 任务列表
-     * @return 任务视图列表
-     */
-    private List<ProcessTaskView> buildTaskView(Long userId, List<Task> tasks) {
-        Map<String, List<Task>> processDefinitionTaskGroup = tasks.stream().collect(Collectors.groupingBy(TaskInfo::getProcessDefinitionId, Collectors.toList()));
-        List<ProcessTaskView> result = new ArrayList<>();
-        Set<Entry<String, List<Task>>> entries = processDefinitionTaskGroup.entrySet();
-        for (Entry<String, List<Task>> entry : entries) {
-            String processDefinitionId = entry.getKey();
-            String processKey = processModelBpmnMapper.findProcessKeyByProcessDefinitionId(processDefinitionId);
-            if (processKey == null) {
-                log.info("cannot find processBPMN processKey with userId: {}, processDefinitionId: {}",
-                        userId, processDefinitionId);
-                continue;
-            }
-
-            ProcessModelDefinition pmd = processModelMapper.findByProcessKey(processKey);
-            if (pmd == null) {
-                log.info("cannot find processKey with userId: {}, processDefinitionId: {}",
-                        userId, processDefinitionId);
-                continue;
-            }
-
-            String tableName = ProcessModelUtil.getProcessModelTableName(processKey);
-            List<Task> groupTasks = entry.getValue();
-            List<String> processInstanceIds = groupTasks.stream().map(TaskInfo::getProcessInstanceId).toList();
-            Map<String, Task> taskProcessInstanceMap = groupTasks.stream().collect(Collectors.toMap(TaskInfo::getProcessInstanceId, it -> it));
-
-
-            List<ProcessCommonInfo> processCommonInfos = processModelMapper.selectProcessInfoByProcessInstanceId(tableName, processInstanceIds);
-            for (ProcessCommonInfo processCommonInfo : processCommonInfos) {
-                ProcessTaskView view = new ProcessTaskView();
-                BeanUtils.copyProperties(processCommonInfo, view);
-                view.setProcessTypeName(pmd.getTitle());
-                view.setTaskId(taskProcessInstanceMap.get(processCommonInfo.getProcessInstanceId()).getId());
-                view.setProcessInstanceId(processCommonInfo.getProcessInstanceId());
-                result.add(view);
-            }
-        }
-        return result;
-    }
-
-
-    /**
-     * 认领任务
-     */
-    public ResultData<Void> claimTask(String taskId) {
-        SysUser loginUser = RequestUtils.getLoginUser();
-
-        taskService.claim(taskId, loginUser.getId().toString()); // task 必须是 candidateUser Task
-//        taskService.setAssignee();
-//        taskService.setOwner(); // 用于委托他人办理 不会校验
-
-        return ResultData.OK;
-    }
-
-    /**
-     * 撤回任务
-     */
-    public ResultData<Void> unclaimTask(String taskId) {
-        SysUser loginUser = RequestUtils.getLoginUser();
-
-        taskService.unclaim(taskId); // task 必须是 candidateUser Task
-//        taskService.setAssignee();
-//        taskService.setOwner(); // 用于委托他人办理 不会校验
-
-        return ResultData.OK;
-    }
-
-    /**
-     * 我的待办
-     */
-    public ResultData<List<ProcessTodoTaskView>> listTodoTasks() {
-        SysUser loginUser = RequestUtils.getLoginUser();
-        TaskQuery taskQuery = taskService.createTaskQuery().taskAssignee(String.valueOf(loginUser.getId()));
-
-        taskService.createTaskQuery().taskCandidateGroup("总经理");
 
         long count = taskQuery.count();
         if (count == 0) {
@@ -486,6 +401,9 @@ public class ProcessService {
                     .filter(it -> processDefinitionIdSet.contains(it.getProcessDefinitionId()))
                     .map(TaskInfo::getProcessInstanceId).toList();
 
+            // FIXME: 一个流程 只有一个任务
+            Map<String, String> processTaskMap = tasks.stream().collect(Collectors.toMap(TaskInfo::getProcessInstanceId, TaskInfo::getId));
+
             List<ProcessCommonInfo> processCommonInfos = processModelMapper.selectProcessInfoByProcessInstanceId(tableName, processInstanceIds);
             processList.addAll(processCommonInfos);
 
@@ -496,6 +414,7 @@ public class ProcessService {
                 item.processBpmnId = processCommonInfo.getProcessBpmnId();
                 item.processDefinitionId = processCommonInfo.getProcessDefinitionId();
                 item.processKey = processKey;
+                item.taskId = processTaskMap.get(processCommonInfo.getProcessInstanceId());
                 item.name = processCommonInfo.getName();
                 item.creator = processCommonInfo.getCreator();
                 item.createTime = processCommonInfo.getCreateTime();
@@ -505,8 +424,114 @@ public class ProcessService {
 
         Set<Long> creators = processList.stream().map(ProcessCommonInfo::getCreator).collect(Collectors.toSet());
         List<SysUserView> userList = userMapper.listByIdList(List.copyOf(creators));
-        Map<String, SysUserView> userMap = userList.stream().collect(Collectors.toMap(SysUserView::getUsername, it -> it));
-        result.forEach(it -> it.creator = userMap.get(String.valueOf(it.creator)));
+        Map<Long, SysUserView> userMap = userList.stream().collect(Collectors.toMap(SysUserView::getId, it -> it));
+        result.forEach(it -> it.creator = userMap.get((Long) it.creator));
+
+        return ResultData.ok(result);
+    }
+
+    /**
+     * 认领任务
+     */
+    public ResultData<Void> claimTask(String taskId) {
+        SysUser loginUser = RequestUtils.getLoginUser();
+
+        taskService.claim(taskId, loginUser.getId().toString()); // task 必须是 candidateUser Task
+//        taskService.setAssignee();
+//        taskService.setOwner(); // 用于委托他人办理 不会校验
+
+        return ResultData.OK;
+    }
+
+    /**
+     * 撤回任务
+     */
+    public ResultData<Void> unclaimTask(String taskId) {
+        SysUser loginUser = RequestUtils.getLoginUser();
+
+        taskService.unclaim(taskId); // task 必须是 candidateUser Task
+//        taskService.setAssignee();
+//        taskService.setOwner(); // 用于委托他人办理 不会校验
+
+        return ResultData.OK;
+    }
+
+    /**
+     * 我的待办
+     */
+    public ResultData<List<ProcessTodoTaskView>> listTodoTasks() {
+        SysUser loginUser = RequestUtils.getLoginUser();
+        TaskQuery taskQuery = taskService.createTaskQuery().taskAssignee(String.valueOf(loginUser.getId()));
+
+        long count = taskQuery.count();
+        if (count == 0) {
+            return ResultData.ok(Collections.emptyList());
+        }
+
+        // 任务列表
+        List<Task> tasks = taskQuery.list();
+
+        // 流程定义ID集合
+        Set<String> processDefinitionIds = tasks.stream().map(TaskInfo::getProcessDefinitionId).collect(Collectors.toSet());
+
+        // 流程版本定义列表
+        List<ProcessModelBpmnBase> processModelInfos = processModelBpmnMapper.listBaseByProcessDefinitionIds(processDefinitionIds.stream().toList());
+
+        // 流程标识列表
+        Set<String> processKeySet = processModelInfos.stream().map(ProcessModelBpmnBase::getProcessKey).collect(Collectors.toSet());
+
+        // 流程模型列表
+        List<ProcessModelDefinition> processModelDefinitions = processModelMapper.listByProcessKeys(processKeySet.stream().toList());
+        // 流程模型映射
+        Map<String, ProcessModelDefinition> processDefinitionMap = processModelDefinitions.stream().collect(Collectors.toMap(ProcessModelDefinition::getProcessKey, it -> it));
+
+        // 流程版本映射 [流程标识, 流程版本列表]
+        Map<String, List<ProcessModelBpmnBase>> processKeyMap
+                = processModelInfos.stream().collect(Collectors.groupingBy(ProcessModelBpmnBase::getProcessKey, Collectors.toList()));
+
+
+        List<ProcessTodoTaskView> result = new ArrayList<>();
+        List<ProcessCommonInfo> processList = new ArrayList<>();
+        Set<Entry<String, List<ProcessModelBpmnBase>>> entries = processKeyMap.entrySet();
+        for (Entry<String, List<ProcessModelBpmnBase>> entry : entries) {
+            String processKey = entry.getKey();
+            ProcessModelDefinition processModelDefinition = processDefinitionMap.get(processKey);
+            String tableName = ProcessModelUtil.getProcessModelTableName(processKey);
+            List<ProcessModelBpmnBase> list = entry.getValue();
+            Set<String> processDefinitionIdSet = list.stream()
+                    .map(ProcessModelBpmnBase::getProcessDefinitionId)
+                    .collect(Collectors.toSet());
+
+            List<String> processInstanceIds = tasks.stream()
+                    .filter(it -> processDefinitionIdSet.contains(it.getProcessDefinitionId()))
+                    .map(TaskInfo::getProcessInstanceId).toList();
+            // FIXME: 一个流程 只有一个任务
+            Map<String, Task> processTaskMap = tasks.stream().collect(Collectors.toMap(TaskInfo::getProcessInstanceId, it -> it));
+
+            List<ProcessCommonInfo> processCommonInfos = processModelMapper.selectProcessInfoByProcessInstanceId(tableName, processInstanceIds);
+            processList.addAll(processCommonInfos);
+
+            for (ProcessCommonInfo processCommonInfo : processCommonInfos) {
+                ProcessTodoTaskView item = new ProcessTodoTaskView();
+                item.processType = processModelDefinition.getTitle();
+                item.processId = processCommonInfo.getId();
+                item.processBpmnId = processCommonInfo.getProcessBpmnId();
+                item.processDefinitionId = processCommonInfo.getProcessDefinitionId();
+                item.processKey = processKey;
+                Task task = processTaskMap.get(processCommonInfo.getProcessInstanceId());
+                item.taskId = task.getId();
+                item.claimTime = task.getClaimTime();
+                item.name = processCommonInfo.getName();
+                item.creator = processCommonInfo.getCreator();
+                item.createTime = processCommonInfo.getCreateTime();
+                result.add(item);
+            }
+        }
+
+        Set<Long> creators = processList.stream().map(ProcessCommonInfo::getCreator).collect(Collectors.toSet());
+        List<SysUserView> userList = userMapper.listByIdList(List.copyOf(creators));
+        Map<Long, SysUserView> userMap = userList.stream().collect(Collectors.toMap(SysUserView::getId, it -> it));
+        result.forEach(it -> it.creator = userMap.get((Long) it.creator));
 
         return ResultData.ok(result);
 
