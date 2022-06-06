@@ -44,7 +44,8 @@ public class MenuService {
     }
 
     public ResultData<Void> deleteMenu(Long id) {
-        // 若子菜单被删除完毕 则更新leaf节点
+        // TODO: 若子菜单被删除完毕 则更新leaf节点
+        // TODO: 删除role_menu permission
         sysMenuMapper.deleteByPrimaryKey(id);
         return ResultData.OK;
     }

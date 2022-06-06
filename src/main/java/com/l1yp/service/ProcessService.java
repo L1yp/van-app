@@ -866,7 +866,7 @@ public class ProcessService {
         for (SequenceFlow outgoingFlow : outgoingFlows) {
             ProcessOutComeView outcome = new ProcessOutComeView();
             outcome.name = outgoingFlow.getName();
-            String orderStr = outgoingFlow.getAttributeValue("", "order");
+            String orderStr = outgoingFlow.getAttributeValue("flowable", "order");
             if (StringUtils.hasText(orderStr)) {
                 outcome.order = Integer.parseInt(orderStr);
             }
