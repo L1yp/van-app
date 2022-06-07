@@ -36,18 +36,9 @@ import com.l1yp.model.view.ProcessOutComeView;
 import com.l1yp.model.view.SysUserView;
 import com.l1yp.util.ProcessModelUtil;
 import com.l1yp.util.RequestUtils;
-import org.flowable.bpmn.model.BaseElement;
-import org.flowable.bpmn.model.BpmnModel;
-import org.flowable.bpmn.model.FlowElement;
-import org.flowable.bpmn.model.FlowNode;
-import org.flowable.bpmn.model.SequenceFlow;
-import org.flowable.bpmn.model.UserTask;
+import org.flowable.bpmn.model.*;
 import org.flowable.common.engine.impl.identity.Authentication;
-import org.flowable.engine.HistoryService;
-import org.flowable.engine.ProcessEngine;
-import org.flowable.engine.RepositoryService;
-import org.flowable.engine.RuntimeService;
-import org.flowable.engine.TaskService;
+import org.flowable.engine.*;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.impl.HistoricActivityInstanceQueryProperty;
@@ -95,6 +86,9 @@ public class ProcessService {
 
     @Resource
     HistoryService historyService;
+
+    @Resource
+    ProcessMigrationService processMigrationService;
 
     @Resource
     RepositoryService repositoryService;
@@ -461,7 +455,7 @@ public class ProcessService {
      */
     public ResultData<List<ProcessTodoTaskView>> listTodoTasks() {
         SysUser loginUser = RequestUtils.getLoginUser();
-        TaskQuery taskQuery = taskService.createTaskQuery().taskAssignee(String.valueOf(loginUser.getId()));
+        TaskQuery taskQuery = taskService.createTaskQuery().taskAssignee(String.valueOf(loginUser.getId())).active();
 
         long count = taskQuery.count();
         if (count == 0) {
@@ -855,6 +849,7 @@ public class ProcessService {
         }
 
 
+
         long taskCnt = taskService.createTaskQuery().processInstanceId(processInstanceId).taskAssignee(String.valueOf(loginUser.getId())).count();
         if (taskCnt == 0) {
             // 无权审批
@@ -866,10 +861,7 @@ public class ProcessService {
         for (SequenceFlow outgoingFlow : outgoingFlows) {
             ProcessOutComeView outcome = new ProcessOutComeView();
             outcome.name = outgoingFlow.getName();
-            String orderStr = outgoingFlow.getAttributeValue("flowable", "order");
-            if (StringUtils.hasText(orderStr)) {
-                outcome.order = Integer.parseInt(orderStr);
-            }
+            outcome.order = readOrderFromExtensionElement(outgoingFlow);
             String nodeId = outgoingFlow.getId();
             pageInfo = processNodePageMapper.findByBpmnIdAndNodeId(processBpmnId, nodeId);
             if (pageInfo == null) {
@@ -891,6 +883,23 @@ public class ProcessService {
 
 
         return ResultData.ok(processInfo);
+    }
+
+    private int readOrderFromExtensionElement(FlowElement elem) {
+        List<ExtensionElement> properties = elem.getExtensionElements().get("properties");
+        if (CollectionUtils.isEmpty(properties)) {
+            return 0;
+        }
+        for (ExtensionElement extensionElement : properties) {
+            List<ExtensionElement> propertyList = extensionElement.getChildElements().get("property");
+            for (ExtensionElement property : propertyList) {
+                String name = property.getAttributeValue(null, "name");
+                if (name.equals("order")) {
+                    return Integer.parseInt(property.getAttributeValue(null, "value"));
+                }
+            }
+        }
+        return 0;
     }
 
     private ProcessModelPageInfoView buildProcessModelPageInfoView(ProcessModelNodePage pageInfo, List<ProcessModelPageScheme> pageScheme) {
