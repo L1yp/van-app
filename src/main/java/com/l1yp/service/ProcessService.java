@@ -51,7 +51,6 @@ import org.flowable.task.api.history.HistoricTaskInstanceQuery;
 import org.flowable.variable.api.history.HistoricVariableInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,16 +59,8 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -600,8 +591,8 @@ public class ProcessService {
 
         Set<Long> creators = processList.stream().map(ProcessCommonInfo::getCreator).collect(Collectors.toSet());
         List<SysUserView> userList = userMapper.listByIdList(List.copyOf(creators));
-        Map<String, SysUserView> userMap = userList.stream().collect(Collectors.toMap(SysUserView::getUsername, it -> it));
-        result.forEach(it -> it.creator = userMap.get(it.creator));
+        Map<Long, SysUserView> userMap = userList.stream().collect(Collectors.toMap(SysUserView::getId, it -> it));
+        result.forEach(it -> it.creator = userMap.get((Long) it.creator));
 
         return ResultData.ok(result);
     }
@@ -632,7 +623,7 @@ public class ProcessService {
                 map.put("assignee", Collections.emptyList());
             } else {
                 List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
-                List<String> assigneeUserIds = tasks.stream().map(TaskInfo::getAssignee).toList();
+                List<String> assigneeUserIds = tasks.stream().map(TaskInfo::getAssignee).filter(Objects::nonNull).toList();
                 userIds.addAll(assigneeUserIds.stream().map(Long::valueOf).toList());
                 map.put("assignee", assigneeUserIds);
             }
