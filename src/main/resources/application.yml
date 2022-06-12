@@ -20,30 +20,6 @@ mybatis:
 mapper:
   style: camelhumpAndLowercase
 
-
-app:
-  schedule: enbale
-  lazada:
-    url: https://auth.lazada.com/rest
-    key: 103646
-    secret: rIwXv6q3t1djdV5vPZIZpfnpVm5Wr13Y
-  shopee:
-    sanboxHost: https://partner.test-stable.shopeemobile.com
-    host: https://partner.shopeemobile.com
-    partnerId: 1006194
-    key: aeb6d8801477313751532693832a2f3de1e018e214597eca27f49efbab6fc8f8
-
-qcloud:
-  cos:
-    appid: 1307384290
-    region: ap-chengdu
-    bucket: st-1307384290
-    secretId: AKIDHNDn56rKWR6TaR1LO9drnSqxsVrwmLcc
-    secretKey: lFSP6VdVBbjaATVHm0wbz7xWopa5IEuJ
-  sms:
-    sdkAppId: 1400239728
-    templateId: 391052
-
 logging:
   level:
     root: INFO
