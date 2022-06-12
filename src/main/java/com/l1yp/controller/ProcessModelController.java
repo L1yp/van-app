@@ -8,7 +8,6 @@ import com.l1yp.model.param.process.AddProcessFieldDefinitionParam;
 import com.l1yp.model.param.process.UpdateProcessFieldDefinitionParam;
 import com.l1yp.model.param.process.model.AddProcessModelBpmnParam;
 import com.l1yp.model.param.process.model.AddProcessModelDefinitionParam;
-import com.l1yp.model.param.process.model.AddWFColumnParam;
 import com.l1yp.model.param.process.model.CopyProcessModelBpmnParam;
 import com.l1yp.model.param.process.model.ProcessModelBPMNPublishParam;
 import com.l1yp.model.param.process.model.UpdateProcessModelBpmnParam;

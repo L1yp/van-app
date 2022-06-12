@@ -1,6 +1,5 @@
 package com.l1yp.service;
 
-import cn.dev33.satoken.stp.StpUtil;
 import com.l1yp.mapper.SysMenuMapper;
 import com.l1yp.model.common.ResultData;
 import com.l1yp.model.db.SysMenu;
@@ -46,6 +45,17 @@ public class MenuService {
     public ResultData<Void> deleteMenu(Long id) {
         // TODO: 若子菜单被删除完毕 则更新leaf节点
         // TODO: 删除role_menu permission
+        SysMenu sysMenu = sysMenuMapper.selectByPrimaryKey(id);
+        if (sysMenu == null) {
+            return ResultData.err(400, "ID参数有误");
+        }
+
+        List<Long> childrenIds = sysMenuMapper.selectChildrenIds(List.of(sysMenu.getId()));
+        while (!CollectionUtils.isEmpty(childrenIds)) {
+            sysMenuMapper.deleteMenus(childrenIds);
+            childrenIds = sysMenuMapper.selectChildrenIds(childrenIds);
+        }
+
         sysMenuMapper.deleteByPrimaryKey(id);
         return ResultData.OK;
     }

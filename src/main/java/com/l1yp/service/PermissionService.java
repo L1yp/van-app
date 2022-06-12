@@ -3,11 +3,8 @@ package com.l1yp.service;
 import com.l1yp.mapper.SysPermissionMapper;
 import com.l1yp.model.common.ResultData;
 import com.l1yp.model.db.SysPermission;
-import com.l1yp.model.db.SysRole;
 import com.l1yp.model.param.permission.PermissionAddParam;
 import com.l1yp.model.param.permission.PermissionUpdateParam;
-import com.l1yp.model.param.role.RoleAddParam;
-import com.l1yp.model.param.role.RoleUpdateParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

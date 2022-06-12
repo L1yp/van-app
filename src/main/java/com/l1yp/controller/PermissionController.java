@@ -2,11 +2,8 @@ package com.l1yp.controller;
 
 import com.l1yp.model.common.ResultData;
 import com.l1yp.model.db.SysPermission;
-import com.l1yp.model.db.SysRole;
 import com.l1yp.model.param.permission.PermissionAddParam;
 import com.l1yp.model.param.permission.PermissionUpdateParam;
-import com.l1yp.model.param.role.RoleAddParam;
-import com.l1yp.model.param.role.RoleUpdateParam;
 import com.l1yp.service.PermissionService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;

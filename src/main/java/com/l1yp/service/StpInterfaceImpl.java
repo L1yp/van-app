@@ -1,14 +1,12 @@
 package com.l1yp.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import cn.dev33.satoken.stp.StpInterface;
 import com.l1yp.mapper.SysPermissionMapper;
 import com.l1yp.mapper.SysRoleMapper;
 import org.springframework.stereotype.Component;
-import cn.dev33.satoken.stp.StpInterface;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 自定义权限验证接口扩展 

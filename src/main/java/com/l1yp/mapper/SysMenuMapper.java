@@ -1,10 +1,13 @@
 package com.l1yp.mapper;
 
 import com.l1yp.model.db.SysMenu;
+import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public interface SysMenuMapper extends Mapper<SysMenu> {
 
@@ -26,6 +29,23 @@ public interface SysMenuMapper extends Mapper<SysMenu> {
             """)
     List<Long> selectUserRoleMenuId(Long uid);
 
+    @SelectProvider(type = Provider.class, method = "selectChildrenIds")
+    List<Long> selectChildrenIds(List<Long> parentIds);
 
+
+    @DeleteProvider(type = Provider.class, method = "deleteMenus")
+    int deleteMenus(List<Long> ids);
+
+    class Provider {
+        public String selectChildrenIds(List<Long> parentIds) {
+            return parentIds.stream().map(String::valueOf)
+                    .collect(Collectors.joining(",", "SELECT id FROM sys_menu WHERE pid IN (", ")"));
+        }
+
+        public String deleteMenus(List<Long> ids) {
+            return ids.stream().map(String::valueOf)
+                    .collect(Collectors.joining(",", "DELETE FROM sys_menu WHERE id IN (", ")"));
+        }
+    }
 
 }
