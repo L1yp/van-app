@@ -3,7 +3,6 @@ package com.l1yp.conf;
 import com.l1yp.flowable.listener.ProcessCompletedEventListener;
 import com.l1yp.flowable.listener.TaskCreatedEventListener;
 import org.apache.ibatis.plugin.Interceptor;
-import org.flowable.app.spring.SpringAppEngineConfiguration;
 import org.flowable.common.engine.api.delegate.event.FlowableEventDispatcher;
 import org.flowable.spring.SpringProcessEngineConfiguration;
 import org.flowable.spring.boot.EngineConfigurationConfigurer;
@@ -16,10 +15,7 @@ import java.util.List;
 
 @Order
 @Configuration
-public class FlowableConfig implements EngineConfigurationConfigurer<SpringAppEngineConfiguration> {
-//
-//    @Resource
-//    VueFormEngine vueFormEngine;
+public class FlowableConfig implements EngineConfigurationConfigurer<SpringProcessEngineConfiguration> {
 
     @Resource
     StatementInteceptor statementInteceptor;
@@ -31,7 +27,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringAppEn
     TaskCreatedEventListener taskCreatedEventListener;
 
     @Override
-    public void configure(SpringAppEngineConfiguration engineConfiguration) {
+    public void configure(SpringProcessEngineConfiguration engineConfiguration) {
         List<Interceptor> interceptors = new ArrayList<>();
         interceptors.add(statementInteceptor);
         engineConfiguration.setCustomMybatisInterceptors(interceptors);
