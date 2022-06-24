@@ -877,6 +877,11 @@ public class ProcessService {
     }
 
     private int readOrderFromExtensionElement(FlowElement elem) {
+        String strOrder = elem.getAttributeValue("http://flowable.org/bpmn", "order");
+        if (StringUtils.hasText(strOrder)) {
+            return Integer.parseInt(strOrder);
+        }
+
         List<ExtensionElement> properties = elem.getExtensionElements().get("properties");
         if (CollectionUtils.isEmpty(properties)) {
             return 0;
