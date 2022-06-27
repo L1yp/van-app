@@ -18,16 +18,22 @@ public class AddProcessModelPageSchemeParam {
 
     public static class PageFieldScheme {
 
+        @NotNull
         public Long fieldId;
 
+        @NotBlank
         public String fieldName;
 
+        @NotBlank
         public String fieldLabel;
 
+        @NotNull
         public Integer orderNo;
 
+        @NotNull
         public Integer span;
 
+        @NotNull
         public Integer writeable;
 
     }

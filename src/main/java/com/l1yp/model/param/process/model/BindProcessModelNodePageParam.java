@@ -1,20 +1,32 @@
 package com.l1yp.model.param.process.model;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class BindProcessModelNodePageParam {
 
+    @NotNull
     private Long id;
 
+    @NotBlank
     private String processKey;
 
+    @NotNull
     private Long processBpmnId;
+
+    @NotNull
     private Long processModelPageId;
 
+    @NotBlank
     private String nodeId;
 
+    @NotBlank
     private String pageWidth;
 
+    @NotBlank
     private String labelWidth;
 
+    @NotNull
     private Integer comment;
 
     public Long getId() {

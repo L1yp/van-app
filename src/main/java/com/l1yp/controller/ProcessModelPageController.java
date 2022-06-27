@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Validated
@@ -36,12 +38,12 @@ public class ProcessModelPageController {
      * 查询页面列表
      */
     @GetMapping("/list")
-    public ResultData<List<ProcessModelPage>> listProcessPage(@RequestParam(name = "processKey") String processKey) {
+    public ResultData<List<ProcessModelPage>> listProcessPage(@NotBlank @RequestParam(name = "processKey") String processKey) {
         return processModelPageService.listProcessPage(processKey);
     }
 
     @GetMapping("/listByBpmnId")
-    public ResultData<List<ProcessModelNodePage>> listProcessPageByBpmnId(@RequestParam(name = "bpmnId") Long bpmnId) {
+    public ResultData<List<ProcessModelNodePage>> listProcessPageByBpmnId(@NotNull @RequestParam(name = "bpmnId") Long bpmnId) {
         return processModelPageService.listProcessPageByBpmnId(bpmnId);
     }
 
@@ -54,7 +56,7 @@ public class ProcessModelPageController {
     }
 
     @GetMapping("/scheme/{pageId}")
-    public ResultData<ProcessModelPageSchemeView> listProcessPageScheme(@PathVariable("pageId") Long pageId) {
+    public ResultData<ProcessModelPageSchemeView> listProcessPageScheme(@NotNull @PathVariable("pageId") Long pageId) {
         return processModelPageService.listProcessPageScheme(pageId);
     }
 

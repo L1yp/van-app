@@ -7,6 +7,7 @@ public class AddProcessModelPageParam {
     @NotBlank
     private String processKey;
 
+    @NotBlank
     private String name;
 
     private String remark;
