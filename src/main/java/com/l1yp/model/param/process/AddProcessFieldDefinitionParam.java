@@ -20,8 +20,6 @@ public class AddProcessFieldDefinitionParam {
 
     private String dbDefaultValue;
 
-    private Integer nullable;
-
     private String dictScope;
 
     private String dictIdent;
@@ -88,14 +86,6 @@ public class AddProcessFieldDefinitionParam {
 
     public void setDbDefaultValue(String dbDefaultValue) {
         this.dbDefaultValue = dbDefaultValue;
-    }
-
-    public Integer getNullable() {
-        return nullable;
-    }
-
-    public void setNullable(Integer nullable) {
-        this.nullable = nullable;
     }
 
     public String getDictScope() {

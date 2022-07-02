@@ -1,5 +1,6 @@
 package com.l1yp.service;
 
+import com.l1yp.conf.constants.dict.DictConstants.YesNo;
 import com.l1yp.conf.constants.process.ProcessConstants.ComponentType;
 import com.l1yp.conf.constants.process.ProcessConstants.PublishState;
 import com.l1yp.mapper.ProcessFieldDefinitionMapper;
@@ -100,7 +101,7 @@ public class ProcessModelService {
         BeanUtils.copyProperties(param, pmd);
         processModelMapper.insertSelective(pmd);
 
-        createProcessBpmn(new AddProcessModelBpmnParam(param.getProcessKey()));
+        createProcessBpmn(new AddProcessModelBpmnParam(param.getProcessKey(), param.getTitle()));
 
         initProcessFieldDefinition(param.getProcessKey());
         initProcessWFTable(param.getProcessKey(), param.getTitle());
@@ -151,10 +152,10 @@ public class ProcessModelService {
         bpmn.setVersion(maxVersion + 1);
         processModelBpmnMapper.insertSelective(bpmn);
 
-        processModelBpmnMapper.updateBpmnXML(bpmn.getId(), loginUser.getUsername(),"""
+        String content = """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" targetNamespace="http://www.flowable.org/processdef">
-                    <process id="Process_0dm6mw4">
+                    <process id="{{PROCESS_ID}}" name="{{PROCESS_NAME}}">
                         <startEvent id="StartEvent_1iig6c2" />
                     </process>
                     <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -165,7 +166,10 @@ public class ProcessModelService {
                         </bpmndi:BPMNPlane>
                     </bpmndi:BPMNDiagram>
                 </definitions>
-                """);
+                """;
+        content = content.replace("{{PROCESS_ID}}", param.getProcessKey());
+        content = content.replace("{{PROCESS_NAME}}", param.getTitle());
+        processModelBpmnMapper.updateBpmnXML(bpmn.getId(), loginUser.getUsername(), content);
         return ResultData.OK;
 
     }
@@ -451,7 +455,7 @@ public class ProcessModelService {
         pfd.setComponentType(param.getComponentType());
         pfd.setDbFieldType(param.getDbFieldType());
         pfd.setDbDefaultValue(param.getDbDefaultValue());
-        pfd.setNullable(param.getNullable());
+        pfd.setNullable(YesNo.YES);
         pfd.setDictIdent(param.getDictScope());
         pfd.setDictIdent(param.getDictIdent());
 

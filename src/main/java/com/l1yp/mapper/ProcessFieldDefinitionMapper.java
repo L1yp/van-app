@@ -56,9 +56,7 @@ public interface ProcessFieldDefinitionMapper extends Mapper<ProcessFieldDefinit
             if (StringUtils.hasText(param.getDbDefaultValue())) {
                 sb.append("DEFAULT ").append(param.getDbDefaultValue()).append(" ");
             }
-            if (param.getNullable() == YesNo.NO) {
-                sb.append("NOT ");
-            }
+
             sb.append("NULL ");
             if (StringUtils.hasText(param.getDescription())) {
                 sb.append("COMMENT '").append(param.getDescription()).append("' ");
