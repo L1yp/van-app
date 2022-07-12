@@ -225,7 +225,7 @@ public class ProcessModelService {
         SysUser loginUser = RequestUtils.getLoginUser();
 
         ProcessModelBpmnBase pmb = processModelBpmnMapper.selectByPrimaryKey(param.getId());
-        if (pmb.getState().equals(PublishState.PUBLISHED)) {
+        if (pmb.getState().equals(PublishState.PUBLISHED) || StringUtils.hasText(pmb.getProcessDefinitionId())) {
             return ResultData.err(400, "不能修改已发布的流程");
         }
 
