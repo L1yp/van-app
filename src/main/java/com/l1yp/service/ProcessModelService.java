@@ -97,6 +97,11 @@ public class ProcessModelService {
      * @param param 流程信息
      */
     public ResultData<Void> createProcessModelDefinition(@RequestBody AddProcessModelDefinitionParam param) {
+        ProcessModelDefinition processModel = processModelMapper.findByProcessKey(param.getProcessKey());
+        if (processModel != null) {
+            return ResultData.err(400, "流程标识重复，请重新填写");
+        }
+
         ProcessModelDefinition pmd = new ProcessModelDefinition();
         BeanUtils.copyProperties(param, pmd);
         processModelMapper.insertSelective(pmd);
@@ -242,6 +247,16 @@ public class ProcessModelService {
         ProcessModelBpmn pmb = processModelBpmnMapper.find(param.getProcessModelBpmnId());
         if (pmb == null) {
             return ResultData.err(400, "查询流程定义失败");
+        }
+
+        if (StringUtils.hasText(pmb.getProcessDefinitionId())) {
+            // 已部署过 无需重新部署
+            ProcessModelBpmn pmb2 = new ProcessModelBpmn();
+            pmb2.setId(param.getProcessModelBpmnId());
+            pmb2.setState(1);
+            pmb2.setUpdateBy(loginUser.getUsername());
+            processModelBpmnMapper.updateByPrimaryKeySelective(pmb2);
+            return ResultData.OK;
         }
 
         ProcessModelDefinition pmd = processModelMapper.findByProcessKey(pmb.getProcessKey());
