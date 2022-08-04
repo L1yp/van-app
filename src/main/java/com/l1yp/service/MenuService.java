@@ -10,6 +10,7 @@ import com.l1yp.model.view.SysMenuView;
 import com.l1yp.util.RequestUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -28,6 +29,7 @@ public class MenuService {
     @Resource
     SysMenuMapper sysMenuMapper;
 
+    @Transactional(rollbackFor = Exception.class)
     public ResultData<Void> addMenu(MenuAddParam param) {
         SysMenu menu = new SysMenu();
         BeanUtils.copyProperties(param, menu);
@@ -35,6 +37,7 @@ public class MenuService {
         return ResultData.OK;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public ResultData<Void> updateMenu(MenuUpdateParam param) {
         SysMenu menu = new SysMenu();
         BeanUtils.copyProperties(param, menu);
@@ -42,6 +45,7 @@ public class MenuService {
         return ResultData.OK;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public ResultData<Void> deleteMenu(Long id) {
         // TODO: 若子菜单被删除完毕 则更新leaf节点
         // TODO: 删除role_menu permission
@@ -55,6 +59,8 @@ public class MenuService {
             sysMenuMapper.deleteMenus(childrenIds);
             childrenIds = sysMenuMapper.selectChildrenIds(childrenIds);
         }
+
+        sysMenuMapper.deleteRoleMenuBound(id);
 
         sysMenuMapper.deleteByPrimaryKey(id);
         return ResultData.OK;

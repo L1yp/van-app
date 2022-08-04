@@ -17,8 +17,6 @@ public class PermissionService {
     @Resource
     SysPermissionMapper sysPermissionMapper;
 
-
-
     public ResultData<List<SysPermission>> findPermission() {
         List<SysPermission> sysRoles = sysPermissionMapper.selectAll();
         return ResultData.ok(sysRoles);

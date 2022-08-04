@@ -24,6 +24,7 @@ import com.l1yp.model.param.process.model.UpdateProcessModelBpmnParam;
 import com.l1yp.model.param.process.model.UpdateProcessModelDefinitionParam;
 import com.l1yp.model.view.ProcessModelBPMNView;
 import com.l1yp.model.view.ProcessModelTreeView;
+import com.l1yp.util.HexUtil;
 import com.l1yp.util.ProcessModelUtil;
 import com.l1yp.util.RequestUtils;
 import org.flowable.engine.RepositoryService;
@@ -161,17 +162,18 @@ public class ProcessModelService {
                 <?xml version="1.0" encoding="UTF-8"?>
                 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" targetNamespace="http://www.flowable.org/processdef">
                     <process id="{{PROCESS_ID}}" name="{{PROCESS_NAME}}">
-                        <startEvent id="StartEvent_1iig6c2" />
+                        <startEvent id="{{START_EVENT_ID}}" name="开始" flowable:initiator="creator" />
                     </process>
                     <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-                        <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_0dm6mw4">
-                            <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1iig6c2">
+                        <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="{{PROCESS_ID}}">
+                            <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="{{START_EVENT_ID}}">
                                 <dc:Bounds x="156" y="81" width="36" height="36" />
                             </bpmndi:BPMNShape>
                         </bpmndi:BPMNPlane>
                     </bpmndi:BPMNDiagram>
                 </definitions>
                 """;
+        content = content.replace("{{START_EVENT_ID}}", "startEvent_" + HexUtil.randomCode(7));
         content = content.replace("{{PROCESS_ID}}", param.getProcessKey());
         content = content.replace("{{PROCESS_NAME}}", param.getTitle());
         processModelBpmnMapper.updateBpmnXML(bpmn.getId(), loginUser.getUsername(), content);

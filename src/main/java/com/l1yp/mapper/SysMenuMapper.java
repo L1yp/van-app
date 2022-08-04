@@ -1,7 +1,9 @@
 package com.l1yp.mapper;
 
 import com.l1yp.model.db.SysMenu;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.DeleteProvider;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 import tk.mybatis.mapper.common.Mapper;
@@ -35,6 +37,11 @@ public interface SysMenuMapper extends Mapper<SysMenu> {
 
     @DeleteProvider(type = Provider.class, method = "deleteMenus")
     int deleteMenus(List<Long> ids);
+
+    @Delete("""
+            DELETE FROM sys_role_menu WHERE menu_id = #{menuId}
+            """)
+    int deleteRoleMenuBound(@Param("menuId") Long menuId);
 
     class Provider {
         public String selectChildrenIds(List<Long> parentIds) {

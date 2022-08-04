@@ -3,6 +3,7 @@ package com.l1yp.util;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class HexUtil {
     private static final char[] lower_digits = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
@@ -95,6 +96,14 @@ public class HexUtil {
         return (code >= '0' && code <= '9') || (code >= 'a' && code <= 'f') || (code >= 'A' && code <= 'F');
     }
 
+    public static String randomCode(int count) {
+        StringBuilder sb = new StringBuilder(count);
+        for (int i = 0; i < count; i++) {
+            int idx = ThreadLocalRandom.current().nextInt(lower_digits.length);
+            sb.append(lower_digits[idx]);
+        }
+        return sb.toString();
+    }
 
     public static void main(String[] args) throws IOException {
         ByteBuffer buffer = ByteBuffer.allocate(16);
