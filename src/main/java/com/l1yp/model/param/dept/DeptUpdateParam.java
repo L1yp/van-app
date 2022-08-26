@@ -9,6 +9,8 @@ public class DeptUpdateParam {
 
     private String title;
 
+    private String simpleName;
+
     private String description;
 
     private String ident;
@@ -83,5 +85,13 @@ public class DeptUpdateParam {
 
     public void setStatus(Boolean status) {
         this.status = status;
+    }
+
+    public String getSimpleName() {
+        return simpleName;
+    }
+
+    public void setSimpleName(String simpleName) {
+        this.simpleName = simpleName;
     }
 }
