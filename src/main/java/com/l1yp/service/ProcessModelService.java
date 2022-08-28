@@ -385,8 +385,8 @@ public class ProcessModelService {
         pfd.setOrderNo(7);
         pfd.setLabel("更新人");
         pfd.setDescription("最后更新人");
-        pfd.setComponentType(ComponentType.SINGLE_LINE_TEXT);
-        pfd.setDbFieldType("VARCHAR(64)");
+        pfd.setComponentType(ComponentType.SINGLE_USER);
+        pfd.setDbFieldType("BIGINT");
         processFieldDefinitionMapper.insertSelective(pfd);
 
         pfd.setId(null);

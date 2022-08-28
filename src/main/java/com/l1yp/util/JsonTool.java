@@ -50,6 +50,7 @@ public class JsonTool {
         try {
             return mapper.readValue(json, type);
         } catch (JsonProcessingException e) {
+            e.printStackTrace();
             return null;
         }
     }

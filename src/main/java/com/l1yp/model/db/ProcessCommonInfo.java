@@ -21,7 +21,7 @@ public class ProcessCommonInfo {
 
     private String processInstanceId;
 
-    private String updateBy;
+    private Long updateBy;
 
     private String tableName;
 
@@ -77,11 +77,11 @@ public class ProcessCommonInfo {
         this.name = name;
     }
 
-    public String getUpdateBy() {
+    public Long getUpdateBy() {
         return updateBy;
     }
 
-    public void setUpdateBy(String updateBy) {
+    public void setUpdateBy(Long updateBy) {
         this.updateBy = updateBy;
     }
 

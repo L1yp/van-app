@@ -6,6 +6,7 @@ package com.l1yp.model.param.dept;
 public class DeptAddParam {
 
     private String title;
+    private String simpleName;
 
     private String description;
 
@@ -25,6 +26,14 @@ public class DeptAddParam {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getSimpleName() {
+        return simpleName;
+    }
+
+    public void setSimpleName(String simpleName) {
+        this.simpleName = simpleName;
     }
 
     public String getDescription() {

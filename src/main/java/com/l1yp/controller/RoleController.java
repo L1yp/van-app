@@ -75,4 +75,10 @@ public class RoleController {
         return service.permissionBound(roleId);
     }
 
+    @GetMapping("/permission/poc")
+    public ResultData<Void> permissionPOC() {
+        service.permissionPOC();
+        return ResultData.OK;
+    }
+
 }

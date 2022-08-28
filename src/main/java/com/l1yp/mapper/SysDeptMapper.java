@@ -28,6 +28,9 @@ public interface SysDeptMapper extends Mapper<SysDept> {
     @SelectProvider(type = Provider.class, method = "search")
     List<SysDept> search(@Param("keyword") String keyword);
 
+    @Select("SELECT id,pid FROM sys_dept")
+    List<SysDept> selectAllId();
+
     class Provider {
 
         public String batchDeleteDept(List<Long> ids) {

@@ -1,5 +1,7 @@
 package com.l1yp.model.view;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * 2022/2/19 Created by 𝑳𝒚𝒑(l1yp@qq.com),
  */
@@ -94,6 +96,7 @@ public class SysUserView {
         this.updateBy = updateBy;
     }
 
+    @JsonIgnore
     public String getLabel() {
         // Lyp <A52736, IT>
         return nickname + "<" + username + ">";

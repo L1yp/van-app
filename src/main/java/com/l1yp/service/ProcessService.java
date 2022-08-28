@@ -152,7 +152,7 @@ public class ProcessService {
             pci.setCode(maxCode); // TODO: gen code
             pci.setName((String) param.getParams().get("name")); // FIXME: 校验
             pci.setCreator(loginUser.getId());
-            pci.setUpdateBy(loginUser.getUsername());
+            pci.setUpdateBy(loginUser.getId());
             pci.setTableName(tableName);
             processModelMapper.createProcess(pci);
             log.info("create process success, insert id: {}", pci.getId());
