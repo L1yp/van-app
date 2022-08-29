@@ -14,6 +14,8 @@ import com.l1yp.model.db.RoleProcessPermissionModel;
 import com.l1yp.model.db.SysDept;
 import com.l1yp.model.db.SysRole;
 import com.l1yp.model.db.SysUser;
+import com.l1yp.model.expression.DepartmentScope;
+import com.l1yp.model.expression.DeptFieldConfig;
 import com.l1yp.model.expression.ExpressionContent;
 import com.l1yp.model.expression.SubDeptConfig;
 import com.l1yp.model.expression.UserFieldConfig;
@@ -94,13 +96,17 @@ public class RoleService {
                 ProcessFieldDefinition processFieldDefinition = fieldIdMap.get(fieldId);
                 if (content.type.equals("START")) {
                     sb.append("(");
-                } else if (content.type.equals("END")) {
+                }
+                else if (content.type.equals("END")) {
                     sb.append(")");
-                } else if (content.type.equals("AND")) {
+                }
+                else if (content.type.equals("AND")) {
                     sb.append(" AND ");
-                } else if (content.type.equals("OR")) {
+                }
+                else if (content.type.equals("OR")) {
                     sb.append(" OR ");
-                } else if (content.type.equals("BLOCK")) {
+                }
+                else if (content.type.equals("BLOCK")) {
 
                     if (processFieldDefinition.getComponentType() == ComponentType.MULTI_USER || processFieldDefinition.getComponentType() == ComponentType.SINGLE_USER) {
                         sb.append("(");
@@ -109,151 +115,149 @@ public class RoleService {
                             log.warn("user config is null");
                             continue;
                         }
-                        boolean empty = true;
+
+                        Set<Long> candidateUserIds = new HashSet<>();
                         if (!CollectionUtils.isEmpty(userFieldConfig.users)) {
-                            List<Long> userIds = userFieldConfig.users;
+                            candidateUserIds.addAll(userFieldConfig.users);
+                        }
+
+                        if (userFieldConfig.my_dept_scope == DepartmentScope.OWNER_USER_ID) {
+                            candidateUserIds.add(loginUser.getId());
+                        }
+
+
+
+                        if (CollectionUtils.isEmpty(userFieldConfig.user_of_dept)) {
+                            userFieldConfig.user_of_dept = new ArrayList<>();
+                        }
+                        if (DepartmentScope.isDepartmentScope(userFieldConfig.my_dept_scope)) {
+                            for (Long myDptId : myDptIds) {
+                                SubDeptConfig config = new SubDeptConfig();
+                                config.scope = userFieldConfig.my_dept_scope;
+                                config.dept = myDptId;
+                                userFieldConfig.user_of_dept.add(config);
+                            }
+                        }
+                        Set<Long> candidateDptIds = getScopeDept(userFieldConfig.user_of_dept, deptViews);
+
+                        boolean empty = true;
+                        if (!CollectionUtils.isEmpty(candidateUserIds)) {
                             if (processFieldDefinition.getComponentType() == ComponentType.MULTI_USER) {
                                 sb.append("id IN (");
                                 sb.append("SELECT wf_id FROM wf_field_user WHERE process_key = ? AND field_id = ? AND user_id IN ");
                                 List<String> args = new ArrayList<>();
-                                IntStream.range(0, userIds.size()).forEach( it -> args.add("?"));
+                                IntStream.range(0, candidateUserIds.size()).forEach( it -> args.add("?"));
                                 sb.append("(").append(String.join(",", args)).append(")");
                                 sb.append(")");
                                 params.add(processKey);
                                 params.add(fieldId);
-                                params.addAll(userIds);
-                            } else {
-                                sb.append("`").append(processFieldDefinition.getName()).append("` IN ");
-                                List<String> args = new ArrayList<>();
-                                IntStream.range(0, userIds.size()).forEach( it -> args.add("?"));
-                                sb.append("(").append(String.join(",", args)).append(")");
-                                params.addAll(userIds);
-                            }
-
-                            empty = false;
-                        }
-
-                        if (userFieldConfig.my_dept_scope > 0) {
-                            if (!empty) {
-                                sb.append(" OR ");
-                            }
-
-                            empty = false;
-                            if (userFieldConfig.my_dept_scope == 1) {
-                                sb.append(" `").append(processFieldDefinition.getName()).append("` = ? ");
-                                params.add(loginUser.getId());
+                                params.addAll(candidateUserIds);
                             }
                             else {
-                                Set<Long> dptIds = new HashSet<>();
-                                if (userFieldConfig.my_dept_scope == 2) {
-                                    dptIds.addAll(myDptIds);
-                                } else if (userFieldConfig.my_dept_scope == 3) {
-                                    List<SysDeptView> myDptViews = deptViews.stream().filter(it -> myDptIds.contains(it.getId())).toList();
-                                    List<Long> subChildrenDept = getSubChildrenDept(myDptViews); // 本部门及下级部门
-                                    dptIds.addAll(subChildrenDept);
-                                } else if (userFieldConfig.my_dept_scope == 4) {
-                                    List<SysDeptView> myDptViews = deptViews.stream().filter(it -> myDptIds.contains(it.getId())).toList();
-                                    List<Long> subChildrenDept = getSubChildrenDept(myDptViews); // 本部门及下级部门
-                                    List<Long> excludeSubChildrenDept = subChildrenDept.stream().filter(it -> !myDptIds.contains(it)).toList();
-                                    dptIds.addAll(excludeSubChildrenDept);
-                                }
-
-                                if (processFieldDefinition.getComponentType() == ComponentType.MULTI_USER) {
-                                    // my dept
-                                    sb.append("id IN ("); // start 1
-
-                                    sb.append(" SELECT wf_id FROM wf_field_user WHERE process_key = ? AND field_id = ? AND user_id IN ( SELECT uid FROM sys_user_dept WHERE dept_id IN ");
-
-                                    List<String> args = new ArrayList<>();
-                                    IntStream.range(0, dptIds.size()).forEach( it -> args.add("?"));
-
-                                    sb.append("(").append(String.join(",", args)).append(")");
-
-                                    sb.append(" )");
-
-                                    sb.append(")"); // end 1
-                                    params.add(processKey);
-                                    params.add(fieldId);
-                                    params.addAll(dptIds);
-                                } else {
-                                    sb.append(" `").append(processFieldDefinition.getName()).append("` IN (");
-
-                                    sb.append(" SELECT uid FROM sys_user_dept WHERE dept_id IN ");
-                                    List<String> args = new ArrayList<>();
-                                    IntStream.range(0, dptIds.size()).forEach( it -> args.add("?"));
-                                    sb.append("(").append(String.join(",", args)).append(")");
-
-                                    sb.append(")");
-
-                                    params.addAll(dptIds);
-                                }
-
+                                sb.append("`").append(processFieldDefinition.getName()).append("` IN ");
+                                List<String> args = new ArrayList<>();
+                                IntStream.range(0, candidateUserIds.size()).forEach( it -> args.add("?"));
+                                sb.append("(").append(String.join(",", args)).append(")");
+                                params.addAll(candidateUserIds);
                             }
-
+                            empty = false;
                         }
 
-                        if (!CollectionUtils.isEmpty(userFieldConfig.user_of_dept)) {
+                        if (!CollectionUtils.isEmpty(candidateDptIds)) {
                             if (!empty) {
                                 sb.append(" OR ");
                             }
-                            Map<Integer, List<SubDeptConfig>> scopeMap = userFieldConfig.user_of_dept.stream().collect(Collectors.groupingBy(SubDeptConfig::getScope, Collectors.toList()));
+                            if (processFieldDefinition.getComponentType() == ComponentType.MULTI_USER) {
+                                // dept
+                                sb.append("id IN ("); // start 1
 
-                            for (Entry<Integer, List<SubDeptConfig>> entry : scopeMap.entrySet()) {
-                                Integer scope = entry.getKey();
-                                List<SubDeptConfig> value = entry.getValue();
-                                List<Long> scopeDepts = value.stream().map(SubDeptConfig::getDept).toList();
-                                List<Long> dptIds= new ArrayList<>();
-                                if (scope == 1) {
-                                    dptIds.addAll(scopeDepts);
-                                } else if (scope == 2) {
-                                    List<SysDeptView> sysDeptViews = scopeDepts.stream().map(deptMap::get).toList();
-                                    List<Long> subChildrenDept = getSubChildrenDept(sysDeptViews); // 本部门及下级部门
-                                    dptIds.addAll(Set.copyOf(subChildrenDept));
-                                } else if (scope == 3) {
-                                    List<SysDeptView> sysDeptViews = scopeDepts.stream().map(deptMap::get).toList();
-                                    List<Long> subChildrenDept = getSubChildrenDept(sysDeptViews); // 本部门及下级部门
-                                    List<Long> subDptIds = subChildrenDept.stream().filter(it -> !scopeDepts.contains(it)).toList();
-                                    dptIds.addAll(Set.copyOf(subDptIds));
-                                }
+                                sb.append(" SELECT wf_id FROM wf_field_user WHERE process_key = ? AND field_id = ? AND user_id IN ( SELECT uid FROM sys_user_dept WHERE dept_id IN");
 
-                                if (processFieldDefinition.getComponentType() == ComponentType.MULTI_USER) {
-                                    // dept
-                                    sb.append("id IN ("); // start 1
+                                List<String> args = new ArrayList<>();
+                                IntStream.range(0, candidateDptIds.size()).forEach( it -> args.add("?"));
 
-                                    sb.append(" SELECT wf_id FROM wf_field_user WHERE process_key = ? AND field_id = ? AND user_id IN ( SELECT uid FROM sys_user_dept WHERE dept_id IN");
+                                sb.append("(").append(String.join(",", args)).append(")");
 
-                                    List<String> args = new ArrayList<>();
-                                    IntStream.range(0, dptIds.size()).forEach( it -> args.add("?"));
+                                sb.append(" )");
 
-                                    sb.append("(").append(String.join(",", args)).append(")");
+                                sb.append(")"); // end 1
+                                params.add(processKey);
+                                params.add(fieldId);
+                                params.addAll(candidateDptIds);
+                            } else {
+                                sb.append(" `").append(processFieldDefinition.getName()).append("` IN (");
 
-                                    sb.append(" )");
+                                sb.append(" SELECT uid FROM sys_user_dept WHERE dept_id IN ");
+                                List<String> args = new ArrayList<>();
+                                IntStream.range(0, candidateDptIds.size()).forEach( it -> args.add("?"));
+                                sb.append("(").append(String.join(",", args)).append(")");
 
-                                    sb.append(")"); // end 1
-                                    params.add(processKey);
-                                    params.add(fieldId);
-                                    params.addAll(dptIds);
-                                } else {
-                                    sb.append(" `").append(processFieldDefinition.getName()).append("` IN (");
+                                sb.append(")");
 
-                                    sb.append(" SELECT uid FROM sys_user_dept WHERE dept_id IN ");
-                                    List<String> args = new ArrayList<>();
-                                    IntStream.range(0, dptIds.size()).forEach( it -> args.add("?"));
-                                    sb.append("(").append(String.join(",", args)).append(")");
-
-                                    sb.append(")");
-
-                                    params.addAll(dptIds);
-                                }
-
+                                params.addAll(candidateDptIds);
                             }
-
                         }
 
                         sb.append(")");
 
                     }
+                    else if (processFieldDefinition.getComponentType() == ComponentType.MULTI_DEPT || processFieldDefinition.getComponentType() == ComponentType.SINGLE_DEPT) {
+                        sb.append("(");
+                        DeptFieldConfig deptFieldConfig = JsonTool.deserialize(content.attrs.val, DeptFieldConfig.class);
+                        if (deptFieldConfig == null) {
+                            log.warn("err expression val: {}", content.attrs.val);
+                            continue;
+                        }
 
+                        if (CollectionUtils.isEmpty(deptFieldConfig.user_of_dept)) {
+                            deptFieldConfig.user_of_dept = new ArrayList<>();
+                        }
+
+                        if (deptFieldConfig.my_dept_scope > 0) {
+                            for (Long myDptId : myDptIds) {
+                                SubDeptConfig config = new SubDeptConfig();
+                                config.scope = deptFieldConfig.my_dept_scope;
+                                config.dept = myDptId;
+                                deptFieldConfig.user_of_dept.add(config);
+                            }
+                        }
+
+                        Set<Long> candidateDptIds = getScopeDept(deptFieldConfig.user_of_dept, deptViews);
+
+                        if (!CollectionUtils.isEmpty(candidateDptIds)) {
+                            if (processFieldDefinition.getComponentType() == ComponentType.MULTI_USER) {
+                                // dept
+                                sb.append("id IN ("); // start 1
+
+                                sb.append(" SELECT wf_id FROM wf_field_user WHERE process_key = ? AND field_id = ? AND user_id IN ( SELECT uid FROM sys_user_dept WHERE dept_id IN");
+
+                                List<String> args = new ArrayList<>();
+                                IntStream.range(0, candidateDptIds.size()).forEach( it -> args.add("?"));
+
+                                sb.append("(").append(String.join(",", args)).append(")");
+
+                                sb.append(" )");
+
+                                sb.append(")"); // end 1
+                                params.add(processKey);
+                                params.add(fieldId);
+                                params.addAll(candidateDptIds);
+                            } else {
+                                sb.append(" `").append(processFieldDefinition.getName()).append("` IN (");
+
+                                sb.append(" SELECT uid FROM sys_user_dept WHERE dept_id IN ");
+                                List<String> args = new ArrayList<>();
+                                IntStream.range(0, candidateDptIds.size()).forEach( it -> args.add("?"));
+                                sb.append("(").append(String.join(",", args)).append(")");
+
+                                sb.append(")");
+
+                                params.addAll(candidateDptIds);
+                            }
+                        }
+
+                        sb.append(")");
+                    }
 
 
                 }
@@ -261,11 +265,28 @@ public class RoleService {
             String condition = sb.toString();
             System.out.println("condition: " + condition);
             System.out.println("params: " + params);
-
-
         }
 
 
+    }
+
+    private Set<Long> getScopeDept(List<SubDeptConfig> subDeptConfigs, List<SysDeptView> src) {
+        Set<Long> dptIds = new HashSet<>();
+        for (SubDeptConfig subDeptConfig : subDeptConfigs) {
+            if (subDeptConfig.scope == 1) {
+                dptIds.add(subDeptConfig.dept);
+            } else if (subDeptConfig.scope == 2) {
+                List<SysDeptView> list = src.stream().filter(it -> it.getId().equals(subDeptConfig.dept)).toList();
+                List<Long> subChildrenDept = getSubChildrenDept(list);
+                dptIds.addAll(subChildrenDept);
+            } else if (subDeptConfig.scope == 3) {
+                List<SysDeptView> list = src.stream().filter(it -> it.getId().equals(subDeptConfig.dept)).toList();
+                List<Long> subChildrenDept = getSubChildrenDept(list);
+                List<Long> excludeOwnerDptIds = subChildrenDept.stream().filter(it -> !it.equals(subDeptConfig.dept)).toList();
+                dptIds.addAll(excludeOwnerDptIds);
+            }
+        }
+        return dptIds;
     }
 
     private List<Long> getSubChildrenDept(List<SysDeptView> deptViews) {

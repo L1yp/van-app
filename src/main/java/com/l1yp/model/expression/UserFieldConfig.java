@@ -1,16 +1,14 @@
 package com.l1yp.model.expression;
 
-import com.l1yp.model.view.SysUserView;
-
 import java.util.List;
 
 public class UserFieldConfig {
 
     /**
-     * 1：本人
-     * 2：本部门
-     * 3：本部门及下级部门
-     * 4：下级部门
+     * 1：本部门
+     * 2：本部门及下级部门
+     * 3：下级部门
+     * 4：本人
      */
     public int my_dept_scope;
 
