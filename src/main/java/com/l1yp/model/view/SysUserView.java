@@ -18,11 +18,6 @@ public class SysUserView {
 
     private String avatar;
 
-    private String registerIp;
-
-    private int status;
-
-    private String updateBy;
 
     public Long getId() {
         return id;
@@ -72,31 +67,6 @@ public class SysUserView {
         this.avatar = avatar;
     }
 
-    public String getRegisterIp() {
-        return registerIp;
-    }
-
-    public void setRegisterIp(String registerIp) {
-        this.registerIp = registerIp;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
-    }
-
-    @JsonIgnore
     public String getLabel() {
         // Lyp <A52736, IT>
         return nickname + "<" + username + ">";

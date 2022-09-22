@@ -692,8 +692,10 @@ public class ProcessService {
         if (hasDeptField) {
             Object WFId = processInfo.get("id");
             WFFieldDepts = wfFieldDeptMapper.listByWFID(processKey, ((Number) WFId).longValue());
-            List<SysDept> depts = sysDeptMapper.listByIdList(WFFieldDepts.stream().map(WFFieldDept::getDeptId).collect(Collectors.toSet()));
-            deptMap = depts.stream().collect(Collectors.toMap(SysDept::getId, it -> it));
+            if (!CollectionUtils.isEmpty(WFFieldDepts)) {
+                List<SysDept> depts = sysDeptMapper.listByIdList(WFFieldDepts.stream().map(WFFieldDept::getDeptId).collect(Collectors.toSet()));
+                deptMap = depts.stream().collect(Collectors.toMap(SysDept::getId, it -> it));
+            }
         }
 
         boolean hasDictField = processFields.stream().anyMatch(ProcessFieldDefinition::isDictType);

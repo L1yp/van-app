@@ -258,7 +258,14 @@ public class RoleService {
 
                         sb.append(")");
                     }
+                    else if (processFieldDefinition.getComponentType() == ComponentType.MULTI_DICT || processFieldDefinition.getComponentType() == ComponentType.SINGLE_DICT) {
+                        sb.append("(");
 
+
+
+
+                        sb.append(")");
+                    }
 
                 }
             }
