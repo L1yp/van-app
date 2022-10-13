@@ -1,17 +1,15 @@
 package com.l1yp.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
-import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.l1yp.model.common.PageData;
 import com.l1yp.model.common.ResultData;
-import com.l1yp.model.param.user.UserBindPartTimeDeptParam;
-import com.l1yp.model.param.user.UserBindPrimaryDeptParam;
-import com.l1yp.model.param.user.UserBindRoleParam;
-import com.l1yp.model.param.user.UserListFindParam;
-import com.l1yp.model.param.user.UserLoginParam;
-import com.l1yp.model.param.user.UserUpdateParam;
-import com.l1yp.model.view.SysUserView;
-import com.l1yp.model.view.UserLoginSuccessView;
-import com.l1yp.service.UserService;
+import com.l1yp.model.param.system.user.UserListFindParam;
+import com.l1yp.model.param.system.user.UserLoginParam;
+import com.l1yp.model.param.system.user.UserLoginParam.UserBindRoleParam;
+import com.l1yp.model.param.system.user.UserUpdateParam;
+import com.l1yp.model.view.LoginResult;
+import com.l1yp.model.view.system.UserView;
+import com.l1yp.service.system.IUserService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,72 +26,44 @@ import java.util.List;
 public class UserController {
 
     @Resource
-    UserService userService;
+    IUserService userService;
 
     @PostMapping("/login")
-    public ResultData<UserLoginSuccessView> login(@Validated @RequestBody UserLoginParam param) {
-        return userService.login(param.getUsername(), param.getPassword());
+    public ResultData<LoginResult> login(@Validated @RequestBody UserLoginParam param) {
+        LoginResult result = userService.login(param.getUsername(), param.getPassword());
+        return ResultData.ok(result);
     }
 
     @GetMapping("/page")
-    public ResultData<List<SysUserView>> findPage(@Validated UserListFindParam param) {
-        return userService.pageUserList(param);
+    public ResultData<PageData<UserView>> findPage(@Validated UserListFindParam param) {
+        PageData<UserView> pageData = userService.pageUserList(param);
+        return ResultData.ok(pageData);
     }
 
-    @SaCheckPermission("system:user:update")
     @PostMapping("/update")
     public ResultData<Void> updateUser(@Validated @RequestBody UserUpdateParam param) {
-        return userService.updateUser(param);
+        userService.update(param);
+        return ResultData.OK;
     }
 
 
     @SaCheckLogin
     @GetMapping("/menu")
-    public ResultData<UserLoginSuccessView> menu() {
-        return userService.menu();
-    }
-
-    @SaCheckLogin
-    @GetMapping("/permission")
-    public ResultData<List<String>> permission() {
-        return userService.permission();
-    }
-
-
-    @SaCheckLogin
-    @GetMapping("/dept/part-time/bound/find")
-    public ResultData<List<Long>> findBoundPartTimeDept(Long uid) {
-        return userService.findBoundPartTimeDept(uid);
-    }
-
-    @SaCheckLogin
-    @GetMapping("/dept/primary/bound/find")
-    public ResultData<Long> findBoundPrimaryDept(Long uid) {
-        return userService.findBoundPrimaryDept(uid);
-    }
-
-    @SaCheckLogin
-    @GetMapping("/role/bound/find")
-    public ResultData<List<Long>> findBoundRole(Long uid) {
-        return userService.findBoundRole(uid);
+    public ResultData<LoginResult> menu() {
+        return ResultData.ok(userService.requestLoginState());
     }
 
     @SaCheckLogin
     @PostMapping("/role/bind")
     public ResultData<Void> bindRoles(@Validated @RequestBody UserBindRoleParam param) {
-        return userService.bindRole(param);
+        userService.bindRole(param);
+        return ResultData.OK;
     }
 
     @SaCheckLogin
-    @PostMapping("/dept/part-time/bind")
-    public ResultData<Void> bindPartTimeDept(@Validated @RequestBody UserBindPartTimeDeptParam param) {
-        return userService.bindPartTimeDept(param);
-    }
-
-    @SaCheckLogin
-    @PostMapping("/dept/primary/bind")
-    public ResultData<Void> bindPrimaryDept(@Validated @RequestBody UserBindPrimaryDeptParam param) {
-        return userService.bindPrimaryDept(param);
+    @GetMapping("/pt/dept")
+    public ResultData<List<String>> findPartTimeDept() {
+        return ResultData.ok(userService.findPartTimeDept());
     }
 
 }

@@ -1,6 +1,7 @@
 package com.l1yp.conf;
 
 import cn.dev33.satoken.exception.NotLoginException;
+import com.l1yp.exception.VanException;
 import com.l1yp.model.common.ResultData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,16 +104,21 @@ public class ControllerAdvise {
         );
     }
 
+    @ExceptionHandler(VanException.class)
+    public ResultData<Void> handleVanException(VanException e) {
+        return ResultData.err(e.getCode(), e.getMessage());
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ResultData<Void>> handlerRuntimeException(RuntimeException e){
         log.error("handlerRuntimeException", e);
-        return ResponseEntity.ok(ResultData.err(500, "请求有误，请稍后重试，或联系管理员！"));
+        return ResponseEntity.ok(ResultData.err(500, "请求有误，请稍后重试，或联系管理员！", 500, e.getMessage()));
     }
 
     @ExceptionHandler(IOException.class)
     public ResponseEntity<ResultData<Void>> handlerException(IOException e){
         log.error("handlerIOException", e);
-        return ResponseEntity.ok(ResultData.err(500, "链接超时，请稍后重试，或联系管理员！"));
+        return ResponseEntity.ok(ResultData.err(500, "链接超时，请稍后重试，或联系管理员！", 500, e.getMessage()));
     }
 
     @ExceptionHandler(NotLoginException.class)
@@ -124,13 +130,13 @@ public class ControllerAdvise {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResultData<Void>> handlerException(Exception e){
         log.error("handlerException", e);
-        return ResponseEntity.ok(ResultData.err(500, "请求有误，请稍后重试，或联系管理员！"));
+        return ResponseEntity.ok(ResultData.err(500, "请求有误，请稍后重试，或联系管理员！", 500, e.getMessage()));
     }
 
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<ResultData<Void>> handlerException(Throwable e){
         log.error("handlerThrowable", e);
-        return ResponseEntity.ok(ResultData.err(500, "请求有误，请稍后重试，或联系管理员！"));
+        return ResponseEntity.ok(ResultData.err(500, "请求有误，请稍后重试，或联系管理员！", 500, e.getMessage()));
     }
 
 

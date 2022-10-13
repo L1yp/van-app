@@ -1,11 +1,10 @@
 package com.l1yp.controller;
 
 import com.l1yp.model.common.ResultData;
-import com.l1yp.model.db.SysDept;
-import com.l1yp.model.param.dept.DeptAddParam;
-import com.l1yp.model.param.dept.DeptUpdateParam;
-import com.l1yp.model.view.SysDeptView;
-import com.l1yp.service.DeptService;
+import com.l1yp.model.param.system.dept.DeptAddParam;
+import com.l1yp.model.param.system.dept.DeptUpdateParam;
+import com.l1yp.model.view.system.DepartmentView;
+import com.l1yp.service.system.IDepartmentService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -24,37 +22,36 @@ import java.util.List;
 public class DeptController {
 
     @Resource
-    DeptService service;
+    IDepartmentService service;
 
     @PostMapping("/add")
     public ResultData<Void> addDept(@Validated @RequestBody DeptAddParam param) {
-        return service.addDept(param);
+        service.add(param);
+        return ResultData.OK;
     }
 
     @PostMapping("/update")
     public ResultData<Void> updateDept(@Validated @RequestBody DeptUpdateParam param) {
-        return service.updateDept(param);
+        service.update(param);
+        return ResultData.OK;
     }
 
     @DeleteMapping("/{id}")
-    public ResultData<Void> deleteDept(@PathVariable("id") Long id) {
-        return service.delDept(id);
+    public ResultData<Void> deleteDept(@PathVariable("id") String id) {
+        service.delete(id);
+        return ResultData.OK;
     }
 
     @DeleteMapping("/batch/{ids}")
-    public ResultData<Void> deleteMenu(@PathVariable("ids") List<Long> ids) {
-        return service.batchDelDept(ids);
+    public ResultData<Void> deleteMenu(@PathVariable("ids") List<String> ids) {
+        service.deleteByIds(ids);
+        return ResultData.OK;
     }
 
     @GetMapping("/find")
-    public ResultData<List<SysDeptView>> findDept() {
+    public ResultData<List<DepartmentView>> findDept() {
         return ResultData.ok(service.findDept());
     }
 
-
-    @GetMapping("/search")
-    public ResultData<List<SysDept>> searchDeptView(@RequestParam String keyword) {
-        return service.searchDept(keyword);
-    }
 
 }

@@ -1,11 +1,14 @@
 package com.l1yp.service;
 
 import cn.dev33.satoken.stp.StpInterface;
-import com.l1yp.mapper.SysPermissionMapper;
-import com.l1yp.mapper.SysRoleMapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.l1yp.mapper.system.RoleMapper;
+import com.l1yp.mapper.system.UserRoleMapper;
+import com.l1yp.model.db.system.UserRole;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,10 +18,11 @@ import java.util.List;
 public class StpInterfaceImpl implements StpInterface {
 
     @Resource
-    SysRoleMapper sysRoleMapper;
+    RoleMapper roleMapper;
 
     @Resource
-    SysPermissionMapper sysPermissionMapper;
+    UserRoleMapper userRoleMapper;
+
 
 
     /**
@@ -26,7 +30,10 @@ public class StpInterfaceImpl implements StpInterface {
      */
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
-        return sysPermissionMapper.findUserPermissions(loginId);
+        /**
+         * *
+         */
+        return Collections.emptyList();
     }
 
     /**
@@ -34,7 +41,8 @@ public class StpInterfaceImpl implements StpInterface {
      */
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        return sysRoleMapper.findUserRoleNames(loginId);
+        List<UserRole> userRoles = userRoleMapper.selectList(new LambdaQueryWrapper<UserRole>().eq(UserRole::getUid, loginId));
+        return userRoles.stream().map(UserRole::getRoleId).toList();
     }
 
 }

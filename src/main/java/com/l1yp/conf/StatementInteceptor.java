@@ -164,9 +164,12 @@ public class StatementInteceptor implements Interceptor, InitializingBean {
      * @throws IllegalAccessException
      */
     public String asSql(Object jdbcStat, Class<?> clazz) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Method method = clazz.getDeclaredMethod("asSql");
+        Method getQuery = clazz.getSuperclass().getDeclaredMethod("getQuery");
+        Object query = getQuery.invoke(jdbcStat);
+
+        Method method = query.getClass().getDeclaredMethod("asSql");
         method.setAccessible(true);
-        String sql = (String) method.invoke(jdbcStat);
+        String sql = (String) method.invoke(query);
         String[] lines = sql.split("\\r\\n|\\r|\\n");
         return Arrays.stream(lines).filter(StringUtils::hasText).collect(Collectors.joining("\r\n"));
     }

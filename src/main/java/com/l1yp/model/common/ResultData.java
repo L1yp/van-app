@@ -1,7 +1,5 @@
 package com.l1yp.model.common;
 
-import com.l1yp.model.common.ErrorInfo;
-
 /**
  * 2021/9/7 Created by 𝑳𝒚𝒑(l1yp@qq.com),
  */

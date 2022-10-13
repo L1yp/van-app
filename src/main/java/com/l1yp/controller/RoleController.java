@@ -1,12 +1,13 @@
 package com.l1yp.controller;
 
+import com.l1yp.model.common.PageData;
 import com.l1yp.model.common.ResultData;
-import com.l1yp.model.db.SysRole;
-import com.l1yp.model.param.role.RoleAddParam;
-import com.l1yp.model.param.role.RoleMenuBindParam;
-import com.l1yp.model.param.role.RolePermissionBindParam;
-import com.l1yp.model.param.role.RoleUpdateParam;
-import com.l1yp.service.RoleService;
+import com.l1yp.model.param.system.role.RoleAddParam;
+import com.l1yp.model.param.system.role.RoleMenuBindParam;
+import com.l1yp.model.param.system.role.RolePageParam;
+import com.l1yp.model.param.system.role.RoleUpdateParam;
+import com.l1yp.model.view.system.RoleView;
+import com.l1yp.service.system.IRoleService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -27,58 +29,49 @@ public class RoleController {
 
 
     @Resource
-    RoleService service;
+    IRoleService service;
 
-    @GetMapping("/find")
-    public ResultData<List<SysRole>> findRoles() {
-        return service.findRole();
+    @GetMapping("/page")
+    public ResultData<PageData<RoleView>> findRoles(@RequestParam RolePageParam param) {
+        return ResultData.ok(service.pageRole(param));
     }
 
 
     @PostMapping("/add")
     public ResultData<Void> addRole(@Validated @RequestBody RoleAddParam param) {
-        return service.addRole(param);
+        service.addRole(param);
+        return ResultData.OK;
     }
 
     @PostMapping("/update")
     public ResultData<Void> updateMenu(@Validated @RequestBody RoleUpdateParam param) {
-        return service.updateRole(param);
+        service.updateRole(param);
+        return ResultData.OK;
     }
 
     @DeleteMapping("/{id}")
     public ResultData<Void> deleteMenu(@PathVariable("id") Long id) {
-        return service.deleteRole(id);
+        service.deleteRole(id);
+        return ResultData.OK;
     }
 
     @DeleteMapping("/batch/{ids}")
     public ResultData<Void> deleteMenu(@PathVariable("ids") List<Long> ids) {
-        return service.batchDeleteRole(ids);
+        service.batchDeleteRole(ids);
+        return ResultData.OK;
     }
 
     @PostMapping("/menu/bind")
     public ResultData<Void> bindMenu(@Validated @RequestBody RoleMenuBindParam param) {
-        return service.bindMenu(param);
+        service.bindMenu(param);
+        return ResultData.OK;
     }
 
     @GetMapping("/menu/bound")
-    public ResultData<List<Long>> menuBound(@NotNull @Min(1)Long roleId) {
-        return service.menuBound(roleId);
+    public ResultData<List<String>> menuBound(@NotNull @Min(1)String roleId) {
+        return ResultData.ok(service.menuBound(roleId));
     }
 
-    @PostMapping("/permission/bind")
-    public ResultData<Void> bindPermission(@Validated @RequestBody RolePermissionBindParam param) {
-        return service.bindPermission(param);
-    }
 
-    @GetMapping("/permission/bound")
-    public ResultData<List<Long>> permissionBound(@NotNull @Min(1)Long roleId) {
-        return service.permissionBound(roleId);
-    }
-
-    @GetMapping("/permission/poc")
-    public ResultData<Void> permissionPOC() {
-        service.permissionPOC();
-        return ResultData.OK;
-    }
 
 }
