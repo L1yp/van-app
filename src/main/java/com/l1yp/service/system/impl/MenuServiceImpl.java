@@ -1,5 +1,6 @@
 package com.l1yp.service.system.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.l1yp.mapper.system.MenuMapper;
 import com.l1yp.model.db.system.Menu;
@@ -29,7 +30,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     @Override
     @Transactional
     public void updateMenu(MenuUpdateParam param) {
-        Long count = getBaseMapper().selectCount(this.lambdaQuery().eq(Menu::getId, param.getId()));
+        Long count = getBaseMapper().selectCount(Wrappers.<Menu>lambdaQuery().eq(Menu::getId, param.getId()));
         if (count == null || count == 0) {
             throw new RuntimeException("ID NOT FOUND");
         }

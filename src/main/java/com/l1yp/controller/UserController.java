@@ -11,11 +11,7 @@ import com.l1yp.model.view.LoginResult;
 import com.l1yp.model.view.system.UserView;
 import com.l1yp.service.system.IUserService;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -44,6 +40,12 @@ public class UserController {
     public ResultData<Void> updateUser(@Validated @RequestBody UserUpdateParam param) {
         userService.update(param);
         return ResultData.OK;
+    }
+
+    @SaCheckLogin
+    @GetMapping("/role")
+    public ResultData<List<String>> role(@RequestParam String uid) {
+        return ResultData.ok(userService.findRoles(uid));
     }
 
 

@@ -31,9 +31,9 @@ public class RoleController {
     @Resource
     IRoleService service;
 
-    @GetMapping("/page")
-    public ResultData<PageData<RoleView>> findRoles(@RequestParam RolePageParam param) {
-        return ResultData.ok(service.pageRole(param));
+    @GetMapping("/find")
+    public ResultData<List<RoleView>> findRoles() {
+        return ResultData.ok(service.findRole());
     }
 
 
@@ -67,8 +67,8 @@ public class RoleController {
         return ResultData.OK;
     }
 
-    @GetMapping("/menu/bound")
-    public ResultData<List<String>> menuBound(@NotNull @Min(1)String roleId) {
+    @GetMapping("/menu")
+    public ResultData<List<String>> menuBound(@NotNull String roleId) {
         return ResultData.ok(service.menuBound(roleId));
     }
 

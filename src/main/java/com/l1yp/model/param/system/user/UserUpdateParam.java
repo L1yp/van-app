@@ -23,6 +23,8 @@ public class UserUpdateParam {
      */
     private List<String> ptDeptIds;
 
+    private List<String> roleIds;
+
     public String getId() {
         return id;
     }
@@ -85,5 +87,13 @@ public class UserUpdateParam {
 
     public void setPtDeptIds(List<String> ptDeptIds) {
         this.ptDeptIds = ptDeptIds;
+    }
+
+    public List<String> getRoleIds() {
+        return roleIds;
+    }
+
+    public void setRoleIds(List<String> roleIds) {
+        this.roleIds = roleIds;
     }
 }

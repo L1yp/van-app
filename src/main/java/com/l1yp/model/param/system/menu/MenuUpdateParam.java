@@ -20,6 +20,8 @@ public class MenuUpdateParam {
 
     private Boolean hidden;
 
+    private Boolean closeable;
+
     private Integer state;
 
     private String remark;
@@ -94,6 +96,14 @@ public class MenuUpdateParam {
 
     public void setHidden(Boolean hidden) {
         this.hidden = hidden;
+    }
+
+    public Boolean getCloseable() {
+        return closeable;
+    }
+
+    public void setCloseable(Boolean closeable) {
+        this.closeable = closeable;
     }
 
     public Integer getState() {

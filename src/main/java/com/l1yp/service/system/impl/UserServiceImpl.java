@@ -53,6 +53,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Resource
     UserDeptServiceImpl userDeptService;
 
+    @Resource
+    UserRoleServiceImpl userRoleService;
+
     @Override
     public LoginResult login(String uid, String pwd) {
 
@@ -149,20 +152,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             userDeptService.saveBatch(userDeptList);
         }
 
+        userRoleService.getBaseMapper().deleteByUid(param.getId());
+        if (!CollectionUtils.isEmpty(param.getRoleIds())) {
+            List<UserRole> userRoles = new ArrayList<>();
+            for (String roleId : param.getRoleIds()) {
+                UserRole UserRole = new UserRole();
+                UserRole.setUid(param.getId());
+                UserRole.setRoleId(roleId);
+                userRoles.add(UserRole);
+            }
+            userRoleService.saveBatch(userRoles);
+        }
 
     }
-
-
-    @Resource
-    UserRoleMapper userRoleMapper;
-
-    @Resource
-    UserRoleServiceImpl userRoleService;
 
     @Override
     @Transactional
     public void bindRole(UserBindRoleParam param) {
-        userRoleMapper.deleteByUid(param.getUid());
+        userRoleService.getBaseMapper().deleteByUid(param.getUid());
         List<UserRole> userRoles = new ArrayList<>();
         for (String roleId : param.getRoleIds()) {
             UserRole userRole = new UserRole();
@@ -178,5 +185,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         User loginUser = RequestUtils.getLoginUser();
         List<UserDept> userDeptList = userDeptService.getBaseMapper().selectList(Wrappers.<UserDept>lambdaQuery().eq(UserDept::getUid, loginUser.getId()));
         return userDeptList.stream().map(UserDept::getDeptId).toList();
+    }
+
+    @Override
+    public List<String> findRoles(String uid) {
+        List<UserRole> userRoles = userRoleService.getBaseMapper().selectList(Wrappers.<UserRole>lambdaQuery().eq(UserRole::getUid, uid));
+        return userRoles.stream().map(UserRole::getRoleId).toList();
     }
 }

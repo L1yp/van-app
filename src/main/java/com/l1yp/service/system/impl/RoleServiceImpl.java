@@ -1,5 +1,6 @@
 package com.l1yp.service.system.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.l1yp.mapper.system.RoleMapper;
@@ -24,17 +25,10 @@ import java.util.List;
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IRoleService {
 
     @Override
-    public PageData<RoleView> pageRole(RolePageParam param) {
-        PageHelper.startPage(param.getPageIdx(), param.getPageSize());
-        List<Role> roles = getBaseMapper().selectList(lambdaQuery().like(Role::getName, param.getName()));
-        if (CollectionUtils.isEmpty(roles)) {
-            return PageData.empty(param);
-        }
-        PageData<RoleView> pageData = new PageData<>();
-        pageData.initPage(roles);
-        List<RoleView> roleViews = roles.stream().map(Role::toView).toList();
-        pageData.setData(roleViews);
-        return pageData;
+    public List<RoleView> findRole() {
+        List<Role> roles = getBaseMapper().selectList(null);
+
+        return roles.stream().map(Role::toView).toList();
     }
 
     @Override
@@ -79,7 +73,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
 
     @Override
     public List<String> menuBound(String roleId) {
-        List<RoleMenu> roleMenus = roleMenuService.getBaseMapper().selectList(roleMenuService.lambdaQuery().eq(RoleMenu::getRoleId, roleId));
+        List<RoleMenu> roleMenus = roleMenuService.getBaseMapper().selectList(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, roleId));
         return roleMenus.stream().map(RoleMenu::getMenuId).toList();
     }
 }

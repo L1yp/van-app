@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface IRoleService {
 
-    PageData<RoleView> pageRole(RolePageParam param);
+    List<RoleView> findRole();
 
     void addRole(RoleAddParam param);
 

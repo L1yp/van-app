@@ -36,4 +36,6 @@ public interface IUserService {
 
     List<String> findPartTimeDept();
 
+    List<String> findRoles(String uid);
+
 }

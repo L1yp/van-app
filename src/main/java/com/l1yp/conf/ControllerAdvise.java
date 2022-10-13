@@ -35,6 +35,7 @@ public class ControllerAdvise {
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ResultData<Void>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e){
+        log.error("handleMethodArgumentTypeMismatchException", e);
         return ResponseEntity.ok(ResultData.err(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
     }
 
@@ -45,6 +46,7 @@ public class ControllerAdvise {
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ResultData<Void>> handleConstraintViolationException(ConstraintViolationException e){
+        log.error("handleConstraintViolationException", e);
         StringBuilder sb = new StringBuilder(64);
         Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
         for (ConstraintViolation<?> constraintViolation : constraintViolations) {
@@ -63,6 +65,7 @@ public class ControllerAdvise {
      */
     @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
     public ResponseEntity<ResultData<Void>> handle(BindException e){
+        log.error("handleMethodArgumentNotValidException/BindException", e);
         List<String> messages = new ArrayList<>();
         String message = "";
         for (ObjectError objectError : e.getBindingResult().getAllErrors()) {
@@ -93,6 +96,7 @@ public class ControllerAdvise {
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ResultData<Void>> handleMissingParamException(MissingServletRequestParameterException e){
+        log.error("handleMissingParamException", e);
         return ResponseEntity.ok(
                 ResultData.err(500,
                         String.format(
