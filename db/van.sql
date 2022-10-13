@@ -1592,31 +1592,6 @@ LOCK TABLES `FLW_RU_BATCH_PART` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `process_ext`
---
-
-DROP TABLE IF EXISTS `process_ext`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `process_ext` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `process_key` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `ext` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `process_ext_process_key_uindex` (`process_key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `process_ext`
---
-
-LOCK TABLES `process_ext` WRITE;
-/*!40000 ALTER TABLE `process_ext` DISABLE KEYS */;
-/*!40000 ALTER TABLE `process_ext` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `process_model_bpmn`
 --
 
@@ -1818,68 +1793,6 @@ INSERT INTO `process_model_page_scheme` VALUES (405,7,'h5',11,'name','名称',1,
 UNLOCK TABLES;
 
 --
--- Table structure for table `role_process_permission`
---
-
-DROP TABLE IF EXISTS `role_process_permission`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `role_process_permission` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `role_id` bigint NOT NULL COMMENT '角色ID',
-  `process_key` varchar(64) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '流程标识',
-  `flags` int NOT NULL DEFAULT '0' COMMENT '权限位标识：\n1: read\n2: edit\n4: delete',
-  `expression` text COLLATE utf8mb4_bin COMMENT 'textbus表达式状态字符串',
-  `update_by` bigint NOT NULL,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `create_by` bigint NOT NULL,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='角色流程权限';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `role_process_permission`
---
-
-LOCK TABLES `role_process_permission` WRITE;
-/*!40000 ALTER TABLE `role_process_permission` DISABLE KEYS */;
-INSERT INTO `role_process_permission` VALUES (1,1,'holiday',7,'[{\"type\":\"BLOCK\",\"attrs\":{\"field_id\":19,\"operator\":\"=\",\"val\":\"{\\\"my_dept_scope\\\": 2, \\\"users\\\": [2,3,4],\\\"user_of_dept\\\":[{\\\"id\\\":1,\\\"dept\\\":3,\\\"scope\\\":2}]}\"}}]',1,'2022-08-28 18:22:38',1,'2022-08-28 15:59:30');
-/*!40000 ALTER TABLE `role_process_permission` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_config`
---
-
-DROP TABLE IF EXISTS `sys_config`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `sys_config` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `val` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '配置值',
-  `scope` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '域',
-  `order_no` int DEFAULT '0' COMMENT '键排序ID',
-  `remark` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '备注',
-  `status` tinyint DEFAULT '0' COMMENT '状态,0=启用,1=禁用',
-  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'admin',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `sys_config_scope_order_no_uindex` (`scope`,`order_no`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='配置表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_config`
---
-
-LOCK TABLES `sys_config` WRITE;
-/*!40000 ALTER TABLE `sys_config` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_config` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `sys_dept`
 --
 
@@ -1887,13 +1800,13 @@ DROP TABLE IF EXISTS `sys_dept`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_dept` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
+  `id` bigint unsigned NOT NULL,
   `title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '部门名称',
   `simple_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '部门简称',
   `description` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '部门描述',
   `ident` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '部门编号',
   `order_no` int DEFAULT '0',
-  `pid` bigint DEFAULT '0' COMMENT '行政上级',
+  `pid` bigint COMMENT '行政上级',
   `biz_pid` bigint DEFAULT '0' COMMENT '业务上级',
   `owner` bigint NOT NULL DEFAULT '0' COMMENT '部门经理',
   `assistant` bigint NOT NULL DEFAULT '0' COMMENT '部门助理',
@@ -1907,7 +1820,7 @@ CREATE TABLE `sys_dept` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `sys_dept_ident_uindex` (`ident`),
   KEY `sys_dept_pid_order_no_index` (`pid`,`order_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='部门表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='部门表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1916,76 +1829,8 @@ CREATE TABLE `sys_dept` (
 
 LOCK TABLES `sys_dept` WRITE;
 /*!40000 ALTER TABLE `sys_dept` DISABLE KEYS */;
-INSERT INTO `sys_dept` VALUES (1,'Admin','Admin','','admin',1,0,0,0,0,NULL,NULL,NULL,0,'admin','2022-05-17 19:58:51','2022-02-20 00:33:19'),(2,'全球研发中心-Central Engineering','全球研发中心','','CE',1,1,0,0,0,NULL,NULL,NULL,0,'admin','2022-02-22 08:42:43','2022-02-20 00:56:30'),(3,'总部-HQ','总部','','HQ',2,1,0,0,0,NULL,NULL,NULL,0,'admin','2022-02-22 08:42:43','2022-02-20 00:59:41'),(4,'长沙分公司','长沙','','WL',3,1,0,0,0,NULL,NULL,NULL,0,'admin','2022-05-17 19:58:45','2022-02-20 01:00:14'),(5,'常州分公司','常州','','EX',4,1,0,0,0,NULL,NULL,NULL,0,'admin','2022-05-17 19:58:45','2022-02-20 01:14:19'),(6,'杭州分公司','杭州','','DL',5,1,0,0,0,NULL,NULL,NULL,0,'admin','2022-05-17 19:58:45','2022-02-20 01:14:48'),(7,'CE IT','数字信息','','CE001',1,2,0,0,0,NULL,NULL,NULL,0,'admin','2022-02-22 08:42:43','2022-02-20 01:17:21'),(8,'CE ID','工业设计','','CE013',2,2,0,0,0,NULL,NULL,NULL,0,'admin','2022-02-22 08:42:43','2022-02-20 01:17:38'),(9,'CE Intelligent S&T','智能设计院','','CE006',4,2,0,0,0,NULL,NULL,NULL,0,'admin','2022-02-22 08:42:43','2022-02-20 01:18:31'),(10,'CE Big Data & AI R&D','大数据','','CE014',1,9,0,0,0,NULL,NULL,NULL,0,'admin','2022-02-22 09:46:59','2022-02-20 01:18:48'),(11,'CE Smart Jobsite R&D','智能施工','','CE016',3,9,0,0,0,NULL,NULL,NULL,0,'admin','2022-02-22 09:46:59','2022-02-20 01:24:25'),(12,'CE Smart Machine R&D','智能产品','','CE015',4,9,0,0,0,NULL,NULL,NULL,0,'admin','2022-02-22 09:46:59','2022-02-20 01:26:03'),(13,'数字信息','总部DT','总部DT','HQ-DT',1,3,0,1,0,NULL,NULL,NULL,0,'admin','2022-08-26 00:52:47','2022-08-26 00:50:28'),(14,'信息技术','HQ-IT','总部IT','HQ-IT',2,3,0,1,0,NULL,NULL,NULL,0,'admin','2022-08-26 21:56:16','2022-08-26 21:56:08');
+INSERT INTO `sys_dept` VALUES (1,'Admin','Admin','','admin',1,NULL,0,0,0,NULL,NULL,NULL,0,'admin','2022-10-12 22:43:48','2022-02-20 00:33:19'),(2,'全球研发中心-Central Engineering','全球研发中心','','CE',1,1,0,0,0,NULL,NULL,NULL,0,'admin','2022-02-22 08:42:43','2022-02-20 00:56:30'),(3,'总部-HQ','总部','','HQ',2,1,0,0,0,NULL,NULL,NULL,0,'admin','2022-02-22 08:42:43','2022-02-20 00:59:41'),(4,'长沙分公司','长沙','','WL',3,1,0,0,0,NULL,NULL,NULL,0,'admin','2022-05-17 19:58:45','2022-02-20 01:00:14'),(5,'常州分公司','常州','','EX',4,1,0,0,0,NULL,NULL,NULL,0,'admin','2022-05-17 19:58:45','2022-02-20 01:14:19'),(6,'杭州分公司','杭州','','DL',5,1,0,0,0,NULL,NULL,NULL,0,'admin','2022-05-17 19:58:45','2022-02-20 01:14:48'),(7,'CE IT','数字信息','','CE001',1,2,0,0,0,NULL,NULL,NULL,0,'admin','2022-02-22 08:42:43','2022-02-20 01:17:21'),(8,'CE ID','工业设计','','CE013',2,2,0,0,0,NULL,NULL,NULL,0,'admin','2022-02-22 08:42:43','2022-02-20 01:17:38'),(9,'CE Intelligent S&T','智能设计院','','CE006',4,2,0,0,0,NULL,NULL,NULL,0,'admin','2022-02-22 08:42:43','2022-02-20 01:18:31'),(10,'CE Big Data & AI R&D','大数据','','CE014',1,9,0,0,0,NULL,NULL,NULL,0,'admin','2022-02-22 09:46:59','2022-02-20 01:18:48'),(11,'CE Smart Jobsite R&D','智能施工','','CE016',3,9,0,0,0,NULL,NULL,NULL,0,'admin','2022-02-22 09:46:59','2022-02-20 01:24:25'),(12,'CE Smart Machine R&D','智能产品','','CE015',4,9,0,0,0,NULL,NULL,NULL,0,'admin','2022-02-22 09:46:59','2022-02-20 01:26:03'),(13,'数字信息','总部DT','总部DT','HQ-DT',1,3,0,1,0,NULL,NULL,NULL,0,'admin','2022-08-26 00:52:47','2022-08-26 00:50:28'),(14,'信息技术','HQ-IT','总部IT','HQ-IT',2,3,0,1,0,NULL,NULL,NULL,0,'admin','2022-08-26 21:56:16','2022-08-26 21:56:08'),(15,'宁波分公司','宁波','1111111111','NB',5,1,0,2,0,NULL,NULL,NULL,0,'admin','2022-09-08 12:05:28','2022-09-08 12:05:28');
 /*!40000 ALTER TABLE `sys_dept` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_dict_info`
---
-
-DROP TABLE IF EXISTS `sys_dict_info`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `sys_dict_info` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `scope` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT 'global',
-  `ident` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `status` tinyint DEFAULT NULL COMMENT '0=normal,1=ban',
-  `type` tinyint DEFAULT '1' COMMENT '1=list;2=tree',
-  `remark` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `sys_dict_info_scope_ident_uindex` (`scope`,`ident`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_dict_info`
---
-
-LOCK TABLES `sys_dict_info` WRITE;
-/*!40000 ALTER TABLE `sys_dict_info` DISABLE KEYS */;
-INSERT INTO `sys_dict_info` VALUES (1,'通用状态','global','common_status',0,1,'通用状态','2022-04-03 00:50:54'),(2,'性别','global','sex',0,1,'性别','2022-04-03 01:11:29'),(3,'字典类型','global','dict_type',0,1,'字典类型','2022-04-03 15:14:24'),(4,'成本中心','global','cost_center',0,2,'成本中心','2022-04-03 23:27:24'),(5,'测测','global','test',0,1,'aaa','2022-04-04 11:00:27'),(6,'控件类型','global','component_type',0,1,'控件类型','2022-04-15 14:15:18'),(8,'是否','global','yesno',0,1,'','2022-04-24 22:01:54'),(9,'发布状态','global','publish',0,1,'','2022-04-27 13:36:18'),(10,'通过状态','global','pass_status',0,1,'通过/首次不通过/多次不通过','2022-06-03 10:41:50');
-/*!40000 ALTER TABLE `sys_dict_info` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_dict_value`
---
-
-DROP TABLE IF EXISTS `sys_dict_value`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `sys_dict_value` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `scope` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'global',
-  `ident` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `label` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `val` bigint NOT NULL,
-  `order_no` int DEFAULT '0',
-  `status` tinyint DEFAULT NULL COMMENT '0=normal,1=ban',
-  `remark` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT 'admin' COMMENT 'username',
-  `pid` bigint NOT NULL DEFAULT '0',
-  `meta` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '{"type":"success","effect":"light","size":"default"}' COMMENT 'TAG INFO JSON',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `sys_dict_value_scope_ident_val_uindex` (`scope`,`ident`,`val`),
-  UNIQUE KEY `sys_dict_value_scope_ident_pid_order_no_uindex` (`scope`,`ident`,`pid`,`order_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='字典值列表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_dict_value`
---
-
-LOCK TABLES `sys_dict_value` WRITE;
-/*!40000 ALTER TABLE `sys_dict_value` DISABLE KEYS */;
-INSERT INTO `sys_dict_value` VALUES (1,'global','common_status','正常',0,1,0,'正常状态','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-03 00:51:37','2022-04-03 00:51:37'),(2,'global','common_status','禁用',1,2,0,'禁用状态','admin',0,'{\"type\":\"danger\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-03 03:28:51','2022-04-03 00:51:37'),(3,'global','sex','隐藏',0,1,0,'隐藏/空','admin',0,'{\"type\":\"\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-03 03:28:59','2022-04-03 01:12:38'),(4,'global','sex','男',1,2,0,'男','admin',0,'{\"type\":\"\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-03 03:29:00','2022-04-03 01:12:38'),(5,'global','sex','女',2,3,0,'女','admin',0,'{\"type\":\"\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-03 03:28:59','2022-04-03 01:12:38'),(6,'global','dict_type','列表',1,1,0,'列表','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-03 15:16:36','2022-04-03 15:16:36'),(7,'global','dict_type','树',2,2,0,'树','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-04 01:12:39','2022-04-03 15:16:37'),(12,'global','cost_center','测1',1,1,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-04 09:28:47','2022-04-03 23:44:28'),(13,'global','cost_center','测2',2,2,0,'测试2备注','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-04 00:49:22','2022-04-03 23:48:15'),(14,'global','cost_center','测3',3,3,0,'测试3备注','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-04 00:49:22','2022-04-03 23:48:31'),(16,'global','cost_center','子2',20,1,0,'子2','admin',12,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-04 10:40:09','2022-04-04 00:06:13'),(17,'global','cost_center','子1-1',6,1,0,'子1-1','admin',16,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-04 09:27:18','2022-04-04 00:07:52'),(18,'global','cost_center','测5',10,5,0,'测5','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-04 10:39:02','2022-04-04 00:34:44'),(19,'global','cost_center','子5-1',11,1,0,'子5-1','admin',18,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-04 00:35:43','2022-04-04 00:35:43'),(20,'global','cost_center','子5-1-1',13,1,0,'子5-1-1','admin',19,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-04 00:42:13','2022-04-04 00:36:18'),(21,'global','cost_center','子5-2',12,2,0,'子5-2','admin',18,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-04 00:44:14','2022-04-04 00:37:24'),(24,'global','test','c',1,1,0,'s','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-04 20:39:20','2022-04-04 11:23:19'),(25,'global','test','2',2,2,0,'s2','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-04 20:39:14','2022-04-04 11:23:25'),(26,'global','component_type','单行文本',1,1,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-15 14:15:48','2022-04-15 14:15:48'),(27,'global','component_type','多行文本',2,2,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-15 14:15:57','2022-04-15 14:15:57'),(28,'global','component_type','字典单选',3,3,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-15 14:16:06','2022-04-15 14:16:06'),(29,'global','component_type','字典多选',4,4,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-15 14:16:15','2022-04-15 14:16:15'),(30,'global','component_type','数字',5,5,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-15 14:16:23','2022-04-15 14:16:23'),(31,'global','component_type','用户',6,6,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-15 14:16:32','2022-04-15 14:16:32'),(32,'global','component_type','用户列表',7,7,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-15 14:16:40','2022-04-15 14:16:40'),(33,'global','component_type','动态标签',8,8,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-15 14:16:48','2022-04-15 14:16:48'),(34,'global','component_type','部门单选',9,9,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-15 14:16:57','2022-04-15 14:16:57'),(35,'global','component_type','部门多选',10,10,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-15 14:17:05','2022-04-15 14:17:05'),(36,'global','component_type','日期时间',11,11,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-15 18:01:54','2022-04-15 18:01:54'),(39,'global','yesno','是',1,1,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-25 22:44:34','2022-04-24 22:02:02'),(40,'global','yesno','否',0,2,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-04-25 22:44:31','2022-04-24 22:02:18'),(41,'global','publish','已发布',1,1,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-05-17 08:04:52','2022-04-27 13:38:11'),(42,'global','publish','未发布',0,2,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-05-17 08:09:04','2022-04-27 13:38:17'),(43,'global','pass_status','通过',1,1,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-06-03 10:42:06','2022-06-03 10:42:06'),(44,'global','pass_status','首次不通过',2,2,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-06-03 10:42:15','2022-06-03 10:42:15'),(45,'global','pass_status','多次不通过',3,3,0,'','admin',0,'{\"type\":\"success\",\"effect\":\"light\",\"size\":\"default\"}','2022-06-03 10:42:23','2022-06-03 10:42:23');
-/*!40000 ALTER TABLE `sys_dict_value` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1996,22 +1841,24 @@ DROP TABLE IF EXISTS `sys_menu`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_menu` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `title` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'route name',
-  `route` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `icon` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `close` tinyint NOT NULL DEFAULT '0' COMMENT '是否展示关闭按钮',
-  `hidden` tinyint NOT NULL DEFAULT '0' COMMENT '不在菜单栏显示',
-  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'admin',
-  `create_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'admin',
-  `pid` bigint NOT NULL DEFAULT '0',
-  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `sys_menu_name_uindex` (`name`),
-  KEY `sys_menu_pid_index` (`pid`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='菜单表';
+  `id` bigint unsigned NOT NULL,
+  `name` varchar(64) COLLATE utf8mb4_bin NOT NULL,
+  `pid` bigint unsigned DEFAULT NULL,
+  `type` varchar(16) COLLATE utf8mb4_bin NOT NULL,
+  `path` varchar(256) COLLATE utf8mb4_bin DEFAULT NULL,
+  `component` varchar(256) COLLATE utf8mb4_bin DEFAULT NULL,
+  `icon` varchar(32) COLLATE utf8mb4_bin DEFAULT NULL,
+  `order_no` int NOT NULL DEFAULT '1',
+  `hidden` tinyint NOT NULL DEFAULT '0',
+  `closeable` tinyint DEFAULT '1',
+  `state` int DEFAULT NULL,
+  `remark` varchar(512) COLLATE utf8mb4_bin DEFAULT NULL,
+  `update_by` bigint unsigned NOT NULL,
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `create_by` bigint unsigned NOT NULL,
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2020,7 +1867,7 @@ CREATE TABLE `sys_menu` (
 
 LOCK TABLES `sys_menu` WRITE;
 /*!40000 ALTER TABLE `sys_menu` DISABLE KEYS */;
-INSERT INTO `sys_menu` VALUES (1,'Dashboard','dashboard','/home','House',0,0,'admin','admin',0,'2022-03-13 20:40:30','2022-02-18 18:49:02'),(2,'系统管理','sysManagement','/sys','Setting',0,0,'admin','admin',0,'2022-02-18 18:49:15','2022-02-18 18:49:15'),(3,'用户管理','userManagement','/sys/user','User',1,0,'admin','admin',2,'2022-02-18 19:05:56','2022-02-18 18:51:11'),(4,'角色管理','roleManagement','/sys/role','UserRole',1,0,'admin','admin',2,'2022-02-18 18:51:20','2022-02-18 18:51:20'),(5,'菜单管理','menuManagement','/sys/menus','Menu',1,0,'admin','admin',2,'2022-06-29 22:34:32','2022-02-18 18:53:22'),(6,'个人设置','userSetting','/user','UserSettings',0,0,'admin','admin',0,'2022-02-18 18:53:31','2022-02-18 18:53:31'),(7,'个人信息','userProfile','/user/profile','UserProfile',1,0,'admin','admin',6,'2022-02-18 21:43:31','2022-02-18 18:55:18'),(8,'修改密码','userPassword','/user/password','Password',1,0,'admin','admin',6,'2022-02-18 21:43:31','2022-02-18 18:55:21'),(12,'部门管理','deptManagement','/sys/dept','Department',1,0,'admin','admin',2,'2022-02-19 21:52:48','2022-02-19 21:52:48'),(14,'字典配置','dictConfig','/sys/dict','config',1,0,'admin','admin',2,'2022-06-29 22:25:15','2022-02-21 20:22:55'),(22,'流程设计','processDesign','/process/design','Cluster',1,0,'admin','admin',0,'2022-04-07 23:10:19','2022-04-02 10:08:30'),(23,'权限管理','permissionManagement','/sys/permission','UserRole',1,0,'admin','admin',2,'2022-04-04 02:17:18','2022-04-04 02:17:18'),(24,'流程管理','processManagement','/process/management','Cluster',1,0,'admin','admin',0,'2022-04-07 23:10:44','2022-04-07 23:10:44'),(28,'待认领流程','unclaimTask','/process/task/unclaim','InstanceVirtual',1,0,'admin','admin',24,'2022-05-22 23:36:47','2022-04-07 23:16:45'),(29,'我的待办','todoTask','/process/task/todo','Task',1,0,'admin','admin',24,'2022-05-21 00:51:50','2022-04-07 23:17:57'),(30,'我经办的流程','processHistoryInstance','/process/manage/history/mine','Task',1,0,'admin','admin',24,'2022-06-29 22:25:15','2022-04-07 23:18:46'),(31,'流程列表','processInstanceByKey','/process/manage/model/instance','View',1,1,'admin','admin',22,'2022-06-29 22:25:15','2022-04-08 08:30:16'),(32,'流程图设计','processAppDesign','/process/model/diagram/designer','Cluster',1,1,'admin','admin',22,'2022-06-29 22:25:15','2022-04-12 10:19:44'),(33,'流程字段配置','processField','/process/model/field','TextField',1,1,'admin','admin',22,'2022-06-29 22:25:15','2022-04-15 08:44:58'),(34,'流程模型','processModel','/process/model','Cluster',1,0,'admin','admin',22,'2022-04-25 22:53:04','2022-04-24 22:03:49'),(35,'流程明细','processInstanceInfo','/process/manage/detail/info','InfoFilled',1,1,'admin','admin',22,'2022-06-29 22:25:15','2022-05-04 11:16:41'),(36,'流程页面','processModelPage','/process/model/page','Page',1,1,'admin','admin',22,'2022-05-16 19:07:40','2022-05-12 21:21:05'),(37,'流程表单','processModelForm','/process/form/designer','Form',1,0,'admin','admin',22,'2022-06-29 22:25:15','2022-06-12 13:32:44');
+INSERT INTO `sys_menu` VALUES (1,'Dashboard',NULL,'PAGE','/home','/home','House',1,0,0,1,NULL,1,'2022-10-12 11:07:53',1,'2022-10-05 23:04:20'),(2,'系统管理',NULL,'FOLER','/sys',NULL,'Setting',2,0,0,1,NULL,1,'2022-10-12 11:07:53',1,'2022-10-05 23:04:20'),(3,'用户管理',2,'PAGE','/sys/user','/sys/user/user','User',1,0,1,1,NULL,1,'2022-10-12 22:12:01',1,'2022-10-05 23:04:20'),(4,'角色管理',2,'PAGE','/sys/role','/sys/role','UserRole',2,0,1,1,NULL,1,'2022-10-05 23:10:20',1,'2022-10-05 23:10:20'),(5,'菜单管理',2,'PAGE','/sys/menus','/sys/menus','Menu',3,0,1,1,NULL,1,'2022-10-05 23:10:20',1,'2022-10-05 23:10:20'),(6,'部门管理',2,'PAGE','/sys/dept','/sys/dept','Department',4,0,1,1,NULL,1,'2022-10-05 23:11:48',1,'2022-10-05 23:11:48'),(7,'字典配置',2,'PAGE','/sys/dict','/sys/dict','config',5,0,1,1,NULL,1,'2022-10-05 23:11:48',1,'2022-10-05 23:11:48'),(8,'权限管理',2,'PAGE','/sys/permission','/sys/permission','UserRole',6,0,1,1,NULL,1,'2022-10-05 23:11:48',1,'2022-10-05 23:11:48'),(9,'个人设置',NULL,'FOLER','/user',NULL,'UserSettings',3,0,0,1,NULL,1,'2022-10-12 11:08:00',1,'2022-10-05 23:04:20'),(10,'个人信息',9,'PAGE','/user/profile','/user/profile','UserProfile',1,0,1,1,NULL,1,'2022-10-05 23:14:50',1,'2022-10-05 23:14:50'),(11,'修改密码',9,'PAGE','/user/password','/user/password','Password',2,0,1,1,NULL,1,'2022-10-05 23:14:50',1,'2022-10-05 23:14:50'),(12,'流程管理',NULL,'FOLER','/process/management',NULL,'Cluster',4,0,0,1,NULL,1,'2022-10-12 11:08:00',1,'2022-10-05 23:15:50'),(13,'待认领流程',12,'PAGE','/process/task/unclaim','/process/task/unclaim','InstanceVirtual',1,0,1,1,NULL,1,'2022-10-05 23:18:00',1,'2022-10-05 23:16:24'),(14,'我的待办',12,'PAGE','/process/task/todo','/process/task/todo','Task',2,0,1,1,NULL,1,'2022-10-05 23:18:00',1,'2022-10-05 23:16:24'),(15,'我经办的流程',12,'PAGE','/process/manage/history/mine','/process/manage/history/mine','Task',3,0,1,1,NULL,1,'2022-10-05 23:18:00',1,'2022-10-05 23:16:24'),(16,'流程设计',NULL,'FOLER','/process/design',NULL,'Cluster',5,0,1,1,NULL,1,'2022-10-12 11:08:00',1,'2022-10-05 23:18:00'),(17,'流程模型',16,'PAGE','/process/model','/process/model','Cluster',1,0,1,1,NULL,1,'2022-10-05 23:25:33',1,'2022-10-05 23:25:33'),(18,'流程表单',16,'PAGE','/process/form/designer','/process/form/designer','Form',2,0,1,1,NULL,1,'2022-10-05 23:25:33',1,'2022-10-05 23:25:33');
 /*!40000 ALTER TABLE `sys_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2060,7 +1907,7 @@ DROP TABLE IF EXISTS `sys_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_role` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
+  `id` bigint unsigned NOT NULL,
   `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `order_no` int DEFAULT NULL,
   `status` tinyint DEFAULT '0',
@@ -2068,7 +1915,7 @@ CREATE TABLE `sys_role` (
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='角色';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='角色';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2095,7 +1942,7 @@ CREATE TABLE `sys_role_menu` (
   `create_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT 'admin',
   PRIMARY KEY (`id`),
   UNIQUE KEY `sys_role_menu_role_id_menu_id_uindex` (`role_id`,`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=413 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='角色菜单表';
+) ENGINE=InnoDB AUTO_INCREMENT=416 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='角色菜单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2104,7 +1951,7 @@ CREATE TABLE `sys_role_menu` (
 
 LOCK TABLES `sys_role_menu` WRITE;
 /*!40000 ALTER TABLE `sys_role_menu` DISABLE KEYS */;
-INSERT INTO `sys_role_menu` VALUES (288,2,1,'admin'),(289,2,3,'admin'),(290,2,4,'admin'),(291,2,5,'admin'),(292,2,7,'admin'),(293,2,8,'admin'),(294,2,12,'admin'),(295,2,14,'admin'),(296,2,23,'admin'),(298,2,28,'admin'),(299,2,29,'admin'),(300,2,30,'admin'),(301,2,31,'admin'),(302,2,32,'admin'),(303,2,33,'admin'),(394,1,1,'admin'),(395,1,3,'admin'),(396,1,4,'admin'),(397,1,5,'admin'),(398,1,7,'admin'),(399,1,8,'admin'),(400,1,12,'admin'),(401,1,14,'admin'),(402,1,23,'admin'),(403,1,28,'admin'),(404,1,29,'admin'),(405,1,30,'admin'),(406,1,31,'admin'),(407,1,32,'admin'),(408,1,33,'admin'),(409,1,34,'admin'),(410,1,35,'admin'),(411,1,36,'admin'),(412,1,37,'admin');
+INSERT INTO `sys_role_menu` VALUES (288,2,1,'admin'),(289,2,2,'admin'),(290,2,3,'admin'),(291,2,4,'admin'),(292,2,5,'admin'),(293,2,6,'admin'),(294,2,7,'admin'),(295,2,8,'admin'),(296,2,9,'admin'),(298,2,10,'admin'),(299,2,11,'admin'),(300,2,12,'admin'),(301,2,13,'admin'),(302,2,14,'admin'),(303,2,15,'admin'),(394,1,1,'admin'),(395,1,2,'admin'),(396,1,3,'admin'),(397,1,4,'admin'),(398,1,5,'admin'),(399,1,6,'admin'),(400,1,7,'admin'),(401,1,8,'admin'),(402,1,9,'admin'),(403,1,10,'admin'),(404,1,11,'admin'),(405,1,12,'admin'),(406,1,13,'admin'),(407,1,14,'admin'),(408,1,15,'admin'),(409,1,16,'admin'),(410,1,17,'admin'),(411,1,18,'admin'),(413,2,16,'admin'),(414,2,17,'admin'),(415,2,18,'admin');
 /*!40000 ALTER TABLE `sys_role_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2144,8 +1991,9 @@ DROP TABLE IF EXISTS `sys_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_user` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
+  `id` bigint unsigned NOT NULL,
   `username` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `dept_id` bigint DEFAULT NULL COMMENT '部门ID',
   `nickname` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `password` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `phone` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
@@ -2160,7 +2008,7 @@ CREATE TABLE `sys_user` (
   UNIQUE KEY `sys_user_username_uindex` (`username`),
   UNIQUE KEY `sys_user_email_uindex` (`email`),
   UNIQUE KEY `sys_user_phone_uindex` (`phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='用户表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='用户表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2169,7 +2017,7 @@ CREATE TABLE `sys_user` (
 
 LOCK TABLES `sys_user` WRITE;
 /*!40000 ALTER TABLE `sys_user` DISABLE KEYS */;
-INSERT INTO `sys_user` VALUES (1,'admin','Admin','e10adc3949ba59abbe56e057f20f883e','18877811997','https://q4.qlogo.cn/g?b=qq&nk=942664114&s=0',NULL,0,'admin','l1yp@qq.com','2022-05-20 13:42:06','2022-02-16 15:32:27'),(2,'A52747','不知火舞','e10adc3949ba59abbe56e057f20f883e','18077855148','/head/不知火舞.jpg',NULL,0,'admin','12353@qq.com','2022-06-08 22:57:28','2022-02-22 21:30:42'),(3,'A52736','伽罗','e10adc3949ba59abbe56e057f20f883e','18077855137','/head/伽罗.jpg',NULL,0,'admin','18877185@qq.com','2022-06-08 22:57:44','2022-02-22 20:11:26'),(4,'A52737','公孙离','e10adc3949ba59abbe56e057f20f883e','18077855138','/head/公孙离.jpg',NULL,0,'admin','18877195@qq.com','2022-06-08 22:57:44','2022-02-22 20:16:56'),(5,'A52738','刘禅','e10adc3949ba59abbe56e057f20f883e','18077855139','/head/刘禅.jpg',NULL,0,'admin','35295921@qq.com','2022-06-08 22:58:12','2022-02-22 21:12:05'),(6,'A52739','大乔','e10adc3949ba59abbe56e057f20f883e','18077855140','/head/大乔.jpg',NULL,0,'admin','12345@qq.com','2022-06-08 22:58:13','2022-02-22 21:12:05'),(7,'A52740','嫦娥','e10adc3949ba59abbe56e057f20f883e','18077855141','/head/嫦娥.jpg',NULL,0,'admin','12346@qq.com','2022-06-08 22:58:13','2022-02-22 21:12:05'),(8,'A52741','安琪拉','e10adc3949ba59abbe56e057f20f883e','18077855142','/head/安琪拉.jpg',NULL,0,'admin','12347@qq.com','2022-06-08 22:58:12','2022-02-22 21:12:05'),(9,'A52742','李白','e10adc3949ba59abbe56e057f20f883e','18077855143','/head/李白.jpg',NULL,0,'admin','12348@qq.com','2022-06-08 22:58:12','2022-02-22 21:12:06'),(10,'A52743','瑶','e10adc3949ba59abbe56e057f20f883e','18077855144','/head/瑶.jpg',NULL,0,'admin','12349@qq.com','2022-06-08 22:58:13','2022-02-22 21:12:06'),(12,'A52744','甄姬','e10adc3949ba59abbe56e057f20f883e','18077855145','/head/甄姬.jpg',NULL,0,'admin','12350@qq.com','2022-06-08 22:58:13','2022-02-22 21:30:41'),(13,'A52745','百里玄策','e10adc3949ba59abbe56e057f20f883e','18077855146','/head/百里玄策.jpg',NULL,0,'admin','12351@qq.com','2022-06-08 22:58:12','2022-02-22 21:30:41'),(14,'A52746','花木兰','e10adc3949ba59abbe56e057f20f883e','18077855147','/head/花木兰.jpg',NULL,0,'admin','12352@qq.com','2022-06-08 22:58:13','2022-02-22 21:30:41'),(17,'A52751','虞姬','e10adc3949ba59abbe56e057f20f883e','18077855152','/head/虞姬.jpg',NULL,0,NULL,NULL,'2022-06-08 22:58:13','2022-06-08 22:57:12'),(18,'A52748','西施','e10adc3949ba59abbe56e057f20f883e','18077855149','/head/西施.jpg',NULL,0,NULL,NULL,'2022-06-08 22:58:12','2022-06-08 22:57:12'),(19,'A52749','诸葛亮','e10adc3949ba59abbe56e057f20f883e','18077855150','/head/诸葛亮.jpg',NULL,0,NULL,NULL,'2022-06-08 22:58:12','2022-06-08 22:57:12'),(20,'A52750','貂蝉','e10adc3949ba59abbe56e057f20f883e','18077855151','/head/貂蝉.jpg',NULL,0,NULL,NULL,'2022-06-08 22:58:12','2022-06-08 22:57:12');
+INSERT INTO `sys_user` VALUES (1,'admin',2,'Admin','e10adc3949ba59abbe56e057f20f883e','18877811997','https://q4.qlogo.cn/g?b=qq&nk=942664114&s=0',NULL,0,'admin','l1yp@qq.com','2022-10-12 23:30:19','2022-02-16 15:32:27'),(2,'A52747',7,'不知火舞','e10adc3949ba59abbe56e057f20f883e','18077855148','/head/不知火舞.jpg',NULL,0,'admin','12353@qq.com','2022-10-12 23:46:01','2022-02-22 21:30:42'),(3,'A52736',8,'伽罗','e10adc3949ba59abbe56e057f20f883e','18077855137','/head/伽罗.jpg',NULL,0,'admin','18877185@qq.com','2022-10-12 23:46:09','2022-02-22 20:11:26'),(4,'A52737',9,'公孙离','e10adc3949ba59abbe56e057f20f883e','18077855138','/head/公孙离.jpg',NULL,0,'admin','18877195@qq.com','2022-10-12 23:46:13','2022-02-22 20:16:56'),(5,'A52738',10,'刘禅','e10adc3949ba59abbe56e057f20f883e','18077855139','/head/刘禅.jpg',NULL,0,'admin','35295921@qq.com','2022-10-12 23:46:18','2022-02-22 21:12:05'),(6,'A52739',4,'大乔','e10adc3949ba59abbe56e057f20f883e','18077855140','/head/大乔.jpg',NULL,0,'admin','12345@qq.com','2022-10-12 23:49:20','2022-02-22 21:12:05'),(7,'A52740',5,'嫦娥','e10adc3949ba59abbe56e057f20f883e','18077855141','/head/嫦娥.jpg',NULL,0,'admin','12346@qq.com','2022-10-12 23:50:03','2022-02-22 21:12:05'),(8,'A52741',6,'安琪拉','e10adc3949ba59abbe56e057f20f883e','18077855142','/head/安琪拉.jpg',NULL,0,'admin','12347@qq.com','2022-10-12 23:50:07','2022-02-22 21:12:05'),(9,'A52742',15,'李白','e10adc3949ba59abbe56e057f20f883e','18077855143','/head/李白.jpg',NULL,0,'admin','12348@qq.com','2022-10-12 23:50:12','2022-02-22 21:12:06'),(10,'A52743',13,'瑶','e10adc3949ba59abbe56e057f20f883e','18077855144','/head/瑶.jpg',NULL,0,'admin','12349@qq.com','2022-10-12 23:50:16','2022-02-22 21:12:06'),(12,'A52744',3,'甄姬','e10adc3949ba59abbe56e057f20f883e','18077855145','/head/甄姬.jpg',NULL,0,'admin','12350@qq.com','2022-10-12 23:50:22','2022-02-22 21:30:41'),(13,'A52745',14,'百里玄策','e10adc3949ba59abbe56e057f20f883e','18077855146','/head/百里玄策.jpg',NULL,0,'admin','12351@qq.com','2022-10-12 23:50:25','2022-02-22 21:30:41'),(14,'A52746',11,'花木兰','e10adc3949ba59abbe56e057f20f883e','18077855147','/head/花木兰.jpg',NULL,0,'admin','12352@qq.com','2022-10-12 23:50:30','2022-02-22 21:30:41'),(17,'A52751',8,'虞姬','e10adc3949ba59abbe56e057f20f883e','18077855152','/head/虞姬.jpg',NULL,0,NULL,'12357@qq.com','2022-10-12 23:54:13','2022-06-08 22:57:12'),(18,'A52748',7,'西施','e10adc3949ba59abbe56e057f20f883e','18077855149','/head/西施.jpg',NULL,0,NULL,'12354@qq.com','2022-10-12 23:52:32','2022-06-08 22:57:12'),(19,'A52749',7,'诸葛亮','e10adc3949ba59abbe56e057f20f883e','18077855150','/head/诸葛亮.jpg',NULL,0,NULL,'12355@qq.com','2022-10-12 23:52:39','2022-06-08 22:57:12'),(20,'A52750',7,'貂蝉','e10adc3949ba59abbe56e057f20f883e','18077855151','/head/貂蝉.jpg',NULL,0,NULL,'12356@qq.com','2022-10-12 23:52:44','2022-06-08 22:57:12');
 /*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2184,13 +2032,12 @@ CREATE TABLE `sys_user_dept` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `uid` bigint NOT NULL,
   `dept_id` bigint DEFAULT NULL,
-  `master` tinyint DEFAULT NULL COMMENT '0=兼职部门，1=主部门',
   `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'admin',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sys_user_dept_uid_dept_id_uindex` (`uid`,`dept_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='用户部门表';
+) ENGINE=InnoDB AUTO_INCREMENT=1580354800776413190 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='兼职部门表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2199,7 +2046,7 @@ CREATE TABLE `sys_user_dept` (
 
 LOCK TABLES `sys_user_dept` WRITE;
 /*!40000 ALTER TABLE `sys_user_dept` DISABLE KEYS */;
-INSERT INTO `sys_user_dept` VALUES (19,2,7,1,'admin','2022-08-25 23:25:22','2022-02-24 15:38:51'),(25,2,2,0,'admin','2022-08-25 23:25:22','2022-02-24 15:49:26'),(26,2,1,0,'admin','2022-08-25 23:25:22','2022-02-24 15:49:26'),(27,2,8,0,'admin','2022-08-25 23:25:22','2022-02-24 15:49:26'),(28,2,9,0,'admin','2022-08-25 23:25:22','2022-02-24 15:49:26'),(29,2,10,0,'admin','2022-08-25 23:25:22','2022-02-24 15:49:26'),(30,1,7,1,'admin','2022-08-28 16:01:15','2022-08-28 16:01:15'),(31,1,9,0,'admin','2022-08-28 16:01:20','2022-08-28 16:01:20');
+INSERT INTO `sys_user_dept` VALUES (19,2,7,'admin','2022-08-25 23:25:22','2022-02-24 15:38:51'),(25,2,2,'admin','2022-08-25 23:25:22','2022-02-24 15:49:26'),(26,2,1,'admin','2022-08-25 23:25:22','2022-02-24 15:49:26'),(27,2,8,'admin','2022-08-25 23:25:22','2022-02-24 15:49:26'),(28,2,9,'admin','2022-08-25 23:25:22','2022-02-24 15:49:26'),(29,2,10,'admin','2022-08-25 23:25:22','2022-02-24 15:49:26'),(1580354800776413186,1,7,'admin','2022-10-13 08:28:40','2022-10-13 08:28:40'),(1580354800776413187,1,9,'admin','2022-10-13 08:28:40','2022-10-13 08:28:40'),(1580354800776413188,1,8,'admin','2022-10-13 08:28:40','2022-10-13 08:28:40'),(1580354800776413189,1,2,'admin','2022-10-13 08:28:40','2022-10-13 08:28:40');
 /*!40000 ALTER TABLE `sys_user_dept` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2420,4 +2267,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-08-28 23:01:05
+-- Dump completed on 2022-10-13  8:43:48
