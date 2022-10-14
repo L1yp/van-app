@@ -135,8 +135,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     @Transactional
     public void update(UserUpdateParam param) {
+        User loginUser = RequestUtils.getLoginUser();
         User user = new User();
         BeanCopierUtil.copy(param, user);
+        user.setUpdateBy(loginUser.getId());
         updateById(user);
 
         userDeptService.getBaseMapper().delete(Wrappers.<UserDept>lambdaQuery().eq(UserDept::getUid, param.getId()));
@@ -146,6 +148,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 UserDept userDept = new UserDept();
                 userDept.setUid(param.getId());
                 userDept.setDeptId(ptDeptId);
+                userDept.setUpdateBy(loginUser.getId());
                 userDeptList.add(userDept);
             }
 
@@ -156,10 +159,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (!CollectionUtils.isEmpty(param.getRoleIds())) {
             List<UserRole> userRoles = new ArrayList<>();
             for (String roleId : param.getRoleIds()) {
-                UserRole UserRole = new UserRole();
-                UserRole.setUid(param.getId());
-                UserRole.setRoleId(roleId);
-                userRoles.add(UserRole);
+                UserRole userRole = new UserRole();
+                userRole.setUid(param.getId());
+                userRole.setRoleId(roleId);
+                userRole.setUpdateBy(loginUser.getId());
+                userRoles.add(userRole);
             }
             userRoleService.saveBatch(userRoles);
         }
@@ -169,12 +173,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     @Transactional
     public void bindRole(UserBindRoleParam param) {
+        User loginUser = RequestUtils.getLoginUser();
         userRoleService.getBaseMapper().deleteByUid(param.getUid());
         List<UserRole> userRoles = new ArrayList<>();
         for (String roleId : param.getRoleIds()) {
             UserRole userRole = new UserRole();
             userRole.setUid(param.getUid());
             userRole.setRoleId(roleId);
+            userRole.setUpdateBy(loginUser.getId());
             userRoles.add(userRole);
         }
         userRoleService.saveBatch(userRoles);

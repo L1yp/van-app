@@ -18,8 +18,6 @@ public class MenuUpdateParam {
 
     private Integer orderNo;
 
-    private Boolean hidden;
-
     private Boolean closeable;
 
     private Integer state;
@@ -89,15 +87,6 @@ public class MenuUpdateParam {
     public void setOrderNo(Integer orderNo) {
         this.orderNo = orderNo;
     }
-
-    public Boolean getHidden() {
-        return hidden;
-    }
-
-    public void setHidden(Boolean hidden) {
-        this.hidden = hidden;
-    }
-
     public Boolean getCloseable() {
         return closeable;
     }

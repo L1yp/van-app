@@ -29,8 +29,6 @@ public class Menu {
     @TableField("order_no")
     private Integer orderNo;
 
-    private Boolean hidden;
-
     private Boolean closeable;
 
     private Integer state;
@@ -38,13 +36,13 @@ public class Menu {
     private String remark;
 
     @TableField("update_by")
-    private Long updateBy;
+    private String updateBy;
 
     @TableField("update_time")
     private Date updateTime;
 
     @TableField("create_by")
-    private Long createBy;
+    private String createBy;
 
     @TableField("create_time")
     private Date createTime;
@@ -113,14 +111,6 @@ public class Menu {
         this.orderNo = orderNo;
     }
 
-    public Boolean getHidden() {
-        return hidden;
-    }
-
-    public void setHidden(Boolean hidden) {
-        this.hidden = hidden;
-    }
-
     public Boolean getCloseable() {
         return closeable;
     }
@@ -145,11 +135,11 @@ public class Menu {
         this.remark = remark;
     }
 
-    public Long getUpdateBy() {
+    public String getUpdateBy() {
         return updateBy;
     }
 
-    public void setUpdateBy(Long updateBy) {
+    public void setUpdateBy(String updateBy) {
         this.updateBy = updateBy;
     }
 
@@ -161,11 +151,11 @@ public class Menu {
         this.updateTime = updateTime;
     }
 
-    public Long getCreateBy() {
+    public String getCreateBy() {
         return createBy;
     }
 
-    public void setCreateBy(Long createBy) {
+    public void setCreateBy(String createBy) {
         this.createBy = createBy;
     }
 
