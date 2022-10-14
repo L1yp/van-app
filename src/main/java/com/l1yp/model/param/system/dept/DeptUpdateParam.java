@@ -1,27 +1,40 @@
 package com.l1yp.model.param.system.dept;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * 2022/2/19 Created by 𝑳𝒚𝒑(l1yp@qq.com),
  */
 public class DeptUpdateParam {
 
+    @NotBlank
     private String id;
 
+    @NotBlank
     private String title;
 
+    @NotBlank
     private String simpleName;
 
     private String description;
 
+    @NotBlank
     private String ident;
 
+    @NotNull
     private Integer orderNo;
 
-    private Long pid;
+    private String pid;
 
-    private Long owner;
+    @NotBlank
+    private String owner;
 
-    private Boolean status;
+    @NotBlank
+    private String assistant;
+
+    @NotNull
+    private Integer status;
 
     public String getId() {
         return id;
@@ -63,27 +76,35 @@ public class DeptUpdateParam {
         this.orderNo = orderNo;
     }
 
-    public Long getPid() {
+    public String getPid() {
         return pid;
     }
 
-    public void setPid(Long pid) {
+    public void setPid(String pid) {
         this.pid = pid;
     }
 
-    public Long getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    public void setOwner(Long owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 
-    public Boolean getStatus() {
+    public String getAssistant() {
+        return assistant;
+    }
+
+    public void setAssistant(String assistant) {
+        this.assistant = assistant;
+    }
+
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

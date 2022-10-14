@@ -28,14 +28,26 @@ public class Department {
 
     private String bizPid;
 
-    private Long owner;
+    /**
+     * 部门经理
+     */
+    private String owner;
 
-    private Long assistant;
+    /**
+     * 部门助理
+     */
+    private String assistant;
 
     private String phone;
 
+    /**
+     * 办公地点
+     */
     private String officeLocation;
 
+    /**
+     * 详细地址
+     */
     private String address;
 
     private String updateBy;
@@ -111,19 +123,19 @@ public class Department {
         this.bizPid = bizPid;
     }
 
-    public Long getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    public void setOwner(Long owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 
-    public Long getAssistant() {
+    public String getAssistant() {
         return assistant;
     }
 
-    public void setAssistant(Long assistant) {
+    public void setAssistant(String assistant) {
         this.assistant = assistant;
     }
 

@@ -14,7 +14,7 @@ public class PageParam {
     @Min(1)
     private int pageIdx;
 
-    @Max(500)
+    @Max(5000)
     @Min(10)
     private int pageSize;
 

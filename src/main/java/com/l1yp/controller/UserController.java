@@ -36,6 +36,11 @@ public class UserController {
         return ResultData.ok(pageData);
     }
 
+    @GetMapping("/search")
+    public ResultData<List<UserView>> search(@Validated String key) {
+        return ResultData.ok(userService.searchUserList(key));
+    }
+
     @PostMapping("/update")
     public ResultData<Void> updateUser(@Validated @RequestBody UserUpdateParam param) {
         userService.update(param);

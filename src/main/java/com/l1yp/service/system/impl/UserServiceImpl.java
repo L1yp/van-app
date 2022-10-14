@@ -133,6 +133,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
+    public List<UserView> searchUserList(String key) {
+        LambdaQueryWrapper<User> wrapper = Wrappers.<User>lambdaQuery();
+        if (StringUtils.isNotBlank(key)) {
+            wrapper.like(User::getUsername, key).or();
+            wrapper.like(User::getNickname, key).or();
+            wrapper.like(User::getPhone, key).or();
+            wrapper.like(User::getEmail, key).or();
+            wrapper.like(User::getDeptId, key).or();
+        }
+
+        List<User> users = getBaseMapper().selectList(wrapper);
+        return users.stream().map(User::toView).toList();
+    }
+
+    @Override
     @Transactional
     public void update(UserUpdateParam param) {
         User loginUser = RequestUtils.getLoginUser();

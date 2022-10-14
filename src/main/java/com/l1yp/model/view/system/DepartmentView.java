@@ -20,9 +20,13 @@ public class DepartmentView {
 
     private String bizPid;
 
-    private Long owner;
+    private String owner;
 
-    private Long assistant;
+    private UserView ownerInfo;
+
+    private String assistant;
+
+    private UserView assistantInfo;
 
     private String phone;
 
@@ -102,20 +106,36 @@ public class DepartmentView {
         this.bizPid = bizPid;
     }
 
-    public Long getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    public void setOwner(Long owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 
-    public Long getAssistant() {
+    public UserView getOwnerInfo() {
+        return ownerInfo;
+    }
+
+    public void setOwnerInfo(UserView ownerInfo) {
+        this.ownerInfo = ownerInfo;
+    }
+
+    public String getAssistant() {
         return assistant;
     }
 
-    public void setAssistant(Long assistant) {
+    public void setAssistant(String assistant) {
         this.assistant = assistant;
+    }
+
+    public UserView getAssistantInfo() {
+        return assistantInfo;
+    }
+
+    public void setAssistantInfo(UserView assistantInfo) {
+        this.assistantInfo = assistantInfo;
     }
 
     public String getPhone() {

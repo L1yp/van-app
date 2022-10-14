@@ -28,6 +28,8 @@ public interface IUserService {
 
     PageData<UserView> pageUserList(UserListFindParam param);
 
+    List<UserView> searchUserList(String key);
+
 
     void update(UserUpdateParam param);
 
