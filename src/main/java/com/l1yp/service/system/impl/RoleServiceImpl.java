@@ -46,12 +46,12 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
-    public void deleteRole(Long id) {
+    public void deleteRole(String id) {
         removeById(id);
     }
 
     @Override
-    public void batchDeleteRole(List<Long> ids) {
+    public void batchDeleteRole(List<String> ids) {
         removeBatchByIds(ids);
     }
 

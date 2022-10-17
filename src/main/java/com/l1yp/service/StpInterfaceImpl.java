@@ -2,8 +2,11 @@ package com.l1yp.service;
 
 import cn.dev33.satoken.stp.StpInterface;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.l1yp.mapper.system.RoleMapper;
+import com.l1yp.mapper.system.RoleMenuMapper;
 import com.l1yp.mapper.system.UserRoleMapper;
+import com.l1yp.model.db.system.RoleMenu;
 import com.l1yp.model.db.system.UserRole;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +26,8 @@ public class StpInterfaceImpl implements StpInterface {
     @Resource
     UserRoleMapper userRoleMapper;
 
+    @Resource
+    RoleMenuMapper roleMenuMapper;
 
 
     /**
@@ -30,10 +35,7 @@ public class StpInterfaceImpl implements StpInterface {
      */
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
-        /**
-         * *
-         */
-        return Collections.emptyList();
+        return roleMenuMapper.selectPermissions((String) loginId);
     }
 
     /**

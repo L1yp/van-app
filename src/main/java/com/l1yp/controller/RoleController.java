@@ -50,13 +50,13 @@ public class RoleController {
     }
 
     @DeleteMapping("/{id}")
-    public ResultData<Void> deleteMenu(@PathVariable("id") Long id) {
+    public ResultData<Void> deleteMenu(@PathVariable("id") String id) {
         service.deleteRole(id);
         return ResultData.OK;
     }
 
     @DeleteMapping("/batch/{ids}")
-    public ResultData<Void> deleteMenu(@PathVariable("ids") List<Long> ids) {
+    public ResultData<Void> deleteMenu(@PathVariable("ids") List<String> ids) {
         service.batchDeleteRole(ids);
         return ResultData.OK;
     }

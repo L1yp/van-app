@@ -18,9 +18,9 @@ public interface IRoleService {
 
     void updateRole(RoleUpdateParam param);
 
-    void deleteRole(Long id);
+    void deleteRole(String id);
 
-    void batchDeleteRole(List<Long> ids);
+    void batchDeleteRole(List<String> ids);
 
     void bindMenu(RoleMenuBindParam param);
 
