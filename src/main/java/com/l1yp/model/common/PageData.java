@@ -16,6 +16,15 @@ public class PageData<T> {
 
     public PageData(){}
 
+    public PageData(List<T> data){
+        if (data instanceof Page<?> page) {
+            setTotal((int) page.getTotal());
+            setPageIdx(page.getPageNum());
+            setPageSize(page.getPageSize());
+        }
+        this.data = data;
+    }
+
     public PageData(PageParam param) {
         pageIdx = param.getPageIdx();
         pageSize = param.getPageSize();

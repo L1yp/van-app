@@ -1,4 +1,4 @@
-package com.l1yp.controller;
+package com.l1yp.controller.system;
 
 import com.l1yp.model.common.PageData;
 import com.l1yp.model.common.ResultData;

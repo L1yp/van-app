@@ -1,4 +1,4 @@
-package com.l1yp.controller;
+package com.l1yp.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.l1yp.model.common.PageData;
