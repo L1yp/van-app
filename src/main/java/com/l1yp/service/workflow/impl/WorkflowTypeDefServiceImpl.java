@@ -12,8 +12,10 @@ import com.l1yp.model.db.workflow.model.WorkflowTypeVer;
 import com.l1yp.model.param.workflow.WorkflowTypeDefAddParam;
 import com.l1yp.model.param.workflow.WorkflowTypeDefPageParam;
 import com.l1yp.model.param.workflow.WorkflowTypeDefUpdateParam;
+import com.l1yp.model.view.system.UserView;
 import com.l1yp.model.view.workflow.WorkflowTypeDefView;
 import com.l1yp.model.view.workflow.WorkflowTypeVerView;
+import com.l1yp.service.system.impl.UserServiceImpl;
 import com.l1yp.service.workflow.IWorkflowTypeDefService;
 import com.l1yp.util.BeanCopierUtil;
 import com.l1yp.util.HexUtil;
@@ -24,8 +26,10 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +37,9 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
 
     @Resource
     WorkflowTypeVerServiceImpl workflowTypeVerService;
+
+    @Resource
+    UserServiceImpl userService;
 
     @Override
     @Transactional
@@ -111,15 +118,31 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
 
         List<WorkflowTypeDefView> data = workflowTypeDefs.stream().map(WorkflowTypeDef::toView).toList();
 
+        Set<String> userIds = new HashSet<>();
+        data.forEach(it -> {
+            userIds.add(it.getUpdateBy());
+            userIds.add(it.getCreateBy());
+        });
+
         List<String> keys = data.stream().map(WorkflowTypeDefView::getKey).toList();
 
         List<WorkflowTypeVer> workflowTypeVers = workflowTypeVerService.getBaseMapper().selectList(Wrappers.<WorkflowTypeVer>lambdaQuery().in(WorkflowTypeVer::getWfKey, keys));
         Map<String, List<WorkflowTypeVerView>> verMap = workflowTypeVers.stream().map(WorkflowTypeVer::toView).collect(Collectors.groupingBy(WorkflowTypeVerView::getWfKey, Collectors.toList()));
+        workflowTypeVers.forEach(it -> {
+            userIds.add(it.getUpdateBy());
+            userIds.add(it.getCreateBy());
+        });
+
 
         data.forEach(it -> it.setChildren(verMap.get(it.getKey())));
 
         pageData.setData(data);
 
+
+
+        List<User> users = userService.listByIds(userIds);
+        Map<String, UserView> userMap = users.stream().map(User::toView).collect(Collectors.toMap(UserView::getId, it -> it));
+        pageData.setAdditional(userMap);
         return pageData;
     }
 

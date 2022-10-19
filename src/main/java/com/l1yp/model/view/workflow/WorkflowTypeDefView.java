@@ -14,7 +14,7 @@ public class WorkflowTypeDefView {
     private String updateBy;
     private Date updateTime;
     private String createBy;
-    private String createTime;
+    private Date createTime;
 
     private List<WorkflowTypeVerView> children;
 
@@ -90,11 +90,11 @@ public class WorkflowTypeDefView {
         this.createBy = createBy;
     }
 
-    public String getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 

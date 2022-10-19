@@ -20,7 +20,7 @@ public class WorkflowTypeVerView {
 
     private String createBy;
 
-    private String createTime;
+    private Date createTime;
 
     public String getId() {
         return id;
@@ -86,11 +86,11 @@ public class WorkflowTypeVerView {
         this.createBy = createBy;
     }
 
-    public String getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
