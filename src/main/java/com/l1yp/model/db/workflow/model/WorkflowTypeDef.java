@@ -30,6 +30,8 @@ public class WorkflowTypeDef {
 
     private Integer status;
 
+    private String processDefinitionId;
+
     private String updateBy;
     private String createBy;
 
@@ -83,6 +85,14 @@ public class WorkflowTypeDef {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
+    }
+
+    public void setProcessDefinitionId(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
     }
 
     public String getUpdateBy() {

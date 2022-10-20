@@ -107,6 +107,20 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
         if (StringUtils.hasText(param.getRemark())) {
             wrapper.like(WorkflowTypeDef::getRemark, param.getRemark());
         }
+        if (StringUtils.hasText(param.getRemark())) {
+            wrapper.like(WorkflowTypeDef::getRemark, param.getRemark());
+        }
+        if (!CollectionUtils.isEmpty(param.getUpdateBy())) {
+            wrapper.in(WorkflowTypeDef::getUpdateBy, param.getUpdateBy());
+        }
+        if (!CollectionUtils.isEmpty(param.getCreateBy())) {
+            wrapper.in(WorkflowTypeDef::getCreateBy, param.getCreateBy());
+        }
+
+        wrapper.orderByDesc(WorkflowTypeDef::getUpdateTime);
+
+        String.join()
+
         List<WorkflowTypeDef> workflowTypeDefs = getBaseMapper().selectList(wrapper);
         if (CollectionUtils.isEmpty(workflowTypeDefs)) {
             return PageData.empty(param);

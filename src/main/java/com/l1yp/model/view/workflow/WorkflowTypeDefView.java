@@ -10,6 +10,8 @@ public class WorkflowTypeDefView {
     private String name;
     private String remark;
     private String codeGenRule;
+
+    private String processDefinitionId;
     private Integer status;
     private String updateBy;
     private Date updateTime;
@@ -56,6 +58,14 @@ public class WorkflowTypeDefView {
 
     public void setCodeGenRule(String codeGenRule) {
         this.codeGenRule = codeGenRule;
+    }
+
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
+    }
+
+    public void setProcessDefinitionId(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
     }
 
     public Integer getStatus() {
