@@ -14,8 +14,7 @@ public class WorkflowTypeDefAddParam {
     @NotBlank
     private String name;
 
-    @NotBlank
-    private String codeGenRule;
+    private CodeGenRule codeGenRule;
 
     private String remark;
 
@@ -40,11 +39,11 @@ public class WorkflowTypeDefAddParam {
         this.name = name;
     }
 
-    public String getCodeGenRule() {
+    public CodeGenRule getCodeGenRule() {
         return codeGenRule;
     }
 
-    public void setCodeGenRule(String codeGenRule) {
+    public void setCodeGenRule(CodeGenRule codeGenRule) {
         this.codeGenRule = codeGenRule;
     }
 

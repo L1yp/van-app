@@ -19,6 +19,7 @@ import com.l1yp.service.system.impl.UserServiceImpl;
 import com.l1yp.service.workflow.IWorkflowTypeDefService;
 import com.l1yp.util.BeanCopierUtil;
 import com.l1yp.util.HexUtil;
+import com.l1yp.util.JsonTool;
 import com.l1yp.util.RequestUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -118,8 +119,6 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
         }
 
         wrapper.orderByDesc(WorkflowTypeDef::getUpdateTime);
-
-        String.join()
 
         List<WorkflowTypeDef> workflowTypeDefs = getBaseMapper().selectList(wrapper);
         if (CollectionUtils.isEmpty(workflowTypeDefs)) {

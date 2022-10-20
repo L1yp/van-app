@@ -1,5 +1,8 @@
 package com.l1yp.model.view.workflow;
 
+import com.l1yp.model.param.workflow.CodeGenRule;
+import com.l1yp.util.JsonTool;
+
 import java.util.Date;
 import java.util.List;
 
@@ -9,7 +12,7 @@ public class WorkflowTypeDefView {
     private String key;
     private String name;
     private String remark;
-    private String codeGenRule;
+    private CodeGenRule codeGenRule;
 
     private String processDefinitionId;
     private Integer status;
@@ -52,11 +55,11 @@ public class WorkflowTypeDefView {
         this.remark = remark;
     }
 
-    public String getCodeGenRule() {
+    public CodeGenRule getCodeGenRule() {
         return codeGenRule;
     }
 
-    public void setCodeGenRule(String codeGenRule) {
+    public void setCodeGenRule(CodeGenRule codeGenRule) {
         this.codeGenRule = codeGenRule;
     }
 

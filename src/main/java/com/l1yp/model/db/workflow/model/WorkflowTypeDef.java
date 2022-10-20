@@ -1,15 +1,18 @@
 package com.l1yp.model.db.workflow.model;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.l1yp.model.param.workflow.CodeGenRule;
 import com.l1yp.model.view.workflow.WorkflowTypeDefView;
 import com.l1yp.util.BeanCopierUtil;
+import com.l1yp.util.JsonTool;
 
 import java.util.Date;
 
 /**
  * 流程类型模型表
  */
-@TableName("workflow_type_def")
+@TableName(value = "workflow_type_def", autoResultMap = true)
 public class WorkflowTypeDef {
 
     public static final Integer ON = 0;
@@ -24,7 +27,8 @@ public class WorkflowTypeDef {
 
     private String name;
 
-    private String codeGenRule;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private CodeGenRule codeGenRule;
 
     private String remark;
 
@@ -63,11 +67,11 @@ public class WorkflowTypeDef {
         this.name = name;
     }
 
-    public String getCodeGenRule() {
+    public CodeGenRule getCodeGenRule() {
         return codeGenRule;
     }
 
-    public void setCodeGenRule(String codeGenRule) {
+    public void setCodeGenRule(CodeGenRule codeGenRule) {
         this.codeGenRule = codeGenRule;
     }
 

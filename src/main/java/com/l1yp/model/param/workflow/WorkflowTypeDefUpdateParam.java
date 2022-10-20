@@ -9,8 +9,7 @@ public class WorkflowTypeDefUpdateParam {
     @NotBlank
     private String id;
 
-    @NotBlank
-    private String codeGenRule;
+    private CodeGenRule codeGenRule;
 
     private String remark;
 
@@ -26,11 +25,11 @@ public class WorkflowTypeDefUpdateParam {
         this.id = id;
     }
 
-    public String getCodeGenRule() {
+    public CodeGenRule getCodeGenRule() {
         return codeGenRule;
     }
 
-    public void setCodeGenRule(String codeGenRule) {
+    public void setCodeGenRule(CodeGenRule codeGenRule) {
         this.codeGenRule = codeGenRule;
     }
 
