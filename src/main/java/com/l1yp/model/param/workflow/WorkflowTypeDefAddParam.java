@@ -8,7 +8,7 @@ import javax.validation.constraints.Pattern;
 public class WorkflowTypeDefAddParam {
 
     @NotBlank
-    @Pattern(regexp = "^\\w+_?\\w?$", message = "key格式不符合数据库规范")
+    @Pattern(regexp = "^[a-zA-Z]+_?\\w?$", message = "key格式不符合数据库命名规范")
     private String key;
 
     @NotBlank
