@@ -19,7 +19,7 @@ public class CodeGenRule {
         private String delimiter;
         private String dateFormat;
         private String joiner;
-        private String numFormat;
+        private Integer numFormat;
 
         public String getPrefix() {
             return prefix;
@@ -53,11 +53,11 @@ public class CodeGenRule {
             this.joiner = joiner;
         }
 
-        public String getNumFormat() {
+        public Integer getNumFormat() {
             return numFormat;
         }
 
-        public void setNumFormat(String numFormat) {
+        public void setNumFormat(Integer numFormat) {
             this.numFormat = numFormat;
         }
     }
