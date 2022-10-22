@@ -1,12 +1,17 @@
 package com.l1yp.model.db.workflow.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.l1yp.model.db.workflow.field.FieldScheme;
+import com.l1yp.model.view.workflow.WorkflowFieldDefView;
+import com.l1yp.util.BeanCopierUtil;
 
 import java.util.Date;
 
-@TableName("workflow_field_def")
+@TableName(value = "workflow_field_def", autoResultMap = true)
 public class WorkflowFieldDef {
 
     @TableId(type = IdType.ASSIGN_ID)
@@ -42,7 +47,10 @@ public class WorkflowFieldDef {
     /**
      * 字段定义
      */
-    private String scheme;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private FieldScheme scheme;
+
+    private FieldScope scope;
 
     private String updateBy;
 
@@ -100,12 +108,20 @@ public class WorkflowFieldDef {
         this.type = type;
     }
 
-    public String getScheme() {
+    public FieldScheme getScheme() {
         return scheme;
     }
 
-    public void setScheme(String scheme) {
+    public void setScheme(FieldScheme scheme) {
         this.scheme = scheme;
+    }
+
+    public FieldScope getScope() {
+        return scope;
+    }
+
+    public void setScope(FieldScope scope) {
+        this.scope = scope;
     }
 
     public String getUpdateBy() {
@@ -139,4 +155,11 @@ public class WorkflowFieldDef {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
+    public WorkflowFieldDefView toView() {
+        WorkflowFieldDefView view = new WorkflowFieldDefView();
+        BeanCopierUtil.copy(this, view);
+        return view;
+    }
+
 }

@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.l1yp.model.param.workflow.CodeGenRule;
 import com.l1yp.model.view.workflow.WorkflowTypeDefView;
 import com.l1yp.util.BeanCopierUtil;
-import com.l1yp.util.JsonTool;
 
 import java.util.Date;
 

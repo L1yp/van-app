@@ -3,6 +3,8 @@ package com.l1yp.model.db.workflow.form;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.l1yp.model.view.workflow.WorkflowOptionValueView;
+import com.l1yp.util.BeanCopierUtil;
 
 import java.util.Date;
 
@@ -20,6 +22,10 @@ public class WorkflowOptionValue {
     private String name;
 
     private Boolean disabled;
+
+    private String pid;
+
+    private Integer orderNo;
 
     private String updateBy;
 
@@ -62,6 +68,22 @@ public class WorkflowOptionValue {
         this.disabled = disabled;
     }
 
+    public String getPid() {
+        return pid;
+    }
+
+    public void setPid(String pid) {
+        this.pid = pid;
+    }
+
+    public Integer getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(Integer orderNo) {
+        this.orderNo = orderNo;
+    }
+
     public String getUpdateBy() {
         return updateBy;
     }
@@ -93,4 +115,11 @@ public class WorkflowOptionValue {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
+    public WorkflowOptionValueView toView() {
+        WorkflowOptionValueView view = new WorkflowOptionValueView();
+        BeanCopierUtil.copy(this, view);
+        return view;
+    }
+
 }

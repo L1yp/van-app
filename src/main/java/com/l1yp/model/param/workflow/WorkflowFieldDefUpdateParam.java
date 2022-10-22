@@ -1,19 +1,10 @@
 package com.l1yp.model.param.workflow;
 
+import com.l1yp.model.db.workflow.field.FieldScheme;
+
 public class WorkflowFieldDefUpdateParam {
 
     private String id;
-
-    /**
-     * 字段名
-     */
-    private String field;
-
-    /**
-     * 标签名
-     */
-    private String label;
-
     /**
      * 字段说明
      */
@@ -34,7 +25,7 @@ public class WorkflowFieldDefUpdateParam {
     /**
      * 字段定义
      */
-    private String scheme;
+    private FieldScheme scheme;
 
     public String getId() {
         return id;
@@ -42,22 +33,6 @@ public class WorkflowFieldDefUpdateParam {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getField() {
-        return field;
-    }
-
-    public void setField(String field) {
-        this.field = field;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     public String getRemark() {
@@ -84,11 +59,11 @@ public class WorkflowFieldDefUpdateParam {
         this.type = type;
     }
 
-    public String getScheme() {
+    public FieldScheme getScheme() {
         return scheme;
     }
 
-    public void setScheme(String scheme) {
+    public void setScheme(FieldScheme scheme) {
         this.scheme = scheme;
     }
 }

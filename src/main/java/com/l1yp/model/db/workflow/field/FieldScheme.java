@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type", visible = true)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = NumberInputFieldScheme.class, name = "number-input"),
-        @JsonSubTypes.Type(value = TextInputFieldScheme.class, name = "text-input"),
+        @JsonSubTypes.Type(value = NumberInputFieldScheme.class, name = "number"),
+        @JsonSubTypes.Type(value = TextInputFieldScheme.class, name = "text"),
         @JsonSubTypes.Type(value = OptionFieldScheme.class, name = "option"),
 })
 public class FieldScheme {

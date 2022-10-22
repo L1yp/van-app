@@ -5,9 +5,14 @@ import java.math.BigDecimal;
 public class NumberInputFieldScheme extends FieldScheme {
 
     /**
-     * 显示格式
+     * 格式化函数
      */
     private String formatter;
+
+    /**
+     * 解析函数
+     */
+    private String parser;
 
     private BigDecimal min;
     private BigDecimal max;
@@ -24,6 +29,14 @@ public class NumberInputFieldScheme extends FieldScheme {
 
     public void setFormatter(String formatter) {
         this.formatter = formatter;
+    }
+
+    public String getParser() {
+        return parser;
+    }
+
+    public void setParser(String parser) {
+        this.parser = parser;
     }
 
     public BigDecimal getMin() {

@@ -66,6 +66,21 @@ public class OptionFieldScheme extends FieldScheme {
          */
         private String defaultValue;
 
+        public String getOptionTypeId() {
+            return optionTypeId;
+        }
+
+        public void setOptionTypeId(String optionTypeId) {
+            this.optionTypeId = optionTypeId;
+        }
+
+        public String getDefaultValue() {
+            return defaultValue;
+        }
+
+        public void setDefaultValue(String defaultValue) {
+            this.defaultValue = defaultValue;
+        }
     }
 
 

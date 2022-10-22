@@ -1,17 +1,11 @@
-package com.l1yp.model.db.workflow.form;
+package com.l1yp.model.view.workflow;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.l1yp.model.view.workflow.WorkflowOptionTypeView;
-import com.l1yp.util.BeanCopierUtil;
+import com.l1yp.model.db.workflow.form.OptionScope;
 
 import java.util.Date;
 
-@TableName("workflow_option_type")
-public class WorkflowOptionType {
+public class WorkflowOptionTypeView {
 
-    @TableId(type = IdType.ASSIGN_ID)
     private String id;
 
     private String name;
@@ -101,11 +95,4 @@ public class WorkflowOptionType {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
-
-    public WorkflowOptionTypeView toView() {
-        WorkflowOptionTypeView view = new WorkflowOptionTypeView();
-        BeanCopierUtil.copy(this, view);
-        return view;
-    }
-
 }

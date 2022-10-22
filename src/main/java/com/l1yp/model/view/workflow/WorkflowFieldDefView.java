@@ -1,5 +1,8 @@
 package com.l1yp.model.view.workflow;
 
+import com.l1yp.model.db.workflow.field.FieldScheme;
+import com.l1yp.model.db.workflow.model.FieldScope;
+
 import java.util.Date;
 
 public class WorkflowFieldDefView {
@@ -36,7 +39,9 @@ public class WorkflowFieldDefView {
     /**
      * 字段定义
      */
-    private String scheme;
+    private FieldScheme scheme;
+
+    private FieldScope scope;
 
     private String updateBy;
 
@@ -94,12 +99,20 @@ public class WorkflowFieldDefView {
         this.type = type;
     }
 
-    public String getScheme() {
+    public FieldScheme getScheme() {
         return scheme;
     }
 
-    public void setScheme(String scheme) {
+    public void setScheme(FieldScheme scheme) {
         this.scheme = scheme;
+    }
+
+    public FieldScope getScope() {
+        return scope;
+    }
+
+    public void setScope(FieldScope scope) {
+        this.scope = scope;
     }
 
     public String getUpdateBy() {

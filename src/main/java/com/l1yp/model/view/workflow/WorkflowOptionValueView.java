@@ -1,26 +1,23 @@
-package com.l1yp.model.db.workflow.form;
-
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.l1yp.model.view.workflow.WorkflowOptionTypeView;
-import com.l1yp.util.BeanCopierUtil;
+package com.l1yp.model.view.workflow;
 
 import java.util.Date;
 
-@TableName("workflow_option_type")
-public class WorkflowOptionType {
+public class WorkflowOptionValueView {
 
-    @TableId(type = IdType.ASSIGN_ID)
     private String id;
+
+    /**
+     * 数据源类型Id
+     */
+    private String typeId;
 
     private String name;
 
-    private String remark;
+    private Boolean disabled;
 
-    private OptionScope scope;
+    private String pid;
 
-    private String wfKey;
+    private Integer orderNo;
 
     private String updateBy;
 
@@ -38,6 +35,14 @@ public class WorkflowOptionType {
         this.id = id;
     }
 
+    public String getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(String typeId) {
+        this.typeId = typeId;
+    }
+
     public String getName() {
         return name;
     }
@@ -46,28 +51,28 @@ public class WorkflowOptionType {
         this.name = name;
     }
 
-    public String getRemark() {
-        return remark;
+    public Boolean getDisabled() {
+        return disabled;
     }
 
-    public void setRemark(String remark) {
-        this.remark = remark;
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
     }
 
-    public OptionScope getScope() {
-        return scope;
+    public String getPid() {
+        return pid;
     }
 
-    public void setScope(OptionScope scope) {
-        this.scope = scope;
+    public void setPid(String pid) {
+        this.pid = pid;
     }
 
-    public String getWfKey() {
-        return wfKey;
+    public Integer getOrderNo() {
+        return orderNo;
     }
 
-    public void setWfKey(String wfKey) {
-        this.wfKey = wfKey;
+    public void setOrderNo(Integer orderNo) {
+        this.orderNo = orderNo;
     }
 
     public String getUpdateBy() {
@@ -101,11 +106,4 @@ public class WorkflowOptionType {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
-
-    public WorkflowOptionTypeView toView() {
-        WorkflowOptionTypeView view = new WorkflowOptionTypeView();
-        BeanCopierUtil.copy(this, view);
-        return view;
-    }
-
 }

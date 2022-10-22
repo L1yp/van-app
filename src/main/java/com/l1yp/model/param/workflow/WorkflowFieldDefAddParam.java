@@ -1,6 +1,17 @@
 package com.l1yp.model.param.workflow;
 
+import com.l1yp.model.db.workflow.field.FieldScheme;
+import com.l1yp.model.db.workflow.model.FieldScope;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class WorkflowFieldDefAddParam {
+
+    /**
+     * 可选字段：是否关联流程
+     */
+    private String wfKey;
 
     /**
      * 字段名
@@ -32,8 +43,18 @@ public class WorkflowFieldDefAddParam {
     /**
      * 字段定义
      */
-    private String scheme;
+    private FieldScheme scheme;
 
+    @NotNull
+    private FieldScope scope;
+
+    public String getWfKey() {
+        return wfKey;
+    }
+
+    public void setWfKey(String wfKey) {
+        this.wfKey = wfKey;
+    }
 
     public String getField() {
         return field;
@@ -75,11 +96,19 @@ public class WorkflowFieldDefAddParam {
         this.type = type;
     }
 
-    public String getScheme() {
+    public FieldScheme getScheme() {
         return scheme;
     }
 
-    public void setScheme(String scheme) {
+    public void setScheme(FieldScheme scheme) {
         this.scheme = scheme;
+    }
+
+    public FieldScope getScope() {
+        return scope;
+    }
+
+    public void setScope(FieldScope scope) {
+        this.scope = scope;
     }
 }
