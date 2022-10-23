@@ -1584,12 +1584,12 @@ DROP TABLE IF EXISTS `sys_dept`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_dept` (
-  `id` bigint unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
   `title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '部门名称',
   `simple_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '部门简称',
   `description` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '部门描述',
   `ident` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '部门编号',
-  `order_no` int DEFAULT '0',
+  `order_no` int DEFAULT '0' COMMENT '排序号',
   `pid` bigint DEFAULT NULL COMMENT '行政上级',
   `biz_pid` bigint DEFAULT '0' COMMENT '业务上级',
   `owner` bigint DEFAULT NULL COMMENT '部门经理',
@@ -1597,10 +1597,10 @@ CREATE TABLE `sys_dept` (
   `phone` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '部门电话',
   `office_location` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '办公地点',
   `address` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '详细地址',
-  `status` tinyint NOT NULL DEFAULT '0',
-  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'admin',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` tinyint NOT NULL DEFAULT '0' COMMENT '状态',
+  `update_by` varchar(32) COLLATE utf8mb4_bin NOT NULL DEFAULT 'admin' COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `sys_dept_ident_uindex` (`ident`),
   KEY `sys_dept_pid_order_no_index` (`pid`,`order_no`)
@@ -1625,23 +1625,23 @@ DROP TABLE IF EXISTS `sys_menu`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_menu` (
-  `id` bigint unsigned NOT NULL,
-  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `pid` bigint unsigned DEFAULT NULL,
-  `type` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `path` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `component` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `icon` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `order_no` int NOT NULL DEFAULT '1',
-  `closeable` tinyint DEFAULT '1',
-  `state` int DEFAULT NULL,
-  `remark` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `update_by` bigint unsigned NOT NULL,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `create_by` bigint unsigned NOT NULL,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `name` varchar(64) COLLATE utf8mb4_bin NOT NULL COMMENT '菜单名称',
+  `pid` bigint unsigned DEFAULT NULL COMMENT '上级菜单',
+  `type` varchar(16) COLLATE utf8mb4_bin NOT NULL COMMENT '菜单类型',
+  `path` varchar(256) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '路由地址',
+  `component` varchar(256) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '组件地址',
+  `icon` varchar(32) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '图标',
+  `order_no` int NOT NULL DEFAULT '1' COMMENT '排序号',
+  `closeable` tinyint DEFAULT '1' COMMENT '可否关闭',
+  `state` int DEFAULT NULL COMMENT '状态',
+  `remark` varchar(512) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '说明',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='系统菜单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1655,34 +1655,6 @@ INSERT INTO `sys_menu` VALUES (1,'Dashboard',NULL,'PAGE','/home','/home','House'
 UNLOCK TABLES;
 
 --
--- Table structure for table `sys_permission`
---
-
-DROP TABLE IF EXISTS `sys_permission`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `sys_permission` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `ident` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `owner_menu_id` bigint DEFAULT '0' COMMENT '所属菜单页面ID',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT 'admin',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `sys_permission_ident_uindex` (`ident`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='权限表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_permission`
---
-
-LOCK TABLES `sys_permission` WRITE;
-/*!40000 ALTER TABLE `sys_permission` DISABLE KEYS */;
-INSERT INTO `sys_permission` VALUES (1,'system:user:query',3,'admin','2022-04-05 16:38:36'),(2,'system:user:update',3,'admin','2022-04-06 08:15:07'),(3,'system:user:delete',3,'admin','2022-04-06 08:15:14'),(4,'system:user:create',3,'admin','2022-04-06 08:15:18'),(5,'system:user:export',3,'admin','2022-04-05 16:31:31');
-/*!40000 ALTER TABLE `sys_permission` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `sys_role`
 --
 
@@ -1690,13 +1662,13 @@ DROP TABLE IF EXISTS `sys_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_role` (
-  `id` bigint unsigned NOT NULL,
-  `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `order_no` int DEFAULT NULL,
-  `status` tinyint DEFAULT '0',
-  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `name` varchar(32) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '角色名称',
+  `order_no` int DEFAULT NULL COMMENT '排序号',
+  `status` tinyint DEFAULT '0' COMMENT '状态',
+  `update_by` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '更新人',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='角色';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1719,10 +1691,11 @@ DROP TABLE IF EXISTS `sys_role_menu`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_role_menu` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `role_id` bigint NOT NULL,
-  `menu_id` bigint NOT NULL,
-  `create_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT 'admin',
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `role_id` bigint NOT NULL COMMENT '角色ID',
+  `menu_id` bigint NOT NULL COMMENT '菜单ID',
+  `create_by` bigint NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `sys_role_menu_role_id_menu_id_uindex` (`role_id`,`menu_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1583661635965095938 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='角色菜单表';
@@ -1734,36 +1707,8 @@ CREATE TABLE `sys_role_menu` (
 
 LOCK TABLES `sys_role_menu` WRITE;
 /*!40000 ALTER TABLE `sys_role_menu` DISABLE KEYS */;
-INSERT INTO `sys_role_menu` VALUES (1581799650580299778,2,1,'admin'),(1581799650580299779,2,2,'admin'),(1581799650580299780,2,3,'admin'),(1581799650580299781,2,4,'admin'),(1581799650580299782,2,5,'admin'),(1581799650580299783,2,6,'admin'),(1581799650580299784,2,9,'admin'),(1581799650580299785,2,10,'admin'),(1581799650580299786,2,11,'admin'),(1581799650580299787,2,12,'admin'),(1581799650580299788,2,13,'admin'),(1581799650580299789,2,14,'admin'),(1581799650580299790,2,15,'admin'),(1581799650580299791,2,16,'admin'),(1581799650580299792,2,17,'admin'),(1581799650580299793,2,18,'admin'),(1583661635902181378,1,1,'admin'),(1583661635902181379,1,2,'admin'),(1583661635902181380,1,3,'admin'),(1583661635902181381,1,4,'admin'),(1583661635902181382,1,5,'admin'),(1583661635902181383,1,6,'admin'),(1583661635902181384,1,9,'admin'),(1583661635902181385,1,10,'admin'),(1583661635902181386,1,11,'admin'),(1583661635902181387,1,12,'admin'),(1583661635902181388,1,13,'admin'),(1583661635902181389,1,14,'admin'),(1583661635902181390,1,15,'admin'),(1583661635902181391,1,16,'admin'),(1583661635902181392,1,17,'admin'),(1583661635902181393,1,18,'admin'),(1583661635902181394,1,1583611174964719617,'admin'),(1583661635965095937,1,1583661590087798785,'admin');
+INSERT INTO `sys_role_menu` VALUES (1581799650580299778,2,1,1,'2022-10-23 20:20:53'),(1581799650580299779,2,2,1,'2022-10-23 20:20:53'),(1581799650580299780,2,3,1,'2022-10-23 20:20:53'),(1581799650580299781,2,4,1,'2022-10-23 20:20:53'),(1581799650580299782,2,5,1,'2022-10-23 20:20:53'),(1581799650580299783,2,6,1,'2022-10-23 20:20:53'),(1581799650580299784,2,9,1,'2022-10-23 20:20:53'),(1581799650580299785,2,10,1,'2022-10-23 20:20:53'),(1581799650580299786,2,11,1,'2022-10-23 20:20:53'),(1581799650580299787,2,12,1,'2022-10-23 20:20:53'),(1581799650580299788,2,13,1,'2022-10-23 20:20:53'),(1581799650580299789,2,14,1,'2022-10-23 20:20:53'),(1581799650580299790,2,15,1,'2022-10-23 20:20:53'),(1581799650580299791,2,16,1,'2022-10-23 20:20:53'),(1581799650580299792,2,17,1,'2022-10-23 20:20:53'),(1581799650580299793,2,18,1,'2022-10-23 20:20:53'),(1583661635902181378,1,1,1,'2022-10-23 20:20:53'),(1583661635902181379,1,2,1,'2022-10-23 20:20:53'),(1583661635902181380,1,3,1,'2022-10-23 20:20:53'),(1583661635902181381,1,4,1,'2022-10-23 20:20:53'),(1583661635902181382,1,5,1,'2022-10-23 20:20:53'),(1583661635902181383,1,6,1,'2022-10-23 20:20:53'),(1583661635902181384,1,9,1,'2022-10-23 20:20:53'),(1583661635902181385,1,10,1,'2022-10-23 20:20:53'),(1583661635902181386,1,11,1,'2022-10-23 20:20:53'),(1583661635902181387,1,12,1,'2022-10-23 20:20:53'),(1583661635902181388,1,13,1,'2022-10-23 20:20:53'),(1583661635902181389,1,14,1,'2022-10-23 20:20:53'),(1583661635902181390,1,15,1,'2022-10-23 20:20:53'),(1583661635902181391,1,16,1,'2022-10-23 20:20:53'),(1583661635902181392,1,17,1,'2022-10-23 20:20:53'),(1583661635902181393,1,18,1,'2022-10-23 20:20:53'),(1583661635902181394,1,1583611174964719617,1,'2022-10-23 20:20:53'),(1583661635965095937,1,1583661590087798785,1,'2022-10-23 20:20:53');
 /*!40000 ALTER TABLE `sys_role_menu` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_role_permission`
---
-
-DROP TABLE IF EXISTS `sys_role_permission`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `sys_role_permission` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `role_id` bigint DEFAULT NULL,
-  `permission_id` bigint DEFAULT NULL,
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT 'admin',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `sys_role_permission_role_id_permission_id_uindex` (`role_id`,`permission_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='角色权限表格';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_role_permission`
---
-
-LOCK TABLES `sys_role_permission` WRITE;
-/*!40000 ALTER TABLE `sys_role_permission` DISABLE KEYS */;
-INSERT INTO `sys_role_permission` VALUES (17,1,1,'admin','2022-04-15 18:37:07'),(18,1,2,'admin','2022-04-15 18:37:07'),(19,1,3,'admin','2022-04-15 18:37:07'),(20,1,4,'admin','2022-04-15 18:37:07'),(21,1,5,'admin','2022-04-15 18:37:07'),(22,2,1,'admin','2022-04-15 18:37:40'),(23,2,2,'admin','2022-04-15 18:37:40'),(24,2,3,'admin','2022-04-15 18:37:40'),(25,2,4,'admin','2022-04-15 18:37:40'),(26,2,5,'admin','2022-04-15 18:37:40'),(27,3,1,'admin','2022-04-15 18:37:45'),(28,3,2,'admin','2022-04-15 18:37:45'),(29,3,3,'admin','2022-04-15 18:37:45'),(30,3,4,'admin','2022-04-15 18:37:45'),(31,3,5,'admin','2022-04-15 18:37:45');
-/*!40000 ALTER TABLE `sys_role_permission` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1774,19 +1719,20 @@ DROP TABLE IF EXISTS `sys_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_user` (
-  `id` bigint unsigned NOT NULL,
-  `username` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `username` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '用户名',
   `dept_id` bigint DEFAULT NULL COMMENT '部门ID',
-  `nickname` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `password` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `phone` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `avatar` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `register_ip` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `status` tinyint NOT NULL DEFAULT '0',
-  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'username',
-  `email` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `nickname` varchar(32) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '用户姓名',
+  `nickname_pinyin` varchar(128) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '昵称拼音',
+  `password` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '用户密码',
+  `phone` varchar(16) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '手机号',
+  `avatar` varchar(1024) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '头像地址',
+  `register_ip` varchar(16) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '注册IP',
+  `status` tinyint NOT NULL DEFAULT '0' COMMENT '用户状态',
+  `email` varchar(128) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '邮箱',
+  `update_by` varchar(32) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '更新人',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `sys_user_username_uindex` (`username`),
   UNIQUE KEY `sys_user_email_uindex` (`email`),
@@ -1800,7 +1746,7 @@ CREATE TABLE `sys_user` (
 
 LOCK TABLES `sys_user` WRITE;
 /*!40000 ALTER TABLE `sys_user` DISABLE KEYS */;
-INSERT INTO `sys_user` VALUES (1,'admin',7,'Admin','e10adc3949ba59abbe56e057f20f883e','18877811997','https://q4.qlogo.cn/g?b=qq&nk=942664114&s=0',NULL,0,'admin','l1yp@qq.com','2022-10-13 09:00:47','2022-02-16 15:32:27'),(2,'A52747',7,'不知火舞','e10adc3949ba59abbe56e057f20f883e','18077855148','https://q4.qlogo.cn/g?b=qq&nk=10001',NULL,0,'1','12353@qq.com','2022-10-14 14:26:52','2022-02-22 21:30:42'),(3,'A52736',8,'伽罗','e10adc3949ba59abbe56e057f20f883e','18077855137','/head/伽罗.jpg',NULL,0,'admin','18877185@qq.com','2022-10-12 23:46:09','2022-02-22 20:11:26'),(4,'A52737',7,'公孙离','e10adc3949ba59abbe56e057f20f883e','18077855138','/head/公孙离.jpg',NULL,0,'1','18877195@qq.com','2022-10-19 20:56:20','2022-02-22 20:16:56'),(5,'A52738',7,'刘禅','e10adc3949ba59abbe56e057f20f883e','18077855139','/head/刘禅.jpg',NULL,0,'1','35295921@qq.com','2022-10-19 20:56:24','2022-02-22 21:12:05'),(6,'A52739',7,'不大知乔','e10adc3949ba59abbe56e057f20f883e','18077855140','/head/大乔.jpg',NULL,0,'1','12345@qq.com','2022-10-20 14:45:07','2022-02-22 21:12:05'),(7,'A52740',5,'嫦娥','e10adc3949ba59abbe56e057f20f883e','18077855141','/head/嫦娥.jpg',NULL,0,'admin','12346@qq.com','2022-10-12 23:50:03','2022-02-22 21:12:05'),(8,'A52741',6,'安琪拉','e10adc3949ba59abbe56e057f20f883e','18077855142','/head/安琪拉.jpg',NULL,0,'admin','12347@qq.com','2022-10-12 23:50:07','2022-02-22 21:12:05'),(9,'A52742',15,'李白','e10adc3949ba59abbe56e057f20f883e','18077855143','/head/李白.jpg',NULL,0,'admin','12348@qq.com','2022-10-12 23:50:12','2022-02-22 21:12:06'),(10,'A52743',13,'瑶','e10adc3949ba59abbe56e057f20f883e','18077855144','/head/瑶.jpg',NULL,0,'admin','12349@qq.com','2022-10-12 23:50:16','2022-02-22 21:12:06'),(12,'A52744',3,'甄姬','e10adc3949ba59abbe56e057f20f883e','18077855145','/head/甄姬.jpg',NULL,0,'admin','12350@qq.com','2022-10-12 23:50:22','2022-02-22 21:30:41'),(13,'A52745',14,'百里玄策','e10adc3949ba59abbe56e057f20f883e','18077855146','/head/百里玄策.jpg',NULL,0,'admin','12351@qq.com','2022-10-12 23:50:25','2022-02-22 21:30:41'),(14,'A52746',11,'花木兰','e10adc3949ba59abbe56e057f20f883e','18077855147','/head/花木兰.jpg',NULL,0,'admin','12352@qq.com','2022-10-12 23:50:30','2022-02-22 21:30:41'),(17,'A52751',8,'虞姬','e10adc3949ba59abbe56e057f20f883e','18077855152','/head/虞姬.jpg',NULL,0,NULL,'12357@qq.com','2022-10-12 23:54:13','2022-06-08 22:57:12'),(18,'A52748',7,'西施','e10adc3949ba59abbe56e057f20f883e','18077855149','/head/西施.jpg',NULL,0,NULL,'12354@qq.com','2022-10-12 23:52:32','2022-06-08 22:57:12'),(19,'A52749',7,'诸葛亮','e10adc3949ba59abbe56e057f20f883e','18077855150','/head/诸葛亮.jpg',NULL,0,NULL,'12355@qq.com','2022-10-12 23:52:39','2022-06-08 22:57:12'),(20,'A52750',7,'貂蝉','e10adc3949ba59abbe56e057f20f883e','18077855151','/head/貂蝉.jpg',NULL,0,NULL,'12356@qq.com','2022-10-12 23:52:44','2022-06-08 22:57:12');
+INSERT INTO `sys_user` VALUES (1,'admin',7,'Admin',NULL,'e10adc3949ba59abbe56e057f20f883e','18877811997','https://q4.qlogo.cn/g?b=qq&nk=942664114&s=0',NULL,0,'l1yp@qq.com','admin','2022-10-13 09:00:47','2022-02-16 15:32:27'),(2,'A52747',7,'不知火舞','buzhihuowu','e10adc3949ba59abbe56e057f20f883e','18077855148','https://q4.qlogo.cn/g?b=qq&nk=10001',NULL,0,'12353@qq.com','1','2022-10-23 15:05:19','2022-02-22 21:30:42'),(3,'A52736',8,'伽罗','jialuo','e10adc3949ba59abbe56e057f20f883e','18077855137','/head/伽罗.jpg',NULL,0,'18877185@qq.com','admin','2022-10-23 15:05:19','2022-02-22 20:11:26'),(4,'A52737',7,'公孙离','gongsunli','e10adc3949ba59abbe56e057f20f883e','18077855138','/head/公孙离.jpg',NULL,0,'18877195@qq.com','1','2022-10-23 15:05:19','2022-02-22 20:16:56'),(5,'A52738',7,'刘禅','liushan','e10adc3949ba59abbe56e057f20f883e','18077855139','/head/刘禅.jpg',NULL,0,'35295921@qq.com','1','2022-10-23 15:05:19','2022-02-22 21:12:05'),(6,'A52739',7,'不大知乔','budazhiqiao','e10adc3949ba59abbe56e057f20f883e','18077855140','/head/大乔.jpg',NULL,0,'12345@qq.com','1','2022-10-23 15:05:19','2022-02-22 21:12:05'),(7,'A52740',5,'嫦娥','change','e10adc3949ba59abbe56e057f20f883e','18077855141','/head/嫦娥.jpg',NULL,0,'12346@qq.com','admin','2022-10-23 15:05:19','2022-02-22 21:12:05'),(8,'A52741',6,'安琪拉','anqila','e10adc3949ba59abbe56e057f20f883e','18077855142','/head/安琪拉.jpg',NULL,0,'12347@qq.com','admin','2022-10-23 15:05:19','2022-02-22 21:12:05'),(9,'A52742',15,'李白','libai','e10adc3949ba59abbe56e057f20f883e','18077855143','/head/李白.jpg',NULL,0,'12348@qq.com','admin','2022-10-23 15:05:19','2022-02-22 21:12:06'),(10,'A52743',13,'瑶','yao','e10adc3949ba59abbe56e057f20f883e','18077855144','/head/瑶.jpg',NULL,0,'12349@qq.com','admin','2022-10-23 15:05:19','2022-02-22 21:12:06'),(12,'A52744',3,'甄姬','zhenji','e10adc3949ba59abbe56e057f20f883e','18077855145','/head/甄姬.jpg',NULL,0,'12350@qq.com','admin','2022-10-23 15:05:19','2022-02-22 21:30:41'),(13,'A52745',14,'百里玄策','bailixuance','e10adc3949ba59abbe56e057f20f883e','18077855146','/head/百里玄策.jpg',NULL,0,'12351@qq.com','admin','2022-10-23 15:05:19','2022-02-22 21:30:41'),(14,'A52746',11,'花木兰','huamulan','e10adc3949ba59abbe56e057f20f883e','18077855147','/head/花木兰.jpg',NULL,0,'12352@qq.com','admin','2022-10-23 15:05:19','2022-02-22 21:30:41'),(17,'A52751',8,'虞姬','yuji','e10adc3949ba59abbe56e057f20f883e','18077855152','/head/虞姬.jpg',NULL,0,'12357@qq.com',NULL,'2022-10-23 15:05:19','2022-06-08 22:57:12'),(18,'A52748',7,'西施','xishi','e10adc3949ba59abbe56e057f20f883e','18077855149','/head/西施.jpg',NULL,0,'12354@qq.com',NULL,'2022-10-23 15:05:19','2022-06-08 22:57:12'),(19,'A52749',7,'诸葛亮','zhugeliang','e10adc3949ba59abbe56e057f20f883e','18077855150','/head/诸葛亮.jpg',NULL,0,'12355@qq.com',NULL,'2022-10-23 15:05:19','2022-06-08 22:57:12'),(20,'A52750',7,'貂蝉','diaochan','e10adc3949ba59abbe56e057f20f883e','18077855151','/head/貂蝉.jpg',NULL,0,'12356@qq.com',NULL,'2022-10-23 15:05:19','2022-06-08 22:57:12');
 /*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1812,12 +1758,12 @@ DROP TABLE IF EXISTS `sys_user_dept`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_user_dept` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `uid` bigint NOT NULL,
-  `dept_id` bigint DEFAULT NULL,
-  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'admin',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `uid` bigint NOT NULL COMMENT '用户ID',
+  `dept_id` bigint DEFAULT NULL COMMENT '部门ID',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `sys_user_dept_uid_dept_id_uindex` (`uid`,`dept_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1582717323777470470 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='兼职部门表';
@@ -1829,7 +1775,7 @@ CREATE TABLE `sys_user_dept` (
 
 LOCK TABLES `sys_user_dept` WRITE;
 /*!40000 ALTER TABLE `sys_user_dept` DISABLE KEYS */;
-INSERT INTO `sys_user_dept` VALUES (1580448967646068737,1,2,'admin','2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068738,1,3,'admin','2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068739,1,7,'admin','2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068740,1,8,'admin','2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068741,1,9,'admin','2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580807330078765058,2,2,'1','2022-10-14 14:26:52','2022-10-14 14:26:52'),(1580807330078765059,2,3,'1','2022-10-14 14:26:52','2022-10-14 14:26:52'),(1580807330078765060,2,7,'1','2022-10-14 14:26:52','2022-10-14 14:26:52'),(1580807330078765061,2,8,'1','2022-10-14 14:26:52','2022-10-14 14:26:52'),(1580807330078765062,2,9,'1','2022-10-14 14:26:52','2022-10-14 14:26:52'),(1582717285303119874,4,2,'1','2022-10-19 20:56:20','2022-10-19 20:56:20'),(1582717285303119875,4,3,'1','2022-10-19 20:56:20','2022-10-19 20:56:20'),(1582717285303119876,4,7,'1','2022-10-19 20:56:20','2022-10-19 20:56:20'),(1582717285303119877,4,8,'1','2022-10-19 20:56:20','2022-10-19 20:56:20'),(1582717285303119878,4,9,'1','2022-10-19 20:56:20','2022-10-19 20:56:20'),(1582717302201970689,5,2,'1','2022-10-19 20:56:24','2022-10-19 20:56:24'),(1582717302201970690,5,3,'1','2022-10-19 20:56:24','2022-10-19 20:56:24'),(1582717302201970691,5,7,'1','2022-10-19 20:56:24','2022-10-19 20:56:24'),(1582717302201970692,5,8,'1','2022-10-19 20:56:24','2022-10-19 20:56:24'),(1582717302201970693,5,9,'1','2022-10-19 20:56:24','2022-10-19 20:56:24'),(1582717323777470465,6,2,'1','2022-10-19 20:56:30','2022-10-19 20:56:30'),(1582717323777470466,6,3,'1','2022-10-19 20:56:30','2022-10-19 20:56:30'),(1582717323777470467,6,7,'1','2022-10-19 20:56:30','2022-10-19 20:56:30'),(1582717323777470468,6,8,'1','2022-10-19 20:56:30','2022-10-19 20:56:30'),(1582717323777470469,6,9,'1','2022-10-19 20:56:30','2022-10-19 20:56:30');
+INSERT INTO `sys_user_dept` VALUES (1580448967646068737,1,2,1,'2022-10-23 20:22:00','2022-10-13 14:42:51'),(1580448967646068738,1,3,1,'2022-10-23 20:22:00','2022-10-13 14:42:51'),(1580448967646068739,1,7,1,'2022-10-23 20:22:00','2022-10-13 14:42:51'),(1580448967646068740,1,8,1,'2022-10-23 20:22:00','2022-10-13 14:42:51'),(1580448967646068741,1,9,1,'2022-10-23 20:22:00','2022-10-13 14:42:51'),(1580807330078765058,2,2,1,'2022-10-14 14:26:52','2022-10-14 14:26:52'),(1580807330078765059,2,3,1,'2022-10-14 14:26:52','2022-10-14 14:26:52'),(1580807330078765060,2,7,1,'2022-10-14 14:26:52','2022-10-14 14:26:52'),(1580807330078765061,2,8,1,'2022-10-14 14:26:52','2022-10-14 14:26:52'),(1580807330078765062,2,9,1,'2022-10-14 14:26:52','2022-10-14 14:26:52'),(1582717285303119874,4,2,1,'2022-10-19 20:56:20','2022-10-19 20:56:20'),(1582717285303119875,4,3,1,'2022-10-19 20:56:20','2022-10-19 20:56:20'),(1582717285303119876,4,7,1,'2022-10-19 20:56:20','2022-10-19 20:56:20'),(1582717285303119877,4,8,1,'2022-10-19 20:56:20','2022-10-19 20:56:20'),(1582717285303119878,4,9,1,'2022-10-19 20:56:20','2022-10-19 20:56:20'),(1582717302201970689,5,2,1,'2022-10-19 20:56:24','2022-10-19 20:56:24'),(1582717302201970690,5,3,1,'2022-10-19 20:56:24','2022-10-19 20:56:24'),(1582717302201970691,5,7,1,'2022-10-19 20:56:24','2022-10-19 20:56:24'),(1582717302201970692,5,8,1,'2022-10-19 20:56:24','2022-10-19 20:56:24'),(1582717302201970693,5,9,1,'2022-10-19 20:56:24','2022-10-19 20:56:24'),(1582717323777470465,6,2,1,'2022-10-19 20:56:30','2022-10-19 20:56:30'),(1582717323777470466,6,3,1,'2022-10-19 20:56:30','2022-10-19 20:56:30'),(1582717323777470467,6,7,1,'2022-10-19 20:56:30','2022-10-19 20:56:30'),(1582717323777470468,6,8,1,'2022-10-19 20:56:30','2022-10-19 20:56:30'),(1582717323777470469,6,9,1,'2022-10-19 20:56:30','2022-10-19 20:56:30');
 /*!40000 ALTER TABLE `sys_user_dept` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1841,12 +1787,12 @@ DROP TABLE IF EXISTS `sys_user_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sys_user_role` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `uid` bigint NOT NULL,
-  `role_id` bigint NOT NULL,
-  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'admin',
-  `update_time` datetime DEFAULT CURRENT_TIMESTAMP,
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `uid` bigint NOT NULL COMMENT '用户ID',
+  `role_id` bigint NOT NULL COMMENT '角色ID',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1582717323777470471 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='用户角色表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1857,7 +1803,7 @@ CREATE TABLE `sys_user_role` (
 
 LOCK TABLES `sys_user_role` WRITE;
 /*!40000 ALTER TABLE `sys_user_role` DISABLE KEYS */;
-INSERT INTO `sys_user_role` VALUES (24,3,1,'admin','2022-05-19 08:40:12','2022-05-19 08:40:12'),(25,7,1,'admin','2022-05-19 08:40:22','2022-05-19 08:40:22'),(26,8,1,'admin','2022-05-19 08:40:28','2022-05-19 08:40:28'),(27,9,1,'admin','2022-05-19 08:40:31','2022-05-19 08:40:31'),(28,10,1,'admin','2022-05-19 08:40:33','2022-05-19 08:40:33'),(29,12,1,'admin','2022-05-19 08:40:36','2022-05-19 08:40:36'),(30,13,1,'admin','2022-05-19 08:40:39','2022-05-19 08:40:39'),(31,14,1,'admin','2022-05-19 08:40:45','2022-05-19 08:40:45'),(1580448967646068742,1,1,'admin','2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068743,1,2,'admin','2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068744,1,3,'admin','2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068745,1,4,'admin','2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068746,1,5,'admin','2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068747,1,6,'admin','2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068748,1,7,'admin','2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580807330103930881,2,1,'1','2022-10-14 14:26:52','2022-10-14 14:26:52'),(1582717285303119879,4,1,'1','2022-10-19 20:56:20','2022-10-19 20:56:20'),(1582717302201970694,5,1,'1','2022-10-19 20:56:24','2022-10-19 20:56:24'),(1582717323777470470,6,1,'1','2022-10-19 20:56:30','2022-10-19 20:56:30');
+INSERT INTO `sys_user_role` VALUES (24,3,1,1,'2022-05-19 08:40:12','2022-05-19 08:40:12'),(25,7,1,1,'2022-05-19 08:40:22','2022-05-19 08:40:22'),(26,8,1,1,'2022-05-19 08:40:28','2022-05-19 08:40:28'),(27,9,1,1,'2022-05-19 08:40:31','2022-05-19 08:40:31'),(28,10,1,1,'2022-05-19 08:40:33','2022-05-19 08:40:33'),(29,12,1,1,'2022-05-19 08:40:36','2022-05-19 08:40:36'),(30,13,1,1,'2022-05-19 08:40:39','2022-05-19 08:40:39'),(31,14,1,1,'2022-05-19 08:40:45','2022-05-19 08:40:45'),(1580448967646068742,1,1,1,'2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068743,1,2,1,'2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068744,1,3,1,'2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068745,1,4,1,'2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068746,1,5,1,'2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068747,1,6,1,'2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068748,1,7,1,'2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580807330103930881,2,1,1,'2022-10-14 14:26:52','2022-10-14 14:26:52'),(1582717285303119879,4,1,1,'2022-10-19 20:56:20','2022-10-19 20:56:20'),(1582717302201970694,5,1,1,'2022-10-19 20:56:24','2022-10-19 20:56:24'),(1582717323777470470,6,1,1,'2022-10-19 20:56:30','2022-10-19 20:56:30');
 /*!40000 ALTER TABLE `sys_user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1869,18 +1815,18 @@ DROP TABLE IF EXISTS `workflow_field_def`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `workflow_field_def` (
-  `id` bigint unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
   `field` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '数据库字段/表单字段',
   `label` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '字段名/表单字段名',
   `remark` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '字段说明',
   `width` int NOT NULL DEFAULT '0' COMMENT '字段宽度',
   `type` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '字段组件类型',
   `scheme` json NOT NULL COMMENT '字段定义',
-  `scope` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'PRIVATE: 私有字段\nGLOBAL: 公共字段\nDEFAULT: 默认字段',
-  `update_by` bigint unsigned NOT NULL,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `create_by` bigint unsigned NOT NULL,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `scope` varchar(16) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '字段范围',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='流程字段定义';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1891,7 +1837,7 @@ CREATE TABLE `workflow_field_def` (
 
 LOCK TABLES `workflow_field_def` WRITE;
 /*!40000 ALTER TABLE `workflow_field_def` DISABLE KEYS */;
-INSERT INTO `workflow_field_def` VALUES (1583519204766466050,'test','测试','1111',16,'text','{\"type\": \"text\", \"default_value\": \"她她她\"}','PRIVATE',1,'2022-10-22 02:02:53',1,'2022-10-22 02:02:53'),(1583619176555900930,'test','测试2','111',16,'text','{\"type\": \"text\", \"default_value\": \"222\"}','PRIVATE',1,'2022-10-22 08:40:08',1,'2022-10-22 08:40:08'),(1583620071620415489,'test','22','3',16,'text','{\"type\": \"text\", \"default_value\": \"22\"}','GLOBAL',1,'2022-10-22 08:43:41',1,'2022-10-22 08:43:41'),(1583622160878735361,'id','编号','主键',8,'number','{\"max\": null, \"min\": null, \"type\": \"number\", \"parser\": null, \"formatter\": null, \"precision\": null, \"default_value\": null}','DEFAULT',1,'2022-10-22 08:52:00',1,'2022-10-22 08:52:00');
+INSERT INTO `workflow_field_def` VALUES (1583622160878735361,'id','编号','主键',8,'number','{\"max\": null, \"min\": null, \"type\": \"number\", \"parser\": null, \"formatter\": null, \"precision\": null, \"default_value\": null}','DEFAULT',1,'2022-10-22 08:52:00',1,'2022-10-22 08:52:00'),(1584160647990243329,'process_instance_id','流程实例ID','流程引擎实例ID',36,'text','{\"type\": \"text\", \"default_value\": null}','DEFAULT',1,'2022-10-23 20:32:03',1,'2022-10-23 20:32:04'),(1584161060399378434,'code','编号','流程唯一编号',32,'text','{\"type\": \"text\", \"default_value\": null}','DEFAULT',1,'2022-10-23 20:33:24',1,'2022-10-23 20:33:24'),(1584161141097787394,'name','标题','流程标题',128,'text','{\"type\": \"text\", \"default_value\": null}','DEFAULT',1,'2022-10-23 20:36:26',1,'2022-10-23 20:33:43'),(1584161976175300609,'dept_id','所属部门','',32,'dept','{\"type\": \"dept\", \"multiple\": false}','DEFAULT',1,'2022-10-23 20:37:02',1,'2022-10-23 20:37:02'),(1584181666134118402,'create_by','创建人','发起流程的人',16,'user','{\"type\": \"user\", \"multiple\": false, \"user_content\": {\"from\": \"ALL\"}}','DEFAULT',1,'2022-10-23 21:55:17',1,'2022-10-23 21:55:17'),(1584181794765033473,'create_time','创建时间','发起流程的时间',16,'date','{\"type\": \"date\", \"format\": \"YYYY-MM-DD HH:mm:ss\", \"date_type\": \"datetime\", \"value_format\": \"YYYY-MM-DD HH:mm:ss\", \"default_value\": \"\"}','DEFAULT',1,'2022-10-23 21:55:47',1,'2022-10-23 21:55:47'),(1584182223049609217,'update_by','更新人','更新数据的人',16,'user','{\"type\": \"user\", \"multiple\": false, \"user_content\": {\"from\": \"ALL\"}}','DEFAULT',1,'2022-10-23 21:57:29',1,'2022-10-23 21:57:29'),(1584182320063860737,'update_time','更新时间','最后更新流程数据的时间',16,'date','{\"type\": \"date\", \"format\": \"YYYY-MM-DD HH:mm:ss\", \"date_type\": \"datetime\", \"value_format\": \"YYYY-MM-DD HH:mm:ss\", \"default_value\": \"\"}','DEFAULT',1,'2022-10-23 21:57:52',1,'2022-10-23 21:57:52');
 /*!40000 ALTER TABLE `workflow_field_def` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1903,13 +1849,14 @@ DROP TABLE IF EXISTS `workflow_field_ref`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `workflow_field_ref` (
-  `id` bigint unsigned NOT NULL,
-  `wf_key` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `field_id` bigint unsigned NOT NULL,
-  `create_by` bigint unsigned NOT NULL,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `wf_key` varchar(64) COLLATE utf8mb4_bin NOT NULL COMMENT '流程标识',
+  `field_id` bigint unsigned NOT NULL COMMENT '字段ID',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
-  KEY `wf_field_idx` (`wf_key`,`field_id`)
+  KEY `wf_field_idx` (`wf_key`,`field_id`),
+  KEY `workflow_field_ref_field_id_index` (`field_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='流程字段引用关系表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1919,7 +1866,6 @@ CREATE TABLE `workflow_field_ref` (
 
 LOCK TABLES `workflow_field_ref` WRITE;
 /*!40000 ALTER TABLE `workflow_field_ref` DISABLE KEYS */;
-INSERT INTO `workflow_field_ref` VALUES (1583519204833574914,'destory_holiday',1583519204766466050,1,'2022-10-22 02:02:53'),(1583619176623009793,'destory_holiday',1583619176555900930,1,'2022-10-22 08:40:08');
 /*!40000 ALTER TABLE `workflow_field_ref` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1931,15 +1877,15 @@ DROP TABLE IF EXISTS `workflow_option_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `workflow_option_type` (
-  `id` bigint unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
   `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '信息名称',
-  `scope` varchar(16) COLLATE utf8mb4_bin NOT NULL COMMENT 'GLOBAL: 全局\nPRIVATE: 私有',
+  `scope` varchar(16) COLLATE utf8mb4_bin NOT NULL COMMENT '信息范围',
   `wf_key` varchar(64) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '私有所属流程标识',
   `remark` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '说明',
-  `update_by` bigint unsigned NOT NULL,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `create_by` bigint unsigned NOT NULL,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='工作流选项类型定义';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1950,7 +1896,7 @@ CREATE TABLE `workflow_option_type` (
 
 LOCK TABLES `workflow_option_type` WRITE;
 /*!40000 ALTER TABLE `workflow_option_type` DISABLE KEYS */;
-INSERT INTO `workflow_option_type` VALUES (1583739849538342914,'测试树数据源','GLOBAL',NULL,'测试',1,'2022-10-22 22:18:01',1,'2022-10-22 22:18:01');
+INSERT INTO `workflow_option_type` VALUES (1583739849538342914,'测试树数据源','GLOBAL',NULL,'测试',1,'2022-10-22 22:18:01',1,'2022-10-22 22:18:01'),(1584006555418566657,'成本中心','PRIVATE',NULL,'222',1,'2022-10-23 10:19:26',1,'2022-10-23 10:19:26');
 /*!40000 ALTER TABLE `workflow_option_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1962,16 +1908,16 @@ DROP TABLE IF EXISTS `workflow_option_value`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `workflow_option_value` (
-  `id` bigint unsigned NOT NULL,
-  `type_id` bigint unsigned NOT NULL,
-  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `pid` bigint DEFAULT NULL COMMENT '父级id',
-  `order_no` int DEFAULT NULL,
-  `disabled` tinyint NOT NULL DEFAULT '0',
-  `update_by` bigint unsigned NOT NULL,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `create_by` bigint unsigned NOT NULL,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `type_id` bigint unsigned NOT NULL COMMENT '信息源ID',
+  `name` varchar(64) COLLATE utf8mb4_bin NOT NULL COMMENT '选项值名称',
+  `pid` bigint DEFAULT NULL COMMENT '选项父级',
+  `order_no` int DEFAULT NULL COMMENT '排序号',
+  `disabled` tinyint NOT NULL DEFAULT '0' COMMENT '是否禁用',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   KEY `type_id_index` (`type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='流程选项值';
@@ -1983,7 +1929,7 @@ CREATE TABLE `workflow_option_value` (
 
 LOCK TABLES `workflow_option_value` WRITE;
 /*!40000 ALTER TABLE `workflow_option_value` DISABLE KEYS */;
-INSERT INTO `workflow_option_value` VALUES (1583820377780162561,1583739849538342914,'测试',NULL,1,0,1,'2022-10-22 22:07:58',1,'2022-10-22 22:07:58'),(1583822690246844417,1583739849538342914,'测试1',1583820377780162561,1,0,1,'2022-10-22 22:17:24',1,'2022-10-22 22:17:24'),(1583824814787584001,1583739849538342914,'测试2',1583820377780162561,2,0,1,'2022-10-22 22:17:28',1,'2022-10-22 22:17:28'),(1583826135649411074,1583739849538342914,'测试21',1583824814787584001,1,0,1,'2022-10-22 22:22:31',1,'2022-10-22 22:22:31'),(1583826162119663617,1583739849538342914,'测试211',1583826135649411074,1,0,1,'2022-10-22 22:22:37',1,'2022-10-22 22:22:37');
+INSERT INTO `workflow_option_value` VALUES (1583820377780162561,1583739849538342914,'测试',NULL,1,0,1,'2022-10-22 22:07:58',1,'2022-10-22 22:07:58'),(1583822690246844417,1583739849538342914,'测试1',1583820377780162561,1,0,1,'2022-10-22 22:17:24',1,'2022-10-22 22:17:24'),(1583824814787584001,1583739849538342914,'测试2',1583820377780162561,2,0,1,'2022-10-22 22:17:28',1,'2022-10-22 22:17:28'),(1583826135649411074,1583739849538342914,'测试21',1583824814787584001,1,0,1,'2022-10-22 22:22:31',1,'2022-10-22 22:22:31'),(1583826162119663617,1583739849538342914,'测试211',1583826135649411074,1,0,1,'2022-10-22 22:22:37',1,'2022-10-22 22:22:37'),(1584006703964037122,1584006555418566657,'总部',NULL,1,0,1,'2022-10-23 10:20:02',1,'2022-10-23 10:20:02'),(1584006740844552193,1584006555418566657,'装配厂',1584006703964037122,1,0,1,'2022-10-23 10:20:11',1,'2022-10-23 10:20:11'),(1584006779922882562,1584006555418566657,'下料厂',1584006703964037122,2,0,1,'2022-10-23 10:20:25',1,'2022-10-23 10:20:25');
 /*!40000 ALTER TABLE `workflow_option_value` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1995,17 +1941,17 @@ DROP TABLE IF EXISTS `workflow_type_def`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `workflow_type_def` (
-  `id` bigint unsigned NOT NULL,
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
   `key` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8_bin NOT NULL COMMENT '流程标识',
-  `name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8_bin NOT NULL,
-  `remark` varchar(256) CHARACTER SET utf8mb3 COLLATE utf8_bin DEFAULT NULL,
+  `name` varchar(64) COLLATE utf8_bin NOT NULL COMMENT '流程名称',
+  `remark` varchar(256) COLLATE utf8_bin DEFAULT NULL COMMENT '流程说明',
   `code_gen_rule` json NOT NULL COMMENT '编码生成规则',
-  `process_definition_id` varchar(128) CHARACTER SET utf8mb3 COLLATE utf8_bin DEFAULT NULL,
-  `status` int DEFAULT NULL,
-  `update_by` bigint unsigned NOT NULL,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `create_by` bigint unsigned NOT NULL,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `process_definition_id` varchar(128) COLLATE utf8_bin DEFAULT NULL COMMENT '流程定义ID',
+  `status` int DEFAULT NULL COMMENT '状态',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `def_key_uidx` (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin COMMENT='流程类型模型表';
@@ -2064,4 +2010,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-10-22 22:33:03
+-- Dump completed on 2022-10-23 22:03:29

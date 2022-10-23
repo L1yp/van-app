@@ -10,6 +10,8 @@ public class UserView {
 
     private String nickname;
 
+    private String nicknamePinyin;
+
     private String phone;
 
     private String email;
@@ -51,6 +53,14 @@ public class UserView {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public String getNicknamePinyin() {
+        return nicknamePinyin;
+    }
+
+    public void setNicknamePinyin(String nicknamePinyin) {
+        this.nicknamePinyin = nicknamePinyin;
     }
 
     public String getPhone() {

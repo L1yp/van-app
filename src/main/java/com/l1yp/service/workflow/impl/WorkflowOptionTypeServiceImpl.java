@@ -49,8 +49,6 @@ public class WorkflowOptionTypeServiceImpl extends ServiceImpl<WorkflowOptionTyp
         User loginUser = RequestUtils.getLoginUser();
         WorkflowOptionType workflowOptionType = new WorkflowOptionType();
         BeanCopierUtil.copy(param, workflowOptionType);
-        workflowOptionType.setUpdateBy(loginUser.getId());
-        workflowOptionType.setCreateBy(loginUser.getId());
         save(workflowOptionType);
     }
 
@@ -60,7 +58,6 @@ public class WorkflowOptionTypeServiceImpl extends ServiceImpl<WorkflowOptionTyp
         User loginUser = RequestUtils.getLoginUser();
         WorkflowOptionType workflowOptionType = new WorkflowOptionType();
         BeanCopierUtil.copy(param, workflowOptionType);
-        workflowOptionType.setUpdateBy(loginUser.getId());
         updateById(workflowOptionType);
     }
 

@@ -1,9 +1,12 @@
 package com.l1yp.model.db.system;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.util.Date;
 
 @TableName("sys_role_menu")
 public class RoleMenu {
@@ -11,14 +14,15 @@ public class RoleMenu {
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
 
-    @TableField("role_id")
     private String roleId;
 
-    @TableField("menu_id")
     private String menuId;
 
-    @TableField("create_by")
+    @TableField(fill = FieldFill.INSERT)
     private String createBy;
+
+    @TableField(fill = FieldFill.INSERT)
+    private Date createTime;
 
     public String getId() {
         return id;
@@ -50,5 +54,13 @@ public class RoleMenu {
 
     public void setCreateBy(String createBy) {
         this.createBy = createBy;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

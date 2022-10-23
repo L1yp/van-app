@@ -27,6 +27,7 @@ import com.l1yp.service.system.IDepartmentService;
 import com.l1yp.service.system.IMenuService;
 import com.l1yp.service.system.IUserService;
 import com.l1yp.util.BeanCopierUtil;
+import com.l1yp.util.PinyinUtil;
 import com.l1yp.util.RequestUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -140,7 +142,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             wrapper.like(User::getNickname, key).or();
             wrapper.like(User::getPhone, key).or();
             wrapper.like(User::getEmail, key).or();
-            wrapper.like(User::getDeptId, key).or();
+            if (PinyinUtil.isPureLetter(key)) {
+                wrapper.like(User::getNicknamePinyin, String.join("%", key.toLowerCase(Locale.ROOT).split("")));
+            }
         }
 
         List<User> users = getBaseMapper().selectList(wrapper);
@@ -150,10 +154,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     @Transactional
     public void update(UserUpdateParam param) {
+        User nowUser = getById(param.getId());
+        if (nowUser == null) {
+            throw new VanException(400, "用户ID不存在");
+        }
+
         User loginUser = RequestUtils.getLoginUser();
         User user = new User();
         BeanCopierUtil.copy(param, user);
-        user.setUpdateBy(loginUser.getId());
+        if (StringUtils.isNotBlank(param.getNickname()) && !nowUser.getNickname().equals(param.getNickname())) {
+            String pinyin = PinyinUtil.getPinyin(param.getNickname());
+            user.setNicknamePinyin(pinyin);
+        }
+
         updateById(user);
 
         userDeptService.getBaseMapper().delete(Wrappers.<UserDept>lambdaQuery().eq(UserDept::getUid, param.getId()));
@@ -163,7 +176,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 UserDept userDept = new UserDept();
                 userDept.setUid(param.getId());
                 userDept.setDeptId(ptDeptId);
-                userDept.setUpdateBy(loginUser.getId());
                 userDeptList.add(userDept);
             }
 
@@ -177,7 +189,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 UserRole userRole = new UserRole();
                 userRole.setUid(param.getId());
                 userRole.setRoleId(roleId);
-                userRole.setUpdateBy(loginUser.getId());
                 userRoles.add(userRole);
             }
             userRoleService.saveBatch(userRoles);
@@ -195,7 +206,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             UserRole userRole = new UserRole();
             userRole.setUid(param.getUid());
             userRole.setRoleId(roleId);
-            userRole.setUpdateBy(loginUser.getId());
             userRoles.add(userRole);
         }
         userRoleService.saveBatch(userRoles);

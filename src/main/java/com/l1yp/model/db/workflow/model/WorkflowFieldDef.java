@@ -1,5 +1,6 @@
 package com.l1yp.model.db.workflow.model;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -52,12 +53,16 @@ public class WorkflowFieldDef {
 
     private FieldScope scope;
 
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updateBy;
 
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
+    @TableField(fill = FieldFill.INSERT)
     private String createBy;
 
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
     public String getId() {

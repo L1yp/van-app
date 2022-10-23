@@ -7,17 +7,13 @@ import com.l1yp.model.db.workflow.field.UserFieldScheme.FixedUserFieldScheme;
 
 import java.util.List;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "from", visible = true)
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = ClassUserFieldScheme.class, name = "class"),
-        @JsonSubTypes.Type(value = FixedUserFieldScheme.class, name = "fixed"),
-        @JsonSubTypes.Type(value = UserFieldScheme.class, name = "all"),
-})
+
 public class UserFieldScheme extends FieldScheme {
 
     private Boolean multiple;
 
-    private UserOptionFrom from;
+    private UserFieldSchemeContent userContent;
+
 
     public Boolean getMultiple() {
         return multiple;
@@ -27,15 +23,35 @@ public class UserFieldScheme extends FieldScheme {
         this.multiple = multiple;
     }
 
-    public UserOptionFrom getFrom() {
-        return from;
+    public UserFieldSchemeContent getUserContent() {
+        return userContent;
     }
 
-    public void setFrom(UserOptionFrom from) {
-        this.from = from;
+    public void setUserContent(UserFieldSchemeContent userContent) {
+        this.userContent = userContent;
     }
 
-    public static class ClassUserFieldScheme extends UserFieldScheme {
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "from", visible = true)
+    @JsonSubTypes({
+            @JsonSubTypes.Type(value = ClassUserFieldScheme.class, name = "CLASS"),
+            @JsonSubTypes.Type(value = FixedUserFieldScheme.class, name = "FIXED"),
+            @JsonSubTypes.Type(value = UserFieldSchemeContent.class, name = "ALL"),
+    })
+    public static class UserFieldSchemeContent {
+
+        private UserOptionFrom from;
+
+        public UserOptionFrom getFrom() {
+            return from;
+        }
+
+        public void setFrom(UserOptionFrom from) {
+            this.from = from;
+        }
+
+    }
+
+    public static class ClassUserFieldScheme extends UserFieldSchemeContent {
 
         private String className;
 
@@ -48,7 +64,7 @@ public class UserFieldScheme extends FieldScheme {
         }
     }
 
-    public static class FixedUserFieldScheme extends UserFieldScheme {
+    public static class FixedUserFieldScheme extends UserFieldSchemeContent {
         private List<String> userIds;
 
         public List<String> getUserIds() {

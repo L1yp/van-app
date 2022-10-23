@@ -1,6 +1,8 @@
 package com.l1yp.model.db.system;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.l1yp.model.view.system.UserView;
@@ -20,6 +22,8 @@ public class User {
 
     private String nickname;
 
+    private String nicknamePinyin;
+
     private String password;
 
     private String phone;
@@ -32,10 +36,13 @@ public class User {
 
     private Integer status;
 
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updateBy;
 
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
     public String getId() {
@@ -68,6 +75,14 @@ public class User {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public String getNicknamePinyin() {
+        return nicknamePinyin;
+    }
+
+    public void setNicknamePinyin(String nicknamePinyin) {
+        this.nicknamePinyin = nicknamePinyin;
     }
 
     public String getPassword() {

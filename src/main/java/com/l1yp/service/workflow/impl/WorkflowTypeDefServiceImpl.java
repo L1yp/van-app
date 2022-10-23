@@ -50,9 +50,6 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
         WorkflowTypeDef workflowTypeDef = new WorkflowTypeDef();
         BeanCopierUtil.copy(param, workflowTypeDef);
 
-        workflowTypeDef.setUpdateBy(loginUser.getId());
-        workflowTypeDef.setCreateBy(loginUser.getId());
-
         save(workflowTypeDef);
 
         WorkflowTypeVer workflowTypeVer = new WorkflowTypeVer();
@@ -78,8 +75,6 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
         xml = xml.replace("{{PROCESS_ID}}", param.getKey());
         xml = xml.replace("{{PROCESS_NAME}}", param.getName());
         xml = xml.replace("{{START_EVENT_ID}}", "startEvent_" + HexUtil.randomCode(7));
-        workflowTypeVer.setUpdateBy(loginUser.getId());
-        workflowTypeVer.setCreateBy(loginUser.getId());
         workflowTypeVer.setXml(xml);
         workflowTypeVerService.save(workflowTypeVer);
     }
@@ -93,7 +88,6 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
         WorkflowTypeDef workflowTypeDef = new WorkflowTypeDef();
         BeanCopierUtil.copy(param, workflowTypeDef);
 
-        workflowTypeDef.setUpdateBy(loginUser.getId());
         updateById(workflowTypeDef);
 
     }

@@ -55,15 +55,12 @@ public class WorkflowFieldDefServiceImpl extends ServiceImpl<WorkflowFieldDefMap
 
         WorkflowFieldDef workflowFieldDef = new WorkflowFieldDef();
         BeanCopierUtil.copy(param, workflowFieldDef);
-        workflowFieldDef.setUpdateBy(loginUser.getId());
-        workflowFieldDef.setCreateBy(loginUser.getId());
 
         save(workflowFieldDef);
         if (StringUtils.hasText(param.getWfKey())) {
             WorkflowFieldRef workflowFieldRef = new WorkflowFieldRef();
             workflowFieldRef.setFieldId(workflowFieldDef.getId());
             workflowFieldRef.setWfKey(param.getWfKey());
-            workflowFieldRef.setCreateBy(loginUser.getId());
             workflowFieldRefMapper.insert(workflowFieldRef);
         }
 
@@ -75,8 +72,9 @@ public class WorkflowFieldDefServiceImpl extends ServiceImpl<WorkflowFieldDefMap
         User loginUser = RequestUtils.getLoginUser();
         WorkflowFieldDef workflowFieldDef = new WorkflowFieldDef();
         BeanCopierUtil.copy(param, workflowFieldDef);
-        workflowFieldDef.setUpdateBy(loginUser.getId());
         updateById(workflowFieldDef);
+
+        // TODO: 更新引用字段的数据
     }
 
     @Override
@@ -102,6 +100,14 @@ public class WorkflowFieldDefServiceImpl extends ServiceImpl<WorkflowFieldDefMap
 
         // 最后删除字段
         removeById(fieldId);
+
+        // 私有字段： 删除引用
+        if (workflowFieldDef.getScope() == FieldScope.PRIVATE) {
+            workflowFieldRefMapper.delete(Wrappers.<WorkflowFieldRef>lambdaQuery().eq(WorkflowFieldRef::getFieldId, fieldId));
+        }
+
+
+
     }
 
     @Override
@@ -115,13 +121,12 @@ public class WorkflowFieldDefServiceImpl extends ServiceImpl<WorkflowFieldDefMap
         WorkflowFieldRef workflowFieldRef = new WorkflowFieldRef();
         workflowFieldRef.setFieldId(param.getFieldId());
         workflowFieldRef.setWfKey(param.getWfKey());
-        workflowFieldRef.setCreateBy(loginUser.getId());
         workflowFieldRefMapper.insert(workflowFieldRef);
     }
 
     @Override
     @Transactional
     public void unrefGlobalField(WorkflowFieldRefParam param) {
-        workflowFieldRefMapper.unrefGlobalField(param);
+        workflowFieldRefMapper.unrefField(param);
     }
 }

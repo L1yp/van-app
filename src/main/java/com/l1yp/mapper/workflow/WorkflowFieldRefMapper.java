@@ -9,6 +9,6 @@ public interface WorkflowFieldRefMapper extends BaseMapper<WorkflowFieldRef> {
 
 
     @Delete("DELETE FROM workflow_field_ref WHERE wf_key = #{wfKey} AND field_id = #{fieldId}")
-    void unrefGlobalField(WorkflowFieldRefParam param);
+    void unrefField(WorkflowFieldRefParam param);
 
 }

@@ -6,12 +6,7 @@ import com.l1yp.model.db.workflow.field.OptionFieldScheme.ClassOptionValueFieldS
 import com.l1yp.model.db.workflow.field.OptionFieldScheme.DefaultOptionValueFieldScheme;
 import com.l1yp.model.db.workflow.field.OptionFieldScheme.TableOptionValueFieldScheme;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "from", visible = true)
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = DefaultOptionValueFieldScheme.class, name = "DEFAULT"),
-        @JsonSubTypes.Type(value = ClassOptionValueFieldScheme.class, name = "CLASS"),
-        @JsonSubTypes.Type(value = TableOptionValueFieldScheme.class, name = "TABLE"),
-})
+
 public class OptionFieldScheme extends FieldScheme {
 
     /**
@@ -22,7 +17,8 @@ public class OptionFieldScheme extends FieldScheme {
     /**
      * 选项来源
      */
-    private OptionValueFrom from;
+
+    private OptionFieldContentScheme optionContent;
 
     public String getComponent() {
         return component;
@@ -32,12 +28,12 @@ public class OptionFieldScheme extends FieldScheme {
         this.component = component;
     }
 
-    public OptionValueFrom getFrom() {
-        return from;
+    public OptionFieldContentScheme getOptionContent() {
+        return optionContent;
     }
 
-    public void setFrom(OptionValueFrom from) {
-        this.from = from;
+    public void setOptionContent(OptionFieldContentScheme optionContent) {
+        this.optionContent = optionContent;
     }
 
     public enum OptionValueFrom {
@@ -55,7 +51,27 @@ public class OptionFieldScheme extends FieldScheme {
         TABLE,
     }
 
-    public static class DefaultOptionValueFieldScheme extends OptionFieldScheme {
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "from", visible = true)
+    @JsonSubTypes({
+            @JsonSubTypes.Type(value = DefaultOptionValueFieldScheme.class, name = "DEFAULT"),
+            @JsonSubTypes.Type(value = ClassOptionValueFieldScheme.class, name = "CLASS"),
+            @JsonSubTypes.Type(value = TableOptionValueFieldScheme.class, name = "TABLE"),
+    })
+    public static class OptionFieldContentScheme {
+
+        private OptionValueFrom from;
+
+        public OptionValueFrom getFrom() {
+            return from;
+        }
+
+        public void setFrom(OptionValueFrom from) {
+            this.from = from;
+        }
+
+    }
+
+    public static class DefaultOptionValueFieldScheme extends OptionFieldContentScheme {
         /**
          * 数据源定义ID
          */
@@ -84,7 +100,7 @@ public class OptionFieldScheme extends FieldScheme {
     }
 
 
-    public static class ClassOptionValueFieldScheme extends OptionFieldScheme {
+    public static class ClassOptionValueFieldScheme extends OptionFieldContentScheme {
 
         /**
          * 类名继承于
@@ -120,7 +136,7 @@ public class OptionFieldScheme extends FieldScheme {
     }
 
 
-    public static class TableOptionValueFieldScheme extends OptionFieldScheme {
+    public static class TableOptionValueFieldScheme extends OptionFieldContentScheme {
 
         /**
          * 表名
@@ -147,6 +163,8 @@ public class OptionFieldScheme extends FieldScheme {
          * 禁用值
          */
         private String disabledValue;
+
+        private String condition;
 
         public String getTableName() {
             return tableName;
@@ -194,6 +212,14 @@ public class OptionFieldScheme extends FieldScheme {
 
         public void setDisabledValue(String disabledValue) {
             this.disabledValue = disabledValue;
+        }
+
+        public String getCondition() {
+            return condition;
+        }
+
+        public void setCondition(String condition) {
+            this.condition = condition;
         }
     }
 

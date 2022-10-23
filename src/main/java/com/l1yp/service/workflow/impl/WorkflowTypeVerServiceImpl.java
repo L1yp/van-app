@@ -38,10 +38,6 @@ public class WorkflowTypeVerServiceImpl extends ServiceImpl<WorkflowTypeVerMappe
         newVer.setRemark(workflowTypeVer.getRemark());
         newVer.setStatus(WorkflowTypeVer.PENDING);
         newVer.setXml(workflowTypeVer.getXml());
-        newVer.setUpdateBy(loginUser.getId());
-        newVer.setCreateBy(loginUser.getId());
-        newVer.setCreateTime(new Date());
-        newVer.setUpdateTime(new Date());
 
         save(newVer);
 

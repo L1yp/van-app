@@ -25,8 +25,6 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
         User loginUser = RequestUtils.getLoginUser();
         Menu menu = new Menu();
         BeanCopierUtil.copy(param, menu);
-        menu.setCreateBy(loginUser.getId());
-        menu.setUpdateBy(loginUser.getId());
         save(menu);
     }
 
@@ -40,8 +38,6 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
         User loginUser = RequestUtils.getLoginUser();
         Menu menu = new Menu();
         BeanCopierUtil.copy(param, menu);
-        menu.setCreateBy(loginUser.getId());
-        menu.setUpdateBy(loginUser.getId());
         getBaseMapper().updateById(menu);
     }
 

@@ -1,5 +1,6 @@
 package com.l1yp.model.db.system;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -35,16 +36,17 @@ public class Menu {
 
     private String remark;
 
-    @TableField("update_by")
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updateBy;
 
-    @TableField("update_time")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
-    @TableField("create_by")
+    @TableField(fill = FieldFill.INSERT)
     private String createBy;
 
-    @TableField("create_time")
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
     public String getId() {

@@ -35,11 +35,16 @@ public class WorkflowTypeDef {
 
     private String processDefinitionId;
 
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updateBy;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private String createBy;
 
+    @TableField(fill = FieldFill.INSERT)
     private Date updateTime;
 
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
     public String getId() {

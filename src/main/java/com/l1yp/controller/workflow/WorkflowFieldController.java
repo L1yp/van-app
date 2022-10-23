@@ -1,6 +1,7 @@
 package com.l1yp.controller.workflow;
 
 import com.l1yp.model.common.ResultData;
+import com.l1yp.model.db.TableScheme;
 import com.l1yp.model.param.workflow.WorkflowFieldDefAddParam;
 import com.l1yp.model.param.workflow.WorkflowFieldDefUpdateParam;
 import com.l1yp.model.param.workflow.WorkflowFieldFindParam;
@@ -8,7 +9,9 @@ import com.l1yp.model.param.workflow.WorkflowFieldRefParam;
 import com.l1yp.model.view.workflow.WorkflowFieldDefView;
 import com.l1yp.service.workflow.impl.WorkflowFieldDefServiceImpl;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,6 +66,22 @@ public class WorkflowFieldController {
     public ResultData<Void> unrefField(@Validated @RequestBody WorkflowFieldRefParam param) {
         workflowFieldDefService.unrefGlobalField(param);
         return ResultData.OK;
+    }
+
+    @DeleteMapping("/{id}")
+    public ResultData<Void> deleteField(@PathVariable("id") String id) {
+        workflowFieldDefService.deleteField(id);
+        return ResultData.OK;
+    }
+
+    @GetMapping("/table/list")
+    public ResultData<List<TableScheme>> getTableList() {
+        return ResultData.ok(workflowFieldDefService.getBaseMapper().getTableName());
+    }
+
+    @GetMapping("/table/column/list")
+    public ResultData<List<TableScheme>> getTableColumnList(String tableName) {
+        return ResultData.ok(workflowFieldDefService.getBaseMapper().getTableColumn(tableName));
     }
 
 }
