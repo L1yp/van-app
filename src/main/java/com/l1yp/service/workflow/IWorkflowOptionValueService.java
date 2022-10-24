@@ -15,4 +15,8 @@ public interface IWorkflowOptionValueService {
 
     void updateValue(WorkflowOptionValueUpdateParam param);
 
+    void deleteOptionValue(String valueId);
+
+    void resetOptionValue(String valueId);
+
 }

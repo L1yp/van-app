@@ -6,6 +6,8 @@ import com.l1yp.model.db.workflow.field.OptionFieldScheme.ClassOptionValueFieldS
 import com.l1yp.model.db.workflow.field.OptionFieldScheme.DefaultOptionValueFieldScheme;
 import com.l1yp.model.db.workflow.field.OptionFieldScheme.TableOptionValueFieldScheme;
 
+import java.util.List;
+
 
 public class OptionFieldScheme extends FieldScheme {
 
@@ -78,9 +80,9 @@ public class OptionFieldScheme extends FieldScheme {
         private String optionTypeId;
 
         /**
-         * 默认值ID, 多个用逗号分割
+         * 默认值ID列表, 统一用多选, 单选时限制多选数量为1
          */
-        private String defaultValue;
+        private List<String> defaultValue;
 
         public String getOptionTypeId() {
             return optionTypeId;
@@ -90,11 +92,11 @@ public class OptionFieldScheme extends FieldScheme {
             this.optionTypeId = optionTypeId;
         }
 
-        public String getDefaultValue() {
+        public List<String> getDefaultValue() {
             return defaultValue;
         }
 
-        public void setDefaultValue(String defaultValue) {
+        public void setDefaultValue(List<String> defaultValue) {
             this.defaultValue = defaultValue;
         }
     }

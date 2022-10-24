@@ -45,7 +45,6 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
     @Override
     @Transactional
     public void add(WorkflowTypeDefAddParam param) {
-        User loginUser = RequestUtils.getLoginUser();
 
         WorkflowTypeDef workflowTypeDef = new WorkflowTypeDef();
         BeanCopierUtil.copy(param, workflowTypeDef);
@@ -83,7 +82,6 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
     @Override
     @Transactional
     public void update(WorkflowTypeDefUpdateParam param) {
-        User loginUser = RequestUtils.getLoginUser();
 
         WorkflowTypeDef workflowTypeDef = new WorkflowTypeDef();
         BeanCopierUtil.copy(param, workflowTypeDef);

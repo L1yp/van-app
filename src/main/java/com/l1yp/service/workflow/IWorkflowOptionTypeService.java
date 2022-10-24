@@ -20,4 +20,7 @@ public interface IWorkflowOptionTypeService {
      * 更新数据源定义
      */
     void updateType(WorkflowOptionTypeUpdateParam param);
+
+    void deleteType(String id);
+
 }

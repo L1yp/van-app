@@ -22,7 +22,6 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     @Override
     @Transactional
     public void createMenu(MenuCreateParam param) {
-        User loginUser = RequestUtils.getLoginUser();
         Menu menu = new Menu();
         BeanCopierUtil.copy(param, menu);
         save(menu);
@@ -35,7 +34,6 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
         if (count == null || count == 0) {
             throw new RuntimeException("ID NOT FOUND");
         }
-        User loginUser = RequestUtils.getLoginUser();
         Menu menu = new Menu();
         BeanCopierUtil.copy(param, menu);
         getBaseMapper().updateById(menu);

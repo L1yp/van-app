@@ -51,7 +51,6 @@ public class WorkflowFieldDefServiceImpl extends ServiceImpl<WorkflowFieldDefMap
     @Override
     @Transactional
     public void addField(WorkflowFieldDefAddParam param) {
-        User loginUser = RequestUtils.getLoginUser();
 
         WorkflowFieldDef workflowFieldDef = new WorkflowFieldDef();
         BeanCopierUtil.copy(param, workflowFieldDef);
@@ -69,7 +68,6 @@ public class WorkflowFieldDefServiceImpl extends ServiceImpl<WorkflowFieldDefMap
     @Override
     @Transactional
     public void updateField(WorkflowFieldDefUpdateParam param) {
-        User loginUser = RequestUtils.getLoginUser();
         WorkflowFieldDef workflowFieldDef = new WorkflowFieldDef();
         BeanCopierUtil.copy(param, workflowFieldDef);
         updateById(workflowFieldDef);
@@ -117,7 +115,6 @@ public class WorkflowFieldDefServiceImpl extends ServiceImpl<WorkflowFieldDefMap
         if (workflowFieldDef == null) {
             throw new VanException(400, "不存在的字段");
         }
-        User loginUser = RequestUtils.getLoginUser();
         WorkflowFieldRef workflowFieldRef = new WorkflowFieldRef();
         workflowFieldRef.setFieldId(param.getFieldId());
         workflowFieldRef.setWfKey(param.getWfKey());

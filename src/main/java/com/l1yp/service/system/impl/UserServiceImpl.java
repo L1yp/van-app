@@ -159,7 +159,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new VanException(400, "用户ID不存在");
         }
 
-        User loginUser = RequestUtils.getLoginUser();
         User user = new User();
         BeanCopierUtil.copy(param, user);
         if (StringUtils.isNotBlank(param.getNickname()) && !nowUser.getNickname().equals(param.getNickname())) {
@@ -199,7 +198,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     @Transactional
     public void bindRole(UserBindRoleParam param) {
-        User loginUser = RequestUtils.getLoginUser();
         userRoleService.getBaseMapper().deleteByUid(param.getUid());
         List<UserRole> userRoles = new ArrayList<>();
         for (String roleId : param.getRoleIds()) {

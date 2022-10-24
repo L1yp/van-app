@@ -23,9 +23,6 @@ public class WorkflowTypeVerServiceImpl extends ServiceImpl<WorkflowTypeVerMappe
     @Override
     @Transactional
     public void copy(WorkflowTypeVerCopyParam param) {
-
-        User loginUser = RequestUtils.getLoginUser();
-
         WorkflowTypeVer workflowTypeVer = getById(param.getId());
         if (workflowTypeVer == null) {
             throw new VanException(400, "找不到源版本");

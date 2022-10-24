@@ -30,7 +30,6 @@ public class WorkflowOptionValueServiceImpl extends ServiceImpl<WorkflowOptionVa
     @Override
     @Transactional
     public void addValue(WorkflowOptionValueAddParam param) {
-        User loginUser = RequestUtils.getLoginUser();
         WorkflowOptionValue workflowOptionValue = new WorkflowOptionValue();
         BeanCopierUtil.copy(param, workflowOptionValue);
         save(workflowOptionValue);
@@ -40,9 +39,24 @@ public class WorkflowOptionValueServiceImpl extends ServiceImpl<WorkflowOptionVa
     @Override
     @Transactional
     public void updateValue(WorkflowOptionValueUpdateParam param) {
-        User loginUser = RequestUtils.getLoginUser();
         WorkflowOptionValue workflowOptionValue = new WorkflowOptionValue();
         BeanCopierUtil.copy(param, workflowOptionValue);
+        updateById(workflowOptionValue);
+    }
+
+    @Override
+    public void deleteOptionValue(String valueId) {
+        WorkflowOptionValue workflowOptionValue = new WorkflowOptionValue();
+        workflowOptionValue.setId(valueId);
+        workflowOptionValue.setDisabled(true);
+        updateById(workflowOptionValue);
+    }
+
+    @Override
+    public void resetOptionValue(String valueId) {
+        WorkflowOptionValue workflowOptionValue = new WorkflowOptionValue();
+        workflowOptionValue.setId(valueId);
+        workflowOptionValue.setDisabled(false);
         updateById(workflowOptionValue);
     }
 }
