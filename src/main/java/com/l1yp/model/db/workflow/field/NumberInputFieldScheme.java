@@ -1,7 +1,11 @@
 package com.l1yp.model.db.workflow.field;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies.LowerCamelCaseStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import java.math.BigDecimal;
 
+@JsonNaming(LowerCamelCaseStrategy.class)
 public class NumberInputFieldScheme extends FieldScheme {
 
     /**

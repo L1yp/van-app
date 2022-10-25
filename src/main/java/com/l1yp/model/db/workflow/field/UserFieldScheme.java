@@ -2,12 +2,15 @@ package com.l1yp.model.db.workflow.field;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies.LowerCamelCaseStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.l1yp.model.db.workflow.field.UserFieldScheme.ClassUserFieldScheme;
 import com.l1yp.model.db.workflow.field.UserFieldScheme.FixedUserFieldScheme;
 
 import java.util.List;
 
 
+@JsonNaming(LowerCamelCaseStrategy.class)
 public class UserFieldScheme extends FieldScheme {
 
     private Boolean multiple;
@@ -37,6 +40,7 @@ public class UserFieldScheme extends FieldScheme {
             @JsonSubTypes.Type(value = FixedUserFieldScheme.class, name = "FIXED"),
             @JsonSubTypes.Type(value = UserFieldSchemeContent.class, name = "ALL"),
     })
+    @JsonNaming(LowerCamelCaseStrategy.class)
     public static class UserFieldSchemeContent {
 
         private UserOptionFrom from;

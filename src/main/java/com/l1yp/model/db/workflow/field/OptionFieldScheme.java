@@ -2,13 +2,13 @@ package com.l1yp.model.db.workflow.field;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.l1yp.model.db.workflow.field.OptionFieldScheme.ClassOptionValueFieldScheme;
-import com.l1yp.model.db.workflow.field.OptionFieldScheme.DefaultOptionValueFieldScheme;
-import com.l1yp.model.db.workflow.field.OptionFieldScheme.TableOptionValueFieldScheme;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies.LowerCamelCaseStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import java.util.List;
 
 
+@JsonNaming(LowerCamelCaseStrategy.class)
 public class OptionFieldScheme extends FieldScheme {
 
     /**
@@ -19,7 +19,6 @@ public class OptionFieldScheme extends FieldScheme {
     /**
      * 选项来源
      */
-
     private OptionFieldContentScheme optionContent;
 
     public String getComponent() {
@@ -59,6 +58,7 @@ public class OptionFieldScheme extends FieldScheme {
             @JsonSubTypes.Type(value = ClassOptionValueFieldScheme.class, name = "CLASS"),
             @JsonSubTypes.Type(value = TableOptionValueFieldScheme.class, name = "TABLE"),
     })
+    @JsonNaming(LowerCamelCaseStrategy.class)
     public static class OptionFieldContentScheme {
 
         private OptionValueFrom from;

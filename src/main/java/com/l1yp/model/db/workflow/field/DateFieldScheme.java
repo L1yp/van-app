@@ -1,5 +1,9 @@
 package com.l1yp.model.db.workflow.field;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies.LowerCamelCaseStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
+@JsonNaming(LowerCamelCaseStrategy.class)
 public class DateFieldScheme extends FieldScheme {
 
     private DateType dateType;
@@ -13,9 +17,6 @@ public class DateFieldScheme extends FieldScheme {
      * 值格式
      */
     private String valueFormat;
-
-
-    private String defaultValue;
 
     public DateType getDateType() {
         return dateType;
@@ -41,13 +42,6 @@ public class DateFieldScheme extends FieldScheme {
         this.valueFormat = valueFormat;
     }
 
-    public String getDefaultValue() {
-        return defaultValue;
-    }
-
-    public void setDefaultValue(String defaultValue) {
-        this.defaultValue = defaultValue;
-    }
 
     public enum DateType {
         year,

@@ -2,6 +2,8 @@ package com.l1yp.model.db.workflow.field;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies.LowerCamelCaseStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type", visible = true)
 @JsonSubTypes({
@@ -13,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = DateFieldScheme.class, name = "date"),
         @JsonSubTypes.Type(value = DateRangeFieldScheme.class, name = "date-range"),
 })
+@JsonNaming(LowerCamelCaseStrategy.class)
 public class FieldScheme {
 
     private String type;

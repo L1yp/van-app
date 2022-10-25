@@ -1,7 +1,11 @@
 package com.l1yp.model.db.workflow.field;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies.LowerCamelCaseStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import java.util.List;
 
+@JsonNaming(LowerCamelCaseStrategy.class)
 public class DateRangeFieldScheme extends FieldScheme {
 
     private DateRangeType dateRangeType;
@@ -16,8 +20,6 @@ public class DateRangeFieldScheme extends FieldScheme {
      */
     private String valueFormat;
 
-
-    private List<String> defaultValue;
 
     public DateRangeType getDateRangeType() {
         return dateRangeType;
@@ -41,14 +43,6 @@ public class DateRangeFieldScheme extends FieldScheme {
 
     public void setValueFormat(String valueFormat) {
         this.valueFormat = valueFormat;
-    }
-
-    public List<String> getDefaultValue() {
-        return defaultValue;
-    }
-
-    public void setDefaultValue(List<String> defaultValue) {
-        this.defaultValue = defaultValue;
     }
 
     public enum DateRangeType {
