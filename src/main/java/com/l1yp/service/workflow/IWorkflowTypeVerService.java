@@ -4,6 +4,7 @@ import com.l1yp.model.param.workflow.WorkflowTypeVerActiveParam;
 import com.l1yp.model.param.workflow.WorkflowTypeVerCopyParam;
 import com.l1yp.model.param.workflow.WorkflowTypeVerPendingParam;
 import com.l1yp.model.param.workflow.WorkflowTypeVerUpdateXmlParam;
+import com.l1yp.model.view.workflow.WorkflowTypeVerView;
 
 public interface IWorkflowTypeVerService {
     /**
@@ -27,4 +28,5 @@ public interface IWorkflowTypeVerService {
      */
     void pendingVer(WorkflowTypeVerPendingParam param);
 
+    WorkflowTypeVerView findVer(String verId);
 }

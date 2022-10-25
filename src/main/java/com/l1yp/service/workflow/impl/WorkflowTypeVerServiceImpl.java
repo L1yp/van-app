@@ -9,6 +9,7 @@ import com.l1yp.model.param.workflow.WorkflowTypeVerActiveParam;
 import com.l1yp.model.param.workflow.WorkflowTypeVerCopyParam;
 import com.l1yp.model.param.workflow.WorkflowTypeVerPendingParam;
 import com.l1yp.model.param.workflow.WorkflowTypeVerUpdateXmlParam;
+import com.l1yp.model.view.workflow.WorkflowTypeVerView;
 import com.l1yp.service.workflow.IWorkflowTypeVerService;
 import com.l1yp.util.RequestUtils;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ public class WorkflowTypeVerServiceImpl extends ServiceImpl<WorkflowTypeVerMappe
         newVer.setStatus(WorkflowTypeVer.PENDING);
         newVer.setXml(workflowTypeVer.getXml());
 
+
         save(newVer);
 
     }
@@ -58,11 +60,22 @@ public class WorkflowTypeVerServiceImpl extends ServiceImpl<WorkflowTypeVerMappe
             throw new VanException(400, "找不到源版本");
         }
         getBaseMapper().pendingAllByWfKey(workflowTypeVer.getWfKey());
+        getBaseMapper().activeVer(param.getId());
+        // TODO: 自动部署
     }
 
     @Override
     @Transactional
     public void pendingVer(WorkflowTypeVerPendingParam param) {
-        getBaseMapper().activeVer(param.getId());
+        getBaseMapper().pendingVer(param.getId());
+    }
+
+    @Override
+    public WorkflowTypeVerView findVer(String verId) {
+        WorkflowTypeVer workflowTypeVer = getById(verId);
+        if (workflowTypeVer == null) {
+            throw new VanException(400, "id有错误");
+        }
+        return workflowTypeVer.toView();
     }
 }

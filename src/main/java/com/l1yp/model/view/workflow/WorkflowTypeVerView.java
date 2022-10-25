@@ -14,6 +14,10 @@ public class WorkflowTypeVerView {
 
     private Integer status;
 
+    private String xml;
+
+    private String processDefinitionId;
+
     private String updateBy;
 
     private Date updateTime;
@@ -60,6 +64,22 @@ public class WorkflowTypeVerView {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getXml() {
+        return xml;
+    }
+
+    public void setXml(String xml) {
+        this.xml = xml;
+    }
+
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
+    }
+
+    public void setProcessDefinitionId(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
     }
 
     public String getUpdateBy() {

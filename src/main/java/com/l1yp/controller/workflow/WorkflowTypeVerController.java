@@ -6,11 +6,14 @@ import com.l1yp.model.param.workflow.WorkflowTypeVerActiveParam;
 import com.l1yp.model.param.workflow.WorkflowTypeVerCopyParam;
 import com.l1yp.model.param.workflow.WorkflowTypeVerPendingParam;
 import com.l1yp.model.param.workflow.WorkflowTypeVerUpdateXmlParam;
+import com.l1yp.model.view.workflow.WorkflowTypeVerView;
 import com.l1yp.service.workflow.IWorkflowTypeVerService;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -23,6 +26,11 @@ public class WorkflowTypeVerController {
 
     @Resource
     IWorkflowTypeVerService workflowTypeVerService;
+
+    @GetMapping("/find")
+    public ResultData<WorkflowTypeVerView> findVer(@RequestParam(name = "id") String id) {
+        return ResultData.ok(workflowTypeVerService.findVer(id));
+    }
 
     @PostMapping("/copy")
     public ResultData<Void> copy(@RequestBody @Validated WorkflowTypeVerCopyParam param) {
