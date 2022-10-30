@@ -1,22 +1,20 @@
-package com.l1yp.model.view.workflow;
+package com.l1yp.model.view.modeling;
+
+import com.l1yp.model.db.modeling.ModelingOptionScope;
 
 import java.util.Date;
 
-public class WorkflowTypeVerView {
+public class ModelingOptionTypeView {
 
     private String id;
 
-    private String key;
-
-    private Integer ver;
+    private String name;
 
     private String remark;
 
-    private Integer status;
+    private ModelingOptionScope scope;
 
-    private String xml;
-
-    private String processDefinitionId;
+    private String mkey;
 
     private String updateBy;
 
@@ -34,20 +32,12 @@ public class WorkflowTypeVerView {
         this.id = id;
     }
 
-    public String getKey() {
-        return key;
+    public String getName() {
+        return name;
     }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public Integer getVer() {
-        return ver;
-    }
-
-    public void setVer(Integer ver) {
-        this.ver = ver;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getRemark() {
@@ -58,28 +48,20 @@ public class WorkflowTypeVerView {
         this.remark = remark;
     }
 
-    public Integer getStatus() {
-        return status;
+    public ModelingOptionScope getScope() {
+        return scope;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setScope(ModelingOptionScope scope) {
+        this.scope = scope;
     }
 
-    public String getXml() {
-        return xml;
+    public String getMkey() {
+        return mkey;
     }
 
-    public void setXml(String xml) {
-        this.xml = xml;
-    }
-
-    public String getProcessDefinitionId() {
-        return processDefinitionId;
-    }
-
-    public void setProcessDefinitionId(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
+    public void setMkey(String mkey) {
+        this.mkey = mkey;
     }
 
     public String getUpdateBy() {
@@ -113,5 +95,4 @@ public class WorkflowTypeVerView {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
-
 }

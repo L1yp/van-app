@@ -1,5 +1,6 @@
 package com.l1yp.service.system.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.l1yp.mapper.system.MenuMapper;
@@ -24,6 +25,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     public void createMenu(MenuCreateParam param) {
         Menu menu = new Menu();
         BeanCopierUtil.copy(param, menu);
+        if (StringUtils.isBlank(menu.getPid())) {
+            menu.setPid(null);
+        }
         save(menu);
     }
 
@@ -36,6 +40,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
         }
         Menu menu = new Menu();
         BeanCopierUtil.copy(param, menu);
+        if (StringUtils.isBlank(menu.getPid())) {
+            menu.setPid(null);
+        }
         getBaseMapper().updateById(menu);
     }
 

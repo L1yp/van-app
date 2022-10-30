@@ -19,8 +19,6 @@ import com.l1yp.service.system.impl.UserServiceImpl;
 import com.l1yp.service.workflow.IWorkflowTypeDefService;
 import com.l1yp.util.BeanCopierUtil;
 import com.l1yp.util.HexUtil;
-import com.l1yp.util.JsonTool;
-import com.l1yp.util.RequestUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -52,7 +50,7 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
         save(workflowTypeDef);
 
         WorkflowTypeVer workflowTypeVer = new WorkflowTypeVer();
-        workflowTypeVer.setWfKey(workflowTypeDef.getKey());
+        workflowTypeVer.setKey(workflowTypeDef.getKey());
         workflowTypeVer.setVer(1);
         workflowTypeVer.setStatus(WorkflowTypeVer.PENDING);
         workflowTypeVer.setRemark("初始化");
@@ -131,8 +129,8 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
 
         List<String> keys = data.stream().map(WorkflowTypeDefView::getKey).toList();
 
-        List<WorkflowTypeVer> workflowTypeVers = workflowTypeVerService.getBaseMapper().selectList(Wrappers.<WorkflowTypeVer>lambdaQuery().in(WorkflowTypeVer::getWfKey, keys));
-        Map<String, List<WorkflowTypeVerView>> verMap = workflowTypeVers.stream().map(WorkflowTypeVer::toView).collect(Collectors.groupingBy(WorkflowTypeVerView::getWfKey, Collectors.toList()));
+        List<WorkflowTypeVer> workflowTypeVers = workflowTypeVerService.getBaseMapper().selectList(Wrappers.<WorkflowTypeVer>lambdaQuery().in(WorkflowTypeVer::getKey, keys));
+        Map<String, List<WorkflowTypeVerView>> verMap = workflowTypeVers.stream().map(WorkflowTypeVer::toView).collect(Collectors.groupingBy(WorkflowTypeVerView::getKey, Collectors.toList()));
         workflowTypeVers.forEach(it -> {
             userIds.add(it.getUpdateBy());
             userIds.add(it.getCreateBy());

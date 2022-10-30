@@ -15,7 +15,7 @@ public interface WorkflowTypeVerMapper extends BaseMapper<WorkflowTypeVer> {
     @Update("UPDATE workflow_type_ver SET xml = #{param.xml} WHERE id = #{param.id}")
     void updateXml(@Param("param") WorkflowTypeVerUpdateXmlParam param);
 
-    @Update("UPDATE workflow_type_ver SET status = " + WorkflowTypeVer.PENDING + " WHERE wf_key = #{wfKey}")
+    @Update("UPDATE workflow_type_ver SET status = " + WorkflowTypeVer.PENDING + " WHERE key = #{key}")
     void pendingAllByWfKey(@Param("wfKey") String wfKey);
 
     @Update("UPDATE workflow_type_ver SET status = " + WorkflowTypeVer.ACTIVE + " WHERE id = #{id}")

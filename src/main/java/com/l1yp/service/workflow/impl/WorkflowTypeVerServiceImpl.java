@@ -3,7 +3,6 @@ package com.l1yp.service.workflow.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.l1yp.exception.VanException;
 import com.l1yp.mapper.workflow.WorkflowTypeVerMapper;
-import com.l1yp.model.db.system.User;
 import com.l1yp.model.db.workflow.model.WorkflowTypeVer;
 import com.l1yp.model.param.workflow.WorkflowTypeVerActiveParam;
 import com.l1yp.model.param.workflow.WorkflowTypeVerCopyParam;
@@ -11,11 +10,8 @@ import com.l1yp.model.param.workflow.WorkflowTypeVerPendingParam;
 import com.l1yp.model.param.workflow.WorkflowTypeVerUpdateXmlParam;
 import com.l1yp.model.view.workflow.WorkflowTypeVerView;
 import com.l1yp.service.workflow.IWorkflowTypeVerService;
-import com.l1yp.util.RequestUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Date;
 
 @Service
 public class WorkflowTypeVerServiceImpl extends ServiceImpl<WorkflowTypeVerMapper, WorkflowTypeVer> implements IWorkflowTypeVerService {
@@ -29,9 +25,9 @@ public class WorkflowTypeVerServiceImpl extends ServiceImpl<WorkflowTypeVerMappe
             throw new VanException(400, "找不到源版本");
         }
 
-        Integer maxVer = getBaseMapper().findMaxVer(workflowTypeVer.getWfKey());
+        Integer maxVer = getBaseMapper().findMaxVer(workflowTypeVer.getKey());
         WorkflowTypeVer newVer = getById(param.getId());
-        newVer.setWfKey(workflowTypeVer.getWfKey());
+        newVer.setKey(workflowTypeVer.getKey());
         newVer.setVer(maxVer + 1);
         newVer.setRemark(workflowTypeVer.getRemark());
         newVer.setStatus(WorkflowTypeVer.PENDING);
@@ -59,7 +55,7 @@ public class WorkflowTypeVerServiceImpl extends ServiceImpl<WorkflowTypeVerMappe
         if (workflowTypeVer == null) {
             throw new VanException(400, "找不到源版本");
         }
-        getBaseMapper().pendingAllByWfKey(workflowTypeVer.getWfKey());
+        getBaseMapper().pendingAllByWfKey(workflowTypeVer.getKey());
         getBaseMapper().activeVer(param.getId());
         // TODO: 自动部署
     }

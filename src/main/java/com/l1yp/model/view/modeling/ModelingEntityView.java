@@ -1,22 +1,19 @@
-package com.l1yp.model.view.workflow;
+package com.l1yp.model.view.modeling;
+
 
 import java.util.Date;
 
-public class WorkflowTypeVerView {
+public class ModelingEntityView {
 
     private String id;
 
-    private String key;
+    private String mkey;
 
-    private Integer ver;
+    private String name;
 
     private String remark;
 
     private Integer status;
-
-    private String xml;
-
-    private String processDefinitionId;
 
     private String updateBy;
 
@@ -34,20 +31,20 @@ public class WorkflowTypeVerView {
         this.id = id;
     }
 
-    public String getKey() {
-        return key;
+    public String getMkey() {
+        return mkey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setMkey(String mkey) {
+        this.mkey = mkey;
     }
 
-    public Integer getVer() {
-        return ver;
+    public String getName() {
+        return name;
     }
 
-    public void setVer(Integer ver) {
-        this.ver = ver;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getRemark() {
@@ -64,22 +61,6 @@ public class WorkflowTypeVerView {
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    public String getXml() {
-        return xml;
-    }
-
-    public void setXml(String xml) {
-        this.xml = xml;
-    }
-
-    public String getProcessDefinitionId() {
-        return processDefinitionId;
-    }
-
-    public void setProcessDefinitionId(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
     }
 
     public String getUpdateBy() {
@@ -113,5 +94,4 @@ public class WorkflowTypeVerView {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
-
 }

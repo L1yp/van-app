@@ -27,7 +27,6 @@ public class Menu {
 
     private String icon;
 
-    @TableField("order_no")
     private Integer orderNo;
 
     private Boolean closeable;

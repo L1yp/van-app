@@ -1,48 +1,33 @@
-package com.l1yp.model.db.workflow.model;
+package com.l1yp.model.db.modeling;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.l1yp.model.view.workflow.WorkflowTypeVerView;
+import com.l1yp.model.view.modeling.ModelingOptionValueView;
 import com.l1yp.util.BeanCopierUtil;
 
 import java.util.Date;
 
-/**
- * 流程类型版本表
- */
-@TableName("workflow_type_ver")
-public class WorkflowTypeVer {
-
-    public static final int PENDING = 0;
-    public static final int ACTIVE = 1;
+@TableName("modeling_option_value")
+public class ModelingOptionValue {
 
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
 
     /**
-     * 流程类型标识
+     * 数据源类型Id
      */
-    @TableField("`key`")
-    private String key;
+    private String typeId;
 
-    private Integer ver;
+    private String name;
 
-    private String xml;
+    private Boolean disabled;
 
-    private String processDefinitionId;
+    private String pid;
 
-    /**
-     * 版本升级说明
-     */
-    private String remark;
-
-    /**
-     * 0 = 挂起, 1 = 激活
-     */
-    private Integer status;
+    private Integer orderNo;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updateBy;
@@ -56,6 +41,7 @@ public class WorkflowTypeVer {
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
+
     public String getId() {
         return id;
     }
@@ -64,52 +50,44 @@ public class WorkflowTypeVer {
         this.id = id;
     }
 
-    public String getKey() {
-        return key;
+    public String getTypeId() {
+        return typeId;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setTypeId(String typeId) {
+        this.typeId = typeId;
     }
 
-    public Integer getVer() {
-        return ver;
+    public String getName() {
+        return name;
     }
 
-    public void setVer(Integer ver) {
-        this.ver = ver;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getXml() {
-        return xml;
+    public Boolean getDisabled() {
+        return disabled;
     }
 
-    public void setXml(String xml) {
-        this.xml = xml;
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
     }
 
-    public String getProcessDefinitionId() {
-        return processDefinitionId;
+    public String getPid() {
+        return pid;
     }
 
-    public void setProcessDefinitionId(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
+    public void setPid(String pid) {
+        this.pid = pid;
     }
 
-    public String getRemark() {
-        return remark;
+    public Integer getOrderNo() {
+        return orderNo;
     }
 
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setOrderNo(Integer orderNo) {
+        this.orderNo = orderNo;
     }
 
     public String getUpdateBy() {
@@ -144,8 +122,8 @@ public class WorkflowTypeVer {
         this.createTime = createTime;
     }
 
-    public WorkflowTypeVerView toView() {
-        WorkflowTypeVerView view = new WorkflowTypeVerView();
+    public ModelingOptionValueView toView() {
+        ModelingOptionValueView view = new ModelingOptionValueView();
         BeanCopierUtil.copy(this, view);
         return view;
     }
