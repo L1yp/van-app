@@ -29,10 +29,23 @@ public class LoginResult {
     }
 
     public static class UserInfo {
+
+        private String id;
+
         private String username;
         private String nickname;
         private String phone;
         private String avatar;
+
+        private String deptId;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
 
         public String getUsername() {
             return username;
@@ -64,6 +77,14 @@ public class LoginResult {
 
         public void setAvatar(String avatar) {
             this.avatar = avatar;
+        }
+
+        public String getDeptId() {
+            return deptId;
+        }
+
+        public void setDeptId(String deptId) {
+            this.deptId = deptId;
         }
     }
 

@@ -221,4 +221,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         List<UserRole> userRoles = userRoleService.getBaseMapper().selectList(Wrappers.<UserRole>lambdaQuery().eq(UserRole::getUid, uid));
         return userRoles.stream().map(UserRole::getRoleId).toList();
     }
+
+    @Override
+    public List<UserView> listUserViewByIdList(List<String> idList) {
+        List<User> users = listByIds(idList);
+        return users.stream().map(User::toView).toList();
+    }
 }

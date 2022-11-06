@@ -12,7 +12,7 @@ import com.l1yp.model.db.modeling.permission.ExpressionModel;
 import java.util.Date;
 import java.util.List;
 
-@TableName("modeling_permission")
+@TableName(value = "modeling_permission", autoResultMap = true)
 public class ModelingPermission {
 
     @TableId(type = IdType.ASSIGN_ID)
@@ -24,7 +24,7 @@ public class ModelingPermission {
 
     private String mkey;
 
-    private int flags;
+    private Integer flags;
 
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<ExpressionModel> content;
@@ -73,11 +73,11 @@ public class ModelingPermission {
         this.mkey = mkey;
     }
 
-    public int getFlags() {
+    public Integer getFlags() {
         return flags;
     }
 
-    public void setFlags(int flags) {
+    public void setFlags(Integer flags) {
         this.flags = flags;
     }
 

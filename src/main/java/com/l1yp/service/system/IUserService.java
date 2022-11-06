@@ -40,4 +40,5 @@ public interface IUserService {
 
     List<String> findRoles(String uid);
 
+    List<UserView> listUserViewByIdList(List<String> idList);
 }

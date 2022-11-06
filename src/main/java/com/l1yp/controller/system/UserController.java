@@ -73,4 +73,9 @@ public class UserController {
         return ResultData.ok(userService.findPartTimeDept());
     }
 
+    @GetMapping("/list/{id_list}")
+    public ResultData<List<UserView>> listUserViewByIdList(@PathVariable("id_list") List<String> idList) {
+        return ResultData.ok(userService.listUserViewByIdList(idList));
+    }
+
 }

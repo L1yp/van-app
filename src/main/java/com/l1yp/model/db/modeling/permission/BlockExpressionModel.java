@@ -40,24 +40,24 @@ public class BlockExpressionModel {
         /**
          * user id list
          */
-        private List<String> users;
-        private String dptId;
+        private List<String> userIdList;
+        private String deptId;
         private boolean cascader;
 
-        public List<String> getUsers() {
-            return users;
+        public List<String> getUserIdList() {
+            return userIdList;
         }
 
-        public void setUsers(List<String> users) {
-            this.users = users;
+        public void setUserIdList(List<String> userIdList) {
+            this.userIdList = userIdList;
         }
 
-        public String getDptId() {
-            return dptId;
+        public String getDeptId() {
+            return deptId;
         }
 
-        public void setDptId(String dptId) {
-            this.dptId = dptId;
+        public void setDeptId(String deptId) {
+            this.deptId = deptId;
         }
 
         public boolean isCascader() {
@@ -71,15 +71,15 @@ public class BlockExpressionModel {
 
     public static class DeptFieldConditionModel extends FieldConditionModel {
 
-        private String dptId;
+        private String deptId;
         private boolean cascader;
 
-        public String getDptId() {
-            return dptId;
+        public String getDeptId() {
+            return deptId;
         }
 
-        public void setDptId(String dptId) {
-            this.dptId = dptId;
+        public void setDeptId(String deptId) {
+            this.deptId = deptId;
         }
 
         public boolean isCascader() {
@@ -91,15 +91,15 @@ public class BlockExpressionModel {
         }
     }
 
-    public static class OptionFieldConditionModel {
-        private List<String> selected;
+    public static class OptionFieldConditionModel extends FieldConditionModel {
+        private List<String> optionValueIdList;
 
-        public List<String> getSelected() {
-            return selected;
+        public List<String> getOptionValueIdList() {
+            return optionValueIdList;
         }
 
-        public void setSelected(List<String> selected) {
-            this.selected = selected;
+        public void setOptionValueIdList(List<String> optionValueIdList) {
+            this.optionValueIdList = optionValueIdList;
         }
     }
 
@@ -140,14 +140,14 @@ public class BlockExpressionModel {
     }
 
     public static class TextFieldConditionModel {
-        private String value;
+        private String text;
 
-        public String getValue() {
-            return value;
+        public String getText() {
+            return text;
         }
 
-        public void setValue(String value) {
-            this.value = value;
+        public void setText(String text) {
+            this.text = text;
         }
     }
 
@@ -178,7 +178,11 @@ public class BlockExpressionModel {
     }
 
     public enum ConditionOperator {
-        EQ, LIKE, NOT_LIKE,
+        EQ,
+        LIKE,
+        NOT_LIKE,
+        ;
+
     }
 
 }

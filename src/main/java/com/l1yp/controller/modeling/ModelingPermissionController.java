@@ -8,6 +8,7 @@ import com.l1yp.service.modeling.impl.ModelingPermissionServiceImpl;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,7 +28,7 @@ public class ModelingPermissionController {
 
 
     @PostMapping("/bind")
-    public ResultData<Void> getPermissionContent(@Validated ModelingPermissionBindParam param) {
+    public ResultData<Void> getPermissionContent(@Validated @RequestBody ModelingPermissionBindParam param) {
         modelingPermissionService.bingPermission(param);
         return ResultData.OK;
     }

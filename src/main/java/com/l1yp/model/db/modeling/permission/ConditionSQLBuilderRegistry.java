@@ -8,15 +8,12 @@ public class ConditionSQLBuilderRegistry {
     public static final Map<String, IFieldCondition> registry = new HashMap<>();
 
     static {
-        registry.put("input", new StrConditionBuilder());
-        registry.put("InputNumber", new NumberConditionBuilder());
-        registry.put("select", new OptionConditionBuilder());
-        registry.put("cascader", new OptionConditionBuilder());
-        registry.put("checkbox", new OptionConditionBuilder());
-        registry.put("radio", new OptionConditionBuilder());
-        registry.put("UserSelect", new UserConditionBuilder());
-        registry.put("MDepartment", new DeptConditionBuilder());
-        registry.put("DatePicker", new DateConditionBuilder());
+        registry.put("text", new StrConditionBuilder());
+        registry.put("number", new NumberConditionBuilder());
+        registry.put("option", new OptionConditionBuilder());
+        registry.put("user", new UserConditionBuilder());
+        registry.put("dept", new DeptConditionBuilder());
+        registry.put("date", new DateConditionBuilder());
     }
 
 
