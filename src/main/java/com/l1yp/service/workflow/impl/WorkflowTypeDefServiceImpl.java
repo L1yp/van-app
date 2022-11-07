@@ -4,8 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
+import com.l1yp.mapper.modeling.ModelingEntityMapper;
+import com.l1yp.mapper.modeling.ModelingFieldMapper;
 import com.l1yp.mapper.workflow.WorkflowTypeDefMapper;
 import com.l1yp.model.common.PageData;
+import com.l1yp.model.db.modeling.ModelingField;
+import com.l1yp.model.db.modeling.ModelingField.FieldScope;
+import com.l1yp.model.db.modeling.field.FieldScheme;
 import com.l1yp.model.db.system.User;
 import com.l1yp.model.db.workflow.model.WorkflowTypeDef;
 import com.l1yp.model.db.workflow.model.WorkflowTypeVer;
@@ -15,16 +20,21 @@ import com.l1yp.model.param.workflow.WorkflowTypeDefUpdateParam;
 import com.l1yp.model.view.system.UserView;
 import com.l1yp.model.view.workflow.WorkflowTypeDefView;
 import com.l1yp.model.view.workflow.WorkflowTypeVerView;
+import com.l1yp.service.modeling.impl.ModelingFieldServiceImpl;
 import com.l1yp.service.system.impl.UserServiceImpl;
 import com.l1yp.service.workflow.IWorkflowTypeDefService;
 import com.l1yp.util.BeanCopierUtil;
 import com.l1yp.util.HexUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +49,17 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
 
     @Resource
     UserServiceImpl userService;
+
+    @Resource
+    ModelingFieldMapper modelingFieldMapper;
+
+    @Resource
+    ModelingEntityMapper modelingEntityMapper;
+
+    @Resource
+    ModelingFieldServiceImpl modelingFieldService;
+
+    private final Logger log = LoggerFactory.getLogger(WorkflowTypeDefServiceImpl.class);
 
     @Override
     @Transactional
@@ -74,7 +95,44 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
         xml = xml.replace("{{START_EVENT_ID}}", "startEvent_" + HexUtil.randomCode(7));
         workflowTypeVer.setXml(xml);
         workflowTypeVerService.save(workflowTypeVer);
+
+
+
+        List<ModelingField> defaultEntityFields = modelingFieldMapper.selectList(Wrappers.<ModelingField>lambdaQuery().eq(ModelingField::getScope, FieldScope.WORKFLOW_DEFAULT));
+        List<String> columnDefs = new ArrayList<>();
+        Set<String> notNullFields = new HashSet<>(Arrays.asList("id", "process_instance_id", "code", "update_by", "update_time", "create_by", "create_time"));
+        String primaryField = "id";
+        for (ModelingField field : defaultEntityFields) {
+            FieldScheme scheme = field.getScheme();
+            String dbType = modelingFieldService.getDbType(field.getWidth(), scheme);
+            String nullable = "NULL";
+            String primaryKey = "";
+            if (primaryField.equals(field.getField())) {
+                primaryKey = "PRIMARY KEY";
+            }
+            if (notNullFields.contains(field.getField())) {
+                nullable = "NOT NULL";
+            }
+            String columnDef = String.format("`%s` %s %s %s COMMENT '%s'", field.getField(), dbType, nullable, primaryKey, field.getLabel());
+            if (field.getField().equals("create_time")) {
+                columnDef = "create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'";
+            }
+            if (field.getField().equals("create_time")) {
+                columnDef = "create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间'";
+            }
+            columnDefs.add(columnDef);
+        }
+        String tableName = WorkflowTypeDef.buildEntityTableName(param.getKey());
+
+        // TODO: 防止SQL注入
+        String createDDL = columnDefs.stream().collect(Collectors.joining(",\n", "CREATE TABLE `" + tableName + "` (\n"  , "\n) COMMENT '" + param.getRemark() + "'"));
+        log.info("create table ddl: {}", createDDL);
+        modelingEntityMapper.createTable(createDDL);
+
     }
+
+
+
 
 
     @Override
