@@ -11,12 +11,17 @@ import com.l1yp.model.common.PageData;
 import com.l1yp.model.db.modeling.ModelingEntity;
 import com.l1yp.model.db.modeling.ModelingField.FieldModule;
 import com.l1yp.model.db.modeling.ModelingField.FieldScope;
+import com.l1yp.model.db.modeling.ModelingOptionValue;
 import com.l1yp.model.db.modeling.ModelingView;
 import com.l1yp.model.db.modeling.ModelingView.Collation;
 import com.l1yp.model.db.modeling.ModelingViewColumn;
 import com.l1yp.model.db.modeling.field.DateFieldScheme;
+import com.l1yp.model.db.modeling.field.DeptFieldScheme;
+import com.l1yp.model.db.modeling.field.FieldScheme;
+import com.l1yp.model.db.modeling.field.FieldType;
 import com.l1yp.model.db.modeling.field.OptionFieldScheme;
 import com.l1yp.model.db.modeling.field.UserFieldScheme;
+import com.l1yp.model.db.system.Department;
 import com.l1yp.model.db.system.User;
 import com.l1yp.model.db.workflow.model.WorkflowTypeDef;
 import com.l1yp.model.param.modeling.entity.ModelFindPageParam;
@@ -27,12 +32,15 @@ import com.l1yp.model.param.modeling.view.ModelingViewFindParam;
 import com.l1yp.model.param.modeling.view.ModelingViewSearchParam;
 import com.l1yp.model.param.modeling.view.ModelingViewUpdateParam;
 import com.l1yp.model.view.modeling.ModelingFieldDefView;
+import com.l1yp.model.view.modeling.ModelingOptionValueView;
 import com.l1yp.model.view.modeling.ModelingViewColumnView;
 import com.l1yp.model.view.modeling.ModelingViewDetailInfo;
 import com.l1yp.model.view.modeling.ModelingViewSimpleInfo;
 import com.l1yp.model.view.modeling.ModelingViewView;
+import com.l1yp.model.view.system.DepartmentView;
 import com.l1yp.model.view.system.UserView;
 import com.l1yp.service.modeling.IModelingViewService;
+import com.l1yp.service.system.impl.DepartmentServiceImpl;
 import com.l1yp.service.system.impl.UserServiceImpl;
 import com.l1yp.util.BeanCopierUtil;
 import com.l1yp.util.RequestUtils;
@@ -43,11 +51,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -61,6 +73,12 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
 
     @Resource
     UserServiceImpl userService;
+
+    @Resource
+    DepartmentServiceImpl departmentService;
+
+    @Resource
+    ModelingOptionValueServiceImpl optionValueService;
 
     @Resource
     ModelingFieldServiceImpl modelingFieldService;
@@ -235,7 +253,11 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
         List<ModelingFieldDefView> fields = modelingFieldService.findFields(fieldParam);
         Map<String, ModelingFieldDefView> fieldNameMap = fields.stream().collect(Collectors.toMap(ModelingFieldDefView::getField, it -> it));
 
-        String columns = fields.stream().filter(it -> it.getScope() == FieldScope.ENTITY_DEFAULT || it.getScope() == FieldScope.WORKFLOW_DEFAULT).map(it -> "`" + it.getField() + "`").collect(Collectors.joining(","));
+        List<String> columnNames = new ArrayList<>(param.getConditionMap().keySet());
+        columnNames.add("id");
+//        columnNames.addAll(fields.stream().filter(it -> it.getScope() == FieldScope.ENTITY_DEFAULT || it.getScope() == FieldScope.WORKFLOW_DEFAULT).map(ModelingFieldDefView::getField).toList());
+
+        String columns = columnNames.stream().map(it -> "`" + it + "`").collect(Collectors.joining(","));
 
         List<Object> args = new ArrayList<>();
         // PERMISSION
@@ -323,10 +345,75 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
         pageSql = pageSql + String.format(" LIMIT %d,%d", param.getOffset(), param.getPageSize());
 
         List<Map<String, Object>> data = getBaseMapper().pageEntity(pageSql, args);
+
+        List<ModelingFieldDefView> columnList = columnNames.stream().map(fieldNameMap::get).toList();
+
+        Set<String> optionIds = new HashSet<>();
+        Set<String> userIds = new HashSet<>();
+        Set<String> deptIds = new HashSet<>();
+        for (ModelingFieldDefView field : columnList) {
+            FieldScheme scheme = field.getScheme();
+            FieldType type = scheme.getType();
+            if (type == FieldType.option) {
+                OptionFieldScheme optionFieldScheme = (OptionFieldScheme) scheme;
+                collectOptionFieldId(data, optionIds, field, optionFieldScheme.getMultiple());
+            }
+            else if (type == FieldType.user) {
+                UserFieldScheme userFieldScheme = (UserFieldScheme) scheme;
+                collectOptionFieldId(data, userIds, field, userFieldScheme.getMultiple());
+            }
+            else if (type == FieldType.dept) {
+                DeptFieldScheme deptFieldScheme = (DeptFieldScheme) scheme;
+                collectOptionFieldId(data, deptIds, field, deptFieldScheme.getMultiple());
+            }
+        }
+        log.info("optionIds: {}, userIds: {}, deptIds: {}", optionIds, userIds, deptIds);
+        Map<String, Object> additional = new HashMap<>();
+        if (!CollectionUtils.isEmpty(userIds)) {
+            Map<String, UserView> userMap = userService.listByIds(userIds).stream().map(User::toView).collect(Collectors.toMap(UserView::getId, it -> it));
+            additional.put("userMap", userMap);
+        }
+        if (!CollectionUtils.isEmpty(userIds)) {
+            Map<String, UserView> userMap = userService.listByIds(userIds).stream().map(User::toView).collect(Collectors.toMap(UserView::getId, it -> it));
+            additional.put("userMap", userMap);
+        }
+        if (!CollectionUtils.isEmpty(optionIds)) {
+            Map<String, ModelingOptionValueView> optionMap = optionValueService.listByIds(optionIds).stream().map(ModelingOptionValue::toView).collect(Collectors.toMap(ModelingOptionValueView::getId, it -> it));
+            additional.put("optionMap", optionMap);
+        }
+
+
         PageData<Map<String, Object>> pageData = new PageData<>(param);
         pageData.setTotal(count);
         pageData.setData(data);
+        pageData.setAdditional(additional);
 
         return pageData;
+    }
+
+    private void collectOptionFieldId(List<Map<String, Object>> data, Set<String> fieldValueIds, ModelingFieldDefView field, boolean multiple) {
+        if (multiple) {
+            data.stream()
+                    .map(it -> it.get(field.getField()))
+                    .filter(Objects::nonNull)
+                    .map(String::valueOf)
+                    .filter(StringUtils::isNotBlank)
+                    .map(it -> Arrays.asList(it.split(",")))
+                    .flatMap(Collection::stream)
+                    .forEach(fieldValueIds::add);
+        } else {
+            data.forEach(it -> {
+                Object value = it.get(field.getField());
+                if (value instanceof Number number) {
+                    it.put(field.getField(), String.valueOf(number));
+                }
+            });
+            data.stream()
+                    .map(it -> it.get(field.getField()))
+                    .filter(Objects::nonNull)
+                    .map(String::valueOf)
+                    .filter(StringUtils::isNotBlank)
+                    .forEach(fieldValueIds::add);
+        }
     }
 }
