@@ -8,7 +8,7 @@ import com.l1yp.mapper.modeling.ModelingFieldMapper;
 import com.l1yp.mapper.modeling.ModelingFieldRefMapper;
 import com.l1yp.model.db.modeling.ModelingEntity;
 import com.l1yp.model.db.modeling.ModelingField;
-import com.l1yp.model.db.modeling.ModelingField.FieldModule;
+import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.ModelingField.FieldScope;
 import com.l1yp.model.db.modeling.ModelingFieldRef;
 import com.l1yp.model.db.modeling.field.DeptFieldScheme;
@@ -49,10 +49,10 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
         }
 
         if (StringUtils.hasText(param.getMkey())) {
-            if (param.getModule() == FieldModule.ENTITY) {
+            if (param.getModule() == ModelingModule.ENTITY) {
                 List<ModelingField> modelingFields = getBaseMapper().selectEntityFields(param);
                 return modelingFields.stream().map(ModelingField::toView).toList();
-            } else if (param.getModule() == FieldModule.WORKFLOW) {
+            } else if (param.getModule() == ModelingModule.WORKFLOW) {
                 List<ModelingField> modelingFields = getBaseMapper().selectWFFields(param);
                 return modelingFields.stream().map(ModelingField::toView).toList();
             }
@@ -150,9 +150,9 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
             String dbType = getDbType(param.getWidth(), originalField.getScheme());
 
             for (ModelingFieldRef modelingFieldRef : modelingFieldRefs) {
-                FieldModule module = modelingFieldRef.getModule();
+                ModelingModule module = modelingFieldRef.getModule();
                 String mkey = modelingFieldRef.getMkey();
-                if (module == FieldModule.ENTITY) {
+                if (module == ModelingModule.ENTITY) {
                     String tableName = ModelingEntity.buildEntityTableName(mkey);
                     // 字段label不允许修改 直接取数据库的即可
                     getBaseMapper().modifyColumn(tableName, originalField.getField(), dbType, originalField.getLabel());
@@ -227,7 +227,7 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
 
 
         String tableName;
-        if (param.getModule() == FieldModule.WORKFLOW) {
+        if (param.getModule() == ModelingModule.WORKFLOW) {
             tableName = WorkflowTypeDef.buildEntityTableName(param.getMkey());
         } else {
             tableName = ModelingEntity.buildEntityTableName(param.getMkey());
@@ -249,7 +249,7 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
         modelingFieldRefMapper.unrefField(param);
 
         String tableName;
-        if (param.getModule() == FieldModule.WORKFLOW) {
+        if (param.getModule() == ModelingModule.WORKFLOW) {
             tableName = WorkflowTypeDef.buildEntityTableName(param.getMkey());
         } else {
             tableName = ModelingEntity.buildEntityTableName(param.getMkey());

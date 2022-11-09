@@ -1,6 +1,6 @@
 package com.l1yp.model.param.modeling.field;
 
-import com.l1yp.model.db.modeling.ModelingField.FieldModule;
+import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.ModelingField.FieldScope;
 
 public class ModelingFieldFindParam {
@@ -14,15 +14,15 @@ public class ModelingFieldFindParam {
      * 查询业务实体或流程字段列表 需要传以下2个
      */
 
-    private FieldModule module;
+    private ModelingModule module;
 
     private String mkey;
 
-    public FieldModule getModule() {
+    public ModelingModule getModule() {
         return module;
     }
 
-    public void setModule(FieldModule module) {
+    public void setModule(ModelingModule module) {
         this.module = module;
     }
 

@@ -1797,6 +1797,37 @@ INSERT INTO `modeling_option_value` VALUES (1583820377780162561,1583739849538342
 UNLOCK TABLES;
 
 --
+-- Table structure for table `modeling_page`
+--
+
+DROP TABLE IF EXISTS `modeling_page`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `modeling_page` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `module` varchar(16) COLLATE utf8mb4_bin NOT NULL COMMENT '模块',
+  `mkey` varchar(64) COLLATE utf8mb4_bin NOT NULL COMMENT '模型标识',
+  `page_key` varchar(128) COLLATE utf8mb4_bin NOT NULL COMMENT '页面标识',
+  `page_scheme` json NOT NULL COMMENT '页面定义',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `page_uidx` (`module`,`mkey`,`page_key`) COMMENT '唯一标识'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='建模页面绑定';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `modeling_page`
+--
+
+LOCK TABLES `modeling_page` WRITE;
+/*!40000 ALTER TABLE `modeling_page` DISABLE KEYS */;
+/*!40000 ALTER TABLE `modeling_page` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `modeling_permission`
 --
 
@@ -2367,4 +2398,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-11-08 22:59:21
+-- Dump completed on 2022-11-09 10:40:06

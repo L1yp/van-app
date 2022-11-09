@@ -1,6 +1,5 @@
 package com.l1yp.model.view.modeling;
 
-import com.l1yp.model.db.modeling.ModelingField.FieldModule;
 import com.l1yp.model.db.modeling.ModelingView.Collation;
 
 import java.util.List;

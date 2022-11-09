@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.l1yp.model.db.modeling.ModelingField.FieldModule;
 import com.l1yp.model.view.modeling.ModelingViewColumnView;
 import com.l1yp.util.BeanCopierUtil;
 

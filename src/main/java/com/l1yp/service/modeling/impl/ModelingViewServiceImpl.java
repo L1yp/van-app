@@ -9,19 +9,16 @@ import com.l1yp.exception.VanException;
 import com.l1yp.mapper.modeling.ModelingViewMapper;
 import com.l1yp.model.common.PageData;
 import com.l1yp.model.db.modeling.ModelingEntity;
-import com.l1yp.model.db.modeling.ModelingField.FieldModule;
-import com.l1yp.model.db.modeling.ModelingField.FieldScope;
+import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.ModelingOptionValue;
 import com.l1yp.model.db.modeling.ModelingView;
 import com.l1yp.model.db.modeling.ModelingView.Collation;
 import com.l1yp.model.db.modeling.ModelingViewColumn;
-import com.l1yp.model.db.modeling.field.DateFieldScheme;
 import com.l1yp.model.db.modeling.field.DeptFieldScheme;
 import com.l1yp.model.db.modeling.field.FieldScheme;
 import com.l1yp.model.db.modeling.field.FieldType;
 import com.l1yp.model.db.modeling.field.OptionFieldScheme;
 import com.l1yp.model.db.modeling.field.UserFieldScheme;
-import com.l1yp.model.db.system.Department;
 import com.l1yp.model.db.system.User;
 import com.l1yp.model.db.workflow.model.WorkflowTypeDef;
 import com.l1yp.model.param.modeling.entity.ModelFindPageParam;
@@ -36,8 +33,6 @@ import com.l1yp.model.view.modeling.ModelingOptionValueView;
 import com.l1yp.model.view.modeling.ModelingViewColumnView;
 import com.l1yp.model.view.modeling.ModelingViewDetailInfo;
 import com.l1yp.model.view.modeling.ModelingViewSimpleInfo;
-import com.l1yp.model.view.modeling.ModelingViewView;
-import com.l1yp.model.view.system.DepartmentView;
 import com.l1yp.model.view.system.UserView;
 import com.l1yp.service.modeling.IModelingViewService;
 import com.l1yp.service.system.impl.DepartmentServiceImpl;
@@ -262,7 +257,7 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
         List<Object> args = new ArrayList<>();
         // PERMISSION
         String tableName = null;
-        if (param.getModule() == FieldModule.ENTITY) {
+        if (param.getModule() == ModelingModule.ENTITY) {
             tableName = ModelingEntity.buildEntityTableName(param.getMkey());
         } else {
             tableName = WorkflowTypeDef.buildEntityTableName(param.getMkey());

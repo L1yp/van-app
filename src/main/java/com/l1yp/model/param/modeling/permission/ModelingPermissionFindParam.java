@@ -1,12 +1,12 @@
 package com.l1yp.model.param.modeling.permission;
 
-import com.l1yp.model.db.modeling.ModelingField.FieldModule;
+import com.l1yp.model.db.modeling.ModelingModule;
 
 public class ModelingPermissionFindParam {
 
     private String roleId;
 
-    private FieldModule module;
+    private ModelingModule module;
 
     private String mkey;
 
@@ -18,11 +18,11 @@ public class ModelingPermissionFindParam {
         this.roleId = roleId;
     }
 
-    public FieldModule getModule() {
+    public ModelingModule getModule() {
         return module;
     }
 
-    public void setModule(FieldModule module) {
+    public void setModule(ModelingModule module) {
         this.module = module;
     }
 

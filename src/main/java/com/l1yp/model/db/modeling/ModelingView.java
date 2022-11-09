@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.l1yp.model.db.modeling.ModelingField.FieldModule;
+import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.view.modeling.ModelingViewView;
 import com.l1yp.util.BeanCopierUtil;
 
@@ -21,7 +21,7 @@ public class ModelingView {
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
 
-    private FieldModule module;
+    private ModelingModule module;
 
     private String mkey;
 
@@ -118,11 +118,11 @@ public class ModelingView {
         this.id = id;
     }
 
-    public FieldModule getModule() {
+    public ModelingModule getModule() {
         return module;
     }
 
-    public void setModule(FieldModule module) {
+    public void setModule(ModelingModule module) {
         this.module = module;
     }
 

@@ -1,7 +1,7 @@
 package com.l1yp.model.param.modeling.entity;
 
 import com.l1yp.model.common.PageParam;
-import com.l1yp.model.db.modeling.ModelingField.FieldModule;
+import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.ModelingView.Collation;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class ModelFindPageParam extends PageParam {
 
-    private FieldModule module;
+    private ModelingModule module;
 
     private String mkey;
 
@@ -17,11 +17,11 @@ public class ModelFindPageParam extends PageParam {
 
     private List<Collation> collation;
 
-    public FieldModule getModule() {
+    public ModelingModule getModule() {
         return module;
     }
 
-    public void setModule(FieldModule module) {
+    public void setModule(ModelingModule module) {
         this.module = module;
     }
 

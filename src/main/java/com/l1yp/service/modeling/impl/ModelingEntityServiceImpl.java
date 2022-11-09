@@ -16,7 +16,7 @@ import com.l1yp.mapper.system.UserMapper;
 import com.l1yp.model.common.PageData;
 import com.l1yp.model.db.modeling.ModelingEntity;
 import com.l1yp.model.db.modeling.ModelingField;
-import com.l1yp.model.db.modeling.ModelingField.FieldModule;
+import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.ModelingField.FieldScope;
 import com.l1yp.model.db.modeling.ModelingFieldRef;
 import com.l1yp.model.db.modeling.ModelingOptionScope;
@@ -189,7 +189,7 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
 
         // 查询字段引用列表
         List<ModelingFieldRef> refFields = modelingFieldRefMapper.selectList(Wrappers.<ModelingFieldRef>lambdaQuery()
-                .eq(ModelingFieldRef::getModule, FieldModule.ENTITY)
+                .eq(ModelingFieldRef::getModule, ModelingModule.ENTITY)
                 .eq(ModelingFieldRef::getMkey, fromEntity.getMkey()));
         if (!CollectionUtils.isEmpty(refFields)) {
             List<String> fieldIds = refFields.stream().map(ModelingFieldRef::getFieldId).toList();

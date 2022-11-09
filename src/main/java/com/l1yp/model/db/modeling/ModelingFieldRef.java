@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.l1yp.model.db.modeling.ModelingField.FieldModule;
+import com.l1yp.model.db.modeling.ModelingModule;
 
 import java.util.Date;
 
@@ -19,7 +19,7 @@ public class ModelingFieldRef {
 
     private String fieldId;
 
-    private FieldModule module;
+    private ModelingModule module;
 
     @TableField(fill = FieldFill.INSERT)
     private String createBy;
@@ -35,11 +35,11 @@ public class ModelingFieldRef {
         this.id = id;
     }
 
-    public FieldModule getModule() {
+    public ModelingModule getModule() {
         return module;
     }
 
-    public void setModule(FieldModule module) {
+    public void setModule(ModelingModule module) {
         this.module = module;
     }
 

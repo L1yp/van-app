@@ -6,40 +6,33 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
-import com.l1yp.model.db.modeling.ModelingModule;
-import com.l1yp.model.db.modeling.permission.ExpressionModel;
+import com.l1yp.model.db.modeling.page.PageScheme;
+import com.l1yp.model.view.modeling.ModelingPageView;
+import com.l1yp.util.BeanCopierUtil;
 
-import java.util.Date;
-import java.util.List;
-
-@TableName(value = "modeling_permission", autoResultMap = true)
-public class ModelingPermission {
+@TableName(value = "modeling_page", autoResultMap = true)
+public class ModelingPage {
 
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
-
-    private String roleId;
 
     private ModelingModule module;
 
     private String mkey;
 
-    private Integer flags;
+    private String pageKey;
 
     @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<ExpressionModel> content;
+    private PageScheme pageScheme;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updateBy;
-
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Date updateTime;
-
+    private String updateTime;
     @TableField(fill = FieldFill.INSERT)
     private String createBy;
-
     @TableField(fill = FieldFill.INSERT)
-    private Date createTime;
+    private String createTime;
 
     public String getId() {
         return id;
@@ -47,14 +40,6 @@ public class ModelingPermission {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(String roleId) {
-        this.roleId = roleId;
     }
 
     public ModelingModule getModule() {
@@ -73,20 +58,20 @@ public class ModelingPermission {
         this.mkey = mkey;
     }
 
-    public Integer getFlags() {
-        return flags;
+    public String getPageKey() {
+        return pageKey;
     }
 
-    public void setFlags(Integer flags) {
-        this.flags = flags;
+    public void setPageKey(String pageKey) {
+        this.pageKey = pageKey;
     }
 
-    public List<ExpressionModel> getContent() {
-        return content;
+    public PageScheme getPageScheme() {
+        return pageScheme;
     }
 
-    public void setContent(List<ExpressionModel> content) {
-        this.content = content;
+    public void setPageScheme(PageScheme pageScheme) {
+        this.pageScheme = pageScheme;
     }
 
     public String getUpdateBy() {
@@ -97,11 +82,11 @@ public class ModelingPermission {
         this.updateBy = updateBy;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 
@@ -113,11 +98,18 @@ public class ModelingPermission {
         this.createBy = createBy;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
+
+    public ModelingPageView toView() {
+        var view = new ModelingPageView();
+        BeanCopierUtil.copy(this, view);
+        return view;
+    }
+
 }

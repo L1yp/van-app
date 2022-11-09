@@ -1,6 +1,6 @@
 package com.l1yp.model.view.modeling;
 
-import com.l1yp.model.db.modeling.ModelingField.FieldModule;
+import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.ModelingView.Collation;
 
 import java.util.Date;
@@ -10,7 +10,7 @@ import java.util.List;
 public class ModelingViewView {
     private String id;
 
-    private FieldModule module;
+    private ModelingModule module;
 
     private String mkey;
 
@@ -40,11 +40,11 @@ public class ModelingViewView {
         this.id = id;
     }
 
-    public FieldModule getModule() {
+    public ModelingModule getModule() {
         return module;
     }
 
-    public void setModule(FieldModule module) {
+    public void setModule(ModelingModule module) {
         this.module = module;
     }
 

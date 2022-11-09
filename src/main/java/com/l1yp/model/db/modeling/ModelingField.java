@@ -90,13 +90,6 @@ public class ModelingField {
         GLOBAL,
     }
 
-    public enum FieldModule {
-
-        WORKFLOW,
-        ENTITY,
-
-    }
-
     public String getId() {
         return id;
     }

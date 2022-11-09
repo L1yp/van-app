@@ -1,14 +1,14 @@
-package com.l1yp.model.param.modeling.field;
+package com.l1yp.model.param.modeling.page;
 
 import com.l1yp.model.db.modeling.ModelingModule;
 
-public class ModelingFieldRefParam {
+public class ModelingPageFindParam {
 
     private ModelingModule module;
 
     private String mkey;
 
-    private String fieldId;
+    private String pageKey;
 
     public ModelingModule getModule() {
         return module;
@@ -26,11 +26,11 @@ public class ModelingFieldRefParam {
         this.mkey = mkey;
     }
 
-    public String getFieldId() {
-        return fieldId;
+    public String getPageKey() {
+        return pageKey;
     }
 
-    public void setFieldId(String fieldId) {
-        this.fieldId = fieldId;
+    public void setPageKey(String pageKey) {
+        this.pageKey = pageKey;
     }
 }

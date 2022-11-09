@@ -1,6 +1,7 @@
 package com.l1yp.model.param.modeling.view;
 
-import com.l1yp.model.db.modeling.ModelingField.FieldModule;
+import com.l1yp.model.db.modeling.ModelingField;
+import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.ModelingView.Collation;
 
 import javax.validation.constraints.NotBlank;
@@ -10,7 +11,7 @@ import java.util.List;
 public class ModelingViewAddParam {
 
     @NotNull
-    private FieldModule module;
+    private ModelingModule module;
 
     @NotBlank
     private String mkey;
@@ -26,11 +27,11 @@ public class ModelingViewAddParam {
 
     private List<ModelingViewColumnParam> columns;
 
-    public FieldModule getModule() {
+    public ModelingModule getModule() {
         return module;
     }
 
-    public void setModule(FieldModule module) {
+    public void setModule(ModelingModule module) {
         this.module = module;
     }
 
