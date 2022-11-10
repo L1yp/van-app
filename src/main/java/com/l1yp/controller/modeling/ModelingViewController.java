@@ -1,5 +1,6 @@
 package com.l1yp.controller.modeling;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.l1yp.model.common.PageData;
 import com.l1yp.model.common.ResultData;
 import com.l1yp.model.param.modeling.entity.ModelFindPageParam;
@@ -10,6 +11,7 @@ import com.l1yp.model.param.modeling.view.ModelingViewUpdateParam;
 import com.l1yp.model.view.modeling.ModelingViewDetailInfo;
 import com.l1yp.model.view.modeling.ModelingViewSimpleInfo;
 import com.l1yp.service.modeling.impl.ModelingViewServiceImpl;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +27,11 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/modeling/view")
+@SaCheckLogin
 public class ModelingViewController {
+
+    @Value("${app.mode}")
+    private String mode;
 
     @Resource
     ModelingViewServiceImpl modelingViewService;
@@ -56,13 +62,16 @@ public class ModelingViewController {
 
     @DeleteMapping("{id}")
     public ResultData<Void> deleteView(@PathVariable("id") String id) {
+        if ("preview".equals(mode)) {
+            return ResultData.err(500, "演示环境禁用此操作");
+        }
         modelingViewService.deleteView(id);
         return ResultData.OK;
     }
 
     @PostMapping("/page")
     public ResultData<PageData<Map<String, Object>>> pageEntity(@Validated @RequestBody ModelFindPageParam param) {
-        return ResultData.ok(modelingViewService.pageModeling(param));
+        return ResultData.ok(modelingViewService.pageModelingInstance(param));
     }
 
 }

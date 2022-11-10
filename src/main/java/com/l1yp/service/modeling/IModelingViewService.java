@@ -31,6 +31,6 @@ public interface IModelingViewService {
 
     void deleteView(String id);
 
-    PageData<Map<String, Object>> pageModeling(ModelFindPageParam param);
+    PageData<Map<String, Object>> pageModelingInstance(ModelFindPageParam param);
 
 }

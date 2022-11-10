@@ -1,5 +1,6 @@
 package com.l1yp.controller.modeling;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.l1yp.model.common.ResultData;
 import com.l1yp.model.param.modeling.permission.ModelingPermissionBindParam;
 import com.l1yp.model.param.modeling.permission.ModelingPermissionFindParam;
@@ -16,6 +17,7 @@ import javax.annotation.Resource;
 
 @RestController
 @RequestMapping("/modeling/permission")
+@SaCheckLogin
 public class ModelingPermissionController {
 
     @Resource

@@ -2,6 +2,7 @@ package com.l1yp.service.modeling.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -12,6 +13,8 @@ import com.l1yp.mapper.modeling.ModelingFieldMapper;
 import com.l1yp.mapper.modeling.ModelingFieldRefMapper;
 import com.l1yp.mapper.modeling.ModelingOptionTypeMapper;
 import com.l1yp.mapper.modeling.ModelingOptionValueMapper;
+import com.l1yp.mapper.modeling.ModelingViewColumnMapper;
+import com.l1yp.mapper.modeling.ModelingViewMapper;
 import com.l1yp.mapper.system.UserMapper;
 import com.l1yp.model.common.PageData;
 import com.l1yp.model.db.modeling.ModelingEntity;
@@ -22,15 +25,25 @@ import com.l1yp.model.db.modeling.ModelingFieldRef;
 import com.l1yp.model.db.modeling.ModelingOptionScope;
 import com.l1yp.model.db.modeling.ModelingOptionType;
 import com.l1yp.model.db.modeling.ModelingOptionValue;
+import com.l1yp.model.db.modeling.ModelingView;
+import com.l1yp.model.db.modeling.ModelingViewColumn;
 import com.l1yp.model.db.modeling.field.FieldScheme;
 import com.l1yp.model.db.system.User;
 import com.l1yp.model.param.modeling.entity.ModelingEntityAddParam;
 import com.l1yp.model.param.modeling.entity.ModelingEntityFindParam;
+import com.l1yp.model.param.modeling.entity.ModelingEntityInstanceAddParam;
+import com.l1yp.model.param.modeling.entity.ModelingEntityInstanceDeleteParam;
+import com.l1yp.model.param.modeling.entity.ModelingEntityInstanceFindParam;
+import com.l1yp.model.param.modeling.entity.ModelingEntityInstanceUpdateParam;
 import com.l1yp.model.param.modeling.entity.ModelingEntityUpdateParam;
+import com.l1yp.model.param.modeling.field.ModelingFieldFindParam;
 import com.l1yp.model.view.modeling.ModelingEntityView;
+import com.l1yp.model.view.modeling.ModelingFieldDefView;
 import com.l1yp.model.view.system.UserView;
 import com.l1yp.service.modeling.IModelingEntityService;
 import com.l1yp.util.BeanCopierUtil;
+import com.l1yp.util.NumberUtil;
+import com.l1yp.util.RequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -39,11 +52,14 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper, ModelingEntity> implements IModelingEntityService {
@@ -67,6 +83,12 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
 
     @Resource
     ModelingFieldServiceImpl modelingFieldService;
+
+    @Resource
+    ModelingViewMapper modelingViewMapper;
+
+    @Resource
+    ModelingViewColumnMapper modelingViewColumnMapper;
 
     @Override
     public ModelingEntityView findEntity(String id) {
@@ -225,6 +247,136 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
 
         }
 
+        // 删除视图
+        List<ModelingView> modelingViews = modelingViewMapper.selectList(Wrappers.<ModelingView>lambdaQuery()
+                .eq(ModelingView::getModule, ModelingModule.ENTITY)
+                .eq(ModelingView::getMkey, fromEntity.getMkey())
+        );
+        if (CollectionUtils.isNotEmpty(modelingViews)) {
+            List<String> viewIdList = modelingViews.stream().map(ModelingView::getId).toList();
+            modelingViewColumnMapper.delete(Wrappers.<ModelingViewColumn>lambdaQuery().in(ModelingViewColumn::getViewId, viewIdList));
+            modelingViewMapper.delete(Wrappers.<ModelingView>lambdaQuery().in(ModelingView::getId, viewIdList));
+        }
 
+
+    }
+
+    // instance methods
+
+    private static final Set<String> excludeInputFields = new HashSet<>(Arrays.asList("id", "create_by", "create_time", "update_by", "update_time"));
+
+    @Override
+    @Transactional
+    public void createInstance(ModelingEntityInstanceAddParam param) {
+        ModelingEntity modelingEntity = getOne(Wrappers.<ModelingEntity>lambdaQuery().eq(ModelingEntity::getMkey, param.getMkey()));
+        if (modelingEntity == null) {
+            throw new VanException(404, "实体不存在: " + param.getMkey());
+        }
+
+        // TODO: check 实体新增权限
+
+        User loginUser = RequestUtils.getLoginUser();
+
+        String tableName = ModelingEntity.buildEntityTableName(param.getMkey());
+        Map<String, Object> data = param.getData();
+
+        ModelingFieldFindParam fieldFindParam = new ModelingFieldFindParam();
+        fieldFindParam.setModule(ModelingModule.ENTITY);
+        fieldFindParam.setMkey(param.getMkey());
+        List<ModelingFieldDefView> fields = modelingFieldService.findFields(fieldFindParam);
+        Map<String, ModelingFieldDefView> fieldMap = fields.stream().collect(Collectors.toMap(ModelingFieldDefView::getField, it -> it));
+        List<String> excludeKeys = data.keySet().stream().filter(it -> !fieldMap.containsKey(it) || excludeInputFields.contains(it)).toList();
+
+        Map<String, Object> formData = data.entrySet().stream().filter(it -> !excludeKeys.contains(it.getKey())).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+        List<String> columnFields = new ArrayList<>(formData.keySet());
+        columnFields.add("id");
+        columnFields.add("create_by");
+        columnFields.add("create_time");
+        columnFields.add("update_by");
+        columnFields.add("update_time");
+        String columns = columnFields.stream().map(it -> "`" + it + "`").collect(Collectors.joining(","));
+
+        List<Object> args = new ArrayList<>();
+        columnFields.stream().filter(formData::containsKey).map(formData::get).forEach(args::add);
+        args.add(IdWorker.getIdStr());
+        args.add(loginUser.getId());
+        args.add(new Date());
+        args.add(loginUser.getId());
+        args.add(new Date());
+
+        String values = IntStream.range(0, args.size()).boxed().map(it -> "#{args[" + it + "]}").collect(Collectors.joining(", "));
+
+        String sql = String.format("INSERT INTO %s(%s) VALUES(%s)", tableName, columns, values);
+        getBaseMapper().executeSQL(sql, args);
+
+    }
+
+    @Override
+    @Transactional
+    public void updateEntityInstance(ModelingEntityInstanceUpdateParam param) {
+        ModelingEntity modelingEntity = getOne(Wrappers.<ModelingEntity>lambdaQuery().eq(ModelingEntity::getMkey, param.getMkey()));
+        if (modelingEntity == null) {
+            throw new VanException(404, "实体不存在: " + param.getMkey());
+        }
+        User loginUser = RequestUtils.getLoginUser();
+        // TODO: check 实体更新权限
+
+        String tableName = ModelingEntity.buildEntityTableName(param.getMkey());
+        Map<String, Object> data = param.getData();
+
+        ModelingFieldFindParam fieldFindParam = new ModelingFieldFindParam();
+        fieldFindParam.setModule(ModelingModule.ENTITY);
+        fieldFindParam.setMkey(param.getMkey());
+        List<ModelingFieldDefView> fields = modelingFieldService.findFields(fieldFindParam);
+        Map<String, ModelingFieldDefView> fieldMap = fields.stream().collect(Collectors.toMap(ModelingFieldDefView::getField, it -> it));
+        List<String> excludeKeys = data.keySet().stream().filter(it -> !fieldMap.containsKey(it) || excludeInputFields.contains(it)).toList();
+
+        Map<String, Object> formData = data.entrySet().stream().filter(it -> !excludeKeys.contains(it.getKey())).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+        List<String> columnFields = new ArrayList<>(formData.keySet());
+        columnFields.add("update_by");
+        columnFields.add("update_time");
+
+        List<Object> args = new ArrayList<>();
+        columnFields.stream().filter(formData::containsKey).map(formData::get).forEach(args::add);
+
+        args.add(loginUser.getId());
+        args.add(new Date());
+        args.add(param.getId());
+
+        // exclude
+        String values = IntStream.range(0, columnFields.size()).boxed().map(it -> String.format("`%s` = #{args[%d]}", columnFields.get(it), it)).collect(Collectors.joining(", "));
+
+        String sql = String.format("UPDATE %s SET %s WHERE id = #{args[%d]}", tableName, values, args.size() - 1);
+        getBaseMapper().executeSQL(sql, args);
+
+    }
+
+    @Override
+    @Transactional
+    public void deleteEntityInstance(ModelingEntityInstanceDeleteParam param) {
+        ModelingEntity modelingEntity = getOne(Wrappers.<ModelingEntity>lambdaQuery().eq(ModelingEntity::getMkey, param.getMkey()));
+        if (modelingEntity == null) {
+            throw new VanException(404, "实体不存在: " + param.getMkey());
+        }
+        // TODO: check 实体删除权限
+
+        String tableName = ModelingEntity.buildEntityTableName(param.getMkey());
+        List<Object> args = new ArrayList<>();
+        args.add(param.getId());
+        String sql = "DELETE FROM " + tableName + " WHERE id = #{args[0]}";
+        getBaseMapper().executeSQL(sql, args);
+
+    }
+
+    @Override
+    public Map<String, Object> getInstance(ModelingEntityInstanceFindParam param) {
+        ModelingEntity modelingEntity = getOne(Wrappers.<ModelingEntity>lambdaQuery().eq(ModelingEntity::getMkey, param.getMkey()));
+        if (modelingEntity == null) {
+            throw new VanException(404, "实体不存在: " + param.getMkey());
+        }
+        String tableName = ModelingEntity.buildEntityTableName(param.getMkey());
+        Map<String, Object> instance = getBaseMapper().getInstance(tableName, param.getId());
+        NumberUtil.transformBigIntToString(instance);
+        return instance;
     }
 }

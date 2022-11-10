@@ -1,10 +1,12 @@
 package com.l1yp.controller.system;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.l1yp.model.common.ResultData;
 import com.l1yp.model.param.system.menu.MenuCreateParam;
 import com.l1yp.model.param.system.menu.MenuUpdateParam;
 import com.l1yp.model.view.system.MenuView;
 import com.l1yp.service.system.IMenuService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +22,11 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/menu")
+@SaCheckLogin
 public class MenuController {
+
+    @Value("${app.mode}")
+    private String mode;
 
     @Resource
     IMenuService service;
@@ -33,12 +39,18 @@ public class MenuController {
 
     @PostMapping("/update")
     public ResultData<Void> updateMenu(@Validated @RequestBody MenuUpdateParam param) {
+        if ("preview".equals(mode)) {
+            return ResultData.err(500, "演示环境禁用此操作");
+        }
         service.updateMenu(param);
         return ResultData.OK;
     }
 
     @DeleteMapping("/{id}")
     public ResultData<Void> deleteMenu(@PathVariable("id") Long id) {
+        if ("preview".equals(mode)) {
+            return ResultData.err(500, "演示环境禁用此操作");
+        }
         service.deleteMenu(id);
         return ResultData.OK;
     }

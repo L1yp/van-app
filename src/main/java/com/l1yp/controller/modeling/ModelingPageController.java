@@ -1,5 +1,6 @@
 package com.l1yp.controller.modeling;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.l1yp.model.common.ResultData;
 import com.l1yp.model.param.modeling.page.ModelingPageBindParam;
 import com.l1yp.model.param.modeling.page.ModelingPageFindParam;
@@ -18,6 +19,7 @@ import javax.annotation.Resource;
 @Validated
 @RestController
 @RequestMapping("/modeling/page")
+@SaCheckLogin
 public class ModelingPageController {
 
     @Resource

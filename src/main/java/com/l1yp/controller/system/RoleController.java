@@ -1,5 +1,6 @@
 package com.l1yp.controller.system;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.l1yp.model.common.PageData;
 import com.l1yp.model.common.ResultData;
 import com.l1yp.model.param.system.role.RoleAddParam;
@@ -8,6 +9,7 @@ import com.l1yp.model.param.system.role.RolePageParam;
 import com.l1yp.model.param.system.role.RoleUpdateParam;
 import com.l1yp.model.view.system.RoleView;
 import com.l1yp.service.system.IRoleService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +27,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/role")
+@SaCheckLogin
 public class RoleController {
 
+
+    @Value("${app.mode}")
+    private String mode;
 
     @Resource
     IRoleService service;
@@ -51,18 +57,27 @@ public class RoleController {
 
     @DeleteMapping("/{id}")
     public ResultData<Void> deleteMenu(@PathVariable("id") String id) {
+        if ("preview".equals(mode)) {
+            return ResultData.err(500, "演示环境禁用此操作");
+        }
         service.deleteRole(id);
         return ResultData.OK;
     }
 
     @DeleteMapping("/batch/{ids}")
     public ResultData<Void> deleteMenu(@PathVariable("ids") List<String> ids) {
+        if ("preview".equals(mode)) {
+            return ResultData.err(500, "演示环境禁用此操作");
+        }
         service.batchDeleteRole(ids);
         return ResultData.OK;
     }
 
     @PostMapping("/menu/bind")
     public ResultData<Void> bindMenu(@Validated @RequestBody RoleMenuBindParam param) {
+        if ("preview".equals(mode)) {
+            return ResultData.err(500, "演示环境禁用此操作");
+        }
         service.bindMenu(param);
         return ResultData.OK;
     }

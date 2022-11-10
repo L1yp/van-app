@@ -12,6 +12,8 @@ public class ModelingViewSimpleInfo {
 
     private Integer sn;
 
+    private Boolean status;
+
     private List<Collation> collation;
 
     private List<ModelingViewColumnView> columns;
@@ -46,6 +48,14 @@ public class ModelingViewSimpleInfo {
 
     public void setCollation(List<Collation> collation) {
         this.collation = collation;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 
     public List<ModelingViewColumnView> getColumns() {

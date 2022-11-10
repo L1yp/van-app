@@ -8,6 +8,7 @@ import com.l1yp.model.param.workflow.WorkflowTypeDefPageParam;
 import com.l1yp.model.param.workflow.WorkflowTypeDefUpdateParam;
 import com.l1yp.model.view.workflow.WorkflowTypeDefView;
 import com.l1yp.service.workflow.impl.WorkflowTypeDefServiceImpl;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,9 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("/workflow/type/def")
 public class WorkflowTypeDefController {
+
+    @Value("${app.mode}")
+    private String mode;
 
     @Resource
     WorkflowTypeDefServiceImpl workflowTypeDefService;
@@ -39,6 +43,9 @@ public class WorkflowTypeDefController {
 
     @PostMapping("/update")
     public ResultData<Void> update(@RequestBody @Validated WorkflowTypeDefUpdateParam param) {
+        if ("preview".equals(mode)) {
+            return ResultData.err(500, "演示环境禁用此操作");
+        }
         workflowTypeDefService.update(param);
         return ResultData.OK;
     }

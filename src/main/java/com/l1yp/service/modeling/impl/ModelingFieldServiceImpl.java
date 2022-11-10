@@ -6,11 +6,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.l1yp.exception.VanException;
 import com.l1yp.mapper.modeling.ModelingFieldMapper;
 import com.l1yp.mapper.modeling.ModelingFieldRefMapper;
+import com.l1yp.mapper.modeling.ModelingViewColumnMapper;
 import com.l1yp.model.db.modeling.ModelingEntity;
 import com.l1yp.model.db.modeling.ModelingField;
 import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.ModelingField.FieldScope;
 import com.l1yp.model.db.modeling.ModelingFieldRef;
+import com.l1yp.model.db.modeling.ModelingViewColumn;
 import com.l1yp.model.db.modeling.field.DeptFieldScheme;
 import com.l1yp.model.db.modeling.field.FieldScheme;
 import com.l1yp.model.db.modeling.field.FieldType;
@@ -38,6 +40,9 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
 
     @Resource
     ModelingFieldRefMapper modelingFieldRefMapper;
+
+    @Resource
+    ModelingViewColumnMapper modelingViewColumnMapper;
 
     @Override
     public List<ModelingFieldDefView> findFields(ModelingFieldFindParam param) {
@@ -185,7 +190,12 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
             }
         }
 
-        // TODO: 查询相关视图 表单 等功能关联的字段 及 数据库表字段
+        // TODO: 查询相关 视图排序规则 表单 等功能关联的字段 及 数据库表字段
+        Long count = modelingViewColumnMapper.selectCount(Wrappers.<ModelingViewColumn>lambdaQuery().eq(ModelingViewColumn::getFieldId, fieldId));
+        if (count > 0) {
+            throw new VanException(400, "请先解绑视图中的字段");
+        }
+
 
         // 最后删除字段
         removeById(fieldId);

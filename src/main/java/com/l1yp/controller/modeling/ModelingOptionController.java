@@ -12,6 +12,7 @@ import com.l1yp.model.view.modeling.ModelingOptionTypeView;
 import com.l1yp.model.view.modeling.ModelingOptionValueView;
 import com.l1yp.service.modeling.impl.ModelingOptionTypeServiceImpl;
 import com.l1yp.service.modeling.impl.ModelingOptionValueServiceImpl;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/modeling/option")
+@SaCheckLogin
 public class ModelingOptionController {
+
+    @Value("${app.mode}")
+    private String mode;
 
     @Resource
     ModelingOptionTypeServiceImpl workflowOptionTypeService;
@@ -51,6 +56,9 @@ public class ModelingOptionController {
 
     @DeleteMapping("/type/{id}")
     public ResultData<Void> deleteType(@PathVariable("id") String typeId) {
+        if ("preview".equals(mode)) {
+            return ResultData.err(500, "演示环境禁用此操作");
+        }
         workflowOptionTypeService.deleteType(typeId);
         return ResultData.OK;
     }
@@ -76,6 +84,9 @@ public class ModelingOptionController {
 
     @DeleteMapping("/value/{id}")
     public ResultData<Void> deleteOptionValue(@PathVariable("id") String valueId) {
+        if ("preview".equals(mode)) {
+            return ResultData.err(500, "演示环境禁用此操作");
+        }
         workflowOptionValueService.deleteOptionValue(valueId);
         return ResultData.OK;
     }

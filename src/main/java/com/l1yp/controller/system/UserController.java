@@ -10,6 +10,7 @@ import com.l1yp.model.param.system.user.UserUpdateParam;
 import com.l1yp.model.view.LoginResult;
 import com.l1yp.model.view.system.UserView;
 import com.l1yp.service.system.IUserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+
+    @Value("${app.mode}")
+    private String mode;
 
     @Resource
     IUserService userService;
@@ -43,6 +47,9 @@ public class UserController {
 
     @PostMapping("/update")
     public ResultData<Void> updateUser(@Validated @RequestBody UserUpdateParam param) {
+        if ("preview".equals(mode)) {
+            return ResultData.err(500, "演示环境禁用此操作");
+        }
         userService.update(param);
         return ResultData.OK;
     }
@@ -63,6 +70,9 @@ public class UserController {
     @SaCheckLogin
     @PostMapping("/role/bind")
     public ResultData<Void> bindRoles(@Validated @RequestBody UserBindRoleParam param) {
+        if ("preview".equals(mode)) {
+            return ResultData.err(500, "演示环境禁用此操作");
+        }
         userService.bindRole(param);
         return ResultData.OK;
     }

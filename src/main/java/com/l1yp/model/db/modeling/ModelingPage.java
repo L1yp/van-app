@@ -10,6 +10,8 @@ import com.l1yp.model.db.modeling.page.PageScheme;
 import com.l1yp.model.view.modeling.ModelingPageView;
 import com.l1yp.util.BeanCopierUtil;
 
+import java.util.Date;
+
 @TableName(value = "modeling_page", autoResultMap = true)
 public class ModelingPage {
 
@@ -28,11 +30,11 @@ public class ModelingPage {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updateBy;
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private String updateTime;
+    private Date updateTime;
     @TableField(fill = FieldFill.INSERT)
     private String createBy;
     @TableField(fill = FieldFill.INSERT)
-    private String createTime;
+    private Date createTime;
 
     public String getId() {
         return id;
@@ -82,11 +84,11 @@ public class ModelingPage {
         this.updateBy = updateBy;
     }
 
-    public String getUpdateTime() {
+    public Date getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(String updateTime) {
+    public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
 
@@ -98,11 +100,11 @@ public class ModelingPage {
         this.createBy = createBy;
     }
 
-    public String getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 

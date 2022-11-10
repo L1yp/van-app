@@ -3,6 +3,8 @@ package com.l1yp.model.view.modeling;
 import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.page.PageScheme;
 
+import java.util.Date;
+
 public class ModelingPageView {
 
     private String id;
@@ -17,11 +19,11 @@ public class ModelingPageView {
 
     private String updateBy;
 
-    private String updateTime;
+    private Date updateTime;
 
     private String createBy;
 
-    private String createTime;
+    private Date createTime;
 
     public String getId() {
         return id;
@@ -71,11 +73,11 @@ public class ModelingPageView {
         this.updateBy = updateBy;
     }
 
-    public String getUpdateTime() {
+    public Date getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(String updateTime) {
+    public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
 
@@ -87,11 +89,11 @@ public class ModelingPageView {
         this.createBy = createBy;
     }
 
-    public String getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 }

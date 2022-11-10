@@ -1,5 +1,6 @@
 package com.l1yp.controller.modeling;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.l1yp.model.common.ResultData;
 import com.l1yp.model.db.modeling.TableScheme;
 import com.l1yp.model.param.modeling.field.ModelingFieldAddParam;
@@ -8,6 +9,7 @@ import com.l1yp.model.param.modeling.field.ModelingFieldFindParam;
 import com.l1yp.model.param.modeling.field.ModelingFieldRefParam;
 import com.l1yp.model.view.modeling.ModelingFieldDefView;
 import com.l1yp.service.modeling.impl.ModelingFieldServiceImpl;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +24,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/modeling/field")
+@SaCheckLogin
 public class ModelingFieldController {
+
+    @Value("${app.mode}")
+    private String mode;
 
     @Resource
     ModelingFieldServiceImpl modelingFieldService;
@@ -55,6 +61,9 @@ public class ModelingFieldController {
      */
     @PostMapping("/ref")
     public ResultData<Void> refField(@Validated @RequestBody ModelingFieldRefParam param) {
+        if ("preview".equals(mode)) {
+            return ResultData.err(500, "演示环境禁用此操作");
+        }
         modelingFieldService.refGlobalField(param);
         return ResultData.OK;
     }

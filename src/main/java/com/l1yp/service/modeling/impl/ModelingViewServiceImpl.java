@@ -38,6 +38,7 @@ import com.l1yp.service.modeling.IModelingViewService;
 import com.l1yp.service.system.impl.DepartmentServiceImpl;
 import com.l1yp.service.system.impl.UserServiceImpl;
 import com.l1yp.util.BeanCopierUtil;
+import com.l1yp.util.NumberUtil;
 import com.l1yp.util.RequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -241,7 +242,7 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
 
 
     @Override
-    public PageData<Map<String, Object>> pageModeling(ModelFindPageParam param) {
+    public PageData<Map<String, Object>> pageModelingInstance(ModelFindPageParam param) {
         var fieldParam = new ModelingFieldFindParam();
         fieldParam.setModule(param.getModule());
         fieldParam.setMkey(param.getMkey());
@@ -377,6 +378,8 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
             additional.put("optionMap", optionMap);
         }
 
+        // 处理BigInteger类型为字符串
+        data.forEach(NumberUtil::transformBigIntToString);
 
         PageData<Map<String, Object>> pageData = new PageData<>(param);
         pageData.setTotal(count);
