@@ -1,0 +1,2433 @@
+-- MySQL dump 10.13  Distrib 8.0.29, for Linux (x86_64)
+--
+-- Host: localhost    Database: van
+-- ------------------------------------------------------
+-- Server version	8.0.29-0ubuntu0.20.04.3
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Current Database: `van`
+--
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `van` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin */ /*!80016 DEFAULT ENCRYPTION='N' */;
+
+USE `van`;
+
+--
+-- Table structure for table `ACT_EVT_LOG`
+--
+
+DROP TABLE IF EXISTS `ACT_EVT_LOG`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_EVT_LOG` (
+  `LOG_NR_` bigint NOT NULL AUTO_INCREMENT,
+  `TYPE_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TIME_STAMP_` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `DATA_` longblob,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `LOCK_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `IS_PROCESSED_` tinyint DEFAULT '0',
+  PRIMARY KEY (`LOG_NR_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_EVT_LOG`
+--
+
+LOCK TABLES `ACT_EVT_LOG` WRITE;
+/*!40000 ALTER TABLE `ACT_EVT_LOG` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_EVT_LOG` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_GE_BYTEARRAY`
+--
+
+DROP TABLE IF EXISTS `ACT_GE_BYTEARRAY`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_GE_BYTEARRAY` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `DEPLOYMENT_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `BYTES_` longblob,
+  `GENERATED_` tinyint DEFAULT NULL,
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_FK_BYTEARR_DEPL` (`DEPLOYMENT_ID_`),
+  CONSTRAINT `ACT_FK_BYTEARR_DEPL` FOREIGN KEY (`DEPLOYMENT_ID_`) REFERENCES `ACT_RE_DEPLOYMENT` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_GE_BYTEARRAY`
+--
+
+LOCK TABLES `ACT_GE_BYTEARRAY` WRITE;
+/*!40000 ALTER TABLE `ACT_GE_BYTEARRAY` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_GE_BYTEARRAY` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_GE_PROPERTY`
+--
+
+DROP TABLE IF EXISTS `ACT_GE_PROPERTY`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_GE_PROPERTY` (
+  `NAME_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `VALUE_` varchar(300) COLLATE utf8_bin DEFAULT NULL,
+  `REV_` int DEFAULT NULL,
+  PRIMARY KEY (`NAME_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_GE_PROPERTY`
+--
+
+LOCK TABLES `ACT_GE_PROPERTY` WRITE;
+/*!40000 ALTER TABLE `ACT_GE_PROPERTY` DISABLE KEYS */;
+INSERT INTO `ACT_GE_PROPERTY` VALUES ('batch.schema.version','6.7.2.0',1),('cfg.execution-related-entities-count','true',1),('cfg.task-related-entities-count','true',1),('common.schema.version','6.7.2.0',1),('entitylink.schema.version','6.7.2.0',1),('eventsubscription.schema.version','6.7.2.0',1),('identitylink.schema.version','6.7.2.0',1),('job.schema.version','6.7.2.0',1),('next.dbid','1',1),('schema.history','create(6.7.2.0)',1),('schema.version','6.7.2.0',1),('task.schema.version','6.7.2.0',1),('variable.schema.version','6.7.2.0',1);
+/*!40000 ALTER TABLE `ACT_GE_PROPERTY` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_HI_ACTINST`
+--
+
+DROP TABLE IF EXISTS `ACT_HI_ACTINST`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_HI_ACTINST` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT '1',
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `ACT_ID_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CALL_PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ACT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ACT_TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `ASSIGNEE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `START_TIME_` datetime(3) NOT NULL,
+  `END_TIME_` datetime(3) DEFAULT NULL,
+  `TRANSACTION_ORDER_` int DEFAULT NULL,
+  `DURATION_` bigint DEFAULT NULL,
+  `DELETE_REASON_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_IDX_HI_ACT_INST_START` (`START_TIME_`),
+  KEY `ACT_IDX_HI_ACT_INST_END` (`END_TIME_`),
+  KEY `ACT_IDX_HI_ACT_INST_PROCINST` (`PROC_INST_ID_`,`ACT_ID_`),
+  KEY `ACT_IDX_HI_ACT_INST_EXEC` (`EXECUTION_ID_`,`ACT_ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_HI_ACTINST`
+--
+
+LOCK TABLES `ACT_HI_ACTINST` WRITE;
+/*!40000 ALTER TABLE `ACT_HI_ACTINST` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_HI_ACTINST` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_HI_ATTACHMENT`
+--
+
+DROP TABLE IF EXISTS `ACT_HI_ATTACHMENT`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_HI_ATTACHMENT` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `DESCRIPTION_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `URL_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CONTENT_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TIME_` datetime(3) DEFAULT NULL,
+  PRIMARY KEY (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_HI_ATTACHMENT`
+--
+
+LOCK TABLES `ACT_HI_ATTACHMENT` WRITE;
+/*!40000 ALTER TABLE `ACT_HI_ATTACHMENT` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_HI_ATTACHMENT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_HI_COMMENT`
+--
+
+DROP TABLE IF EXISTS `ACT_HI_COMMENT`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_HI_COMMENT` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TIME_` datetime(3) NOT NULL,
+  `USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ACTION_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `MESSAGE_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `FULL_MSG_` longblob,
+  PRIMARY KEY (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_HI_COMMENT`
+--
+
+LOCK TABLES `ACT_HI_COMMENT` WRITE;
+/*!40000 ALTER TABLE `ACT_HI_COMMENT` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_HI_COMMENT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_HI_DETAIL`
+--
+
+DROP TABLE IF EXISTS `ACT_HI_DETAIL`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_HI_DETAIL` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ACT_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `VAR_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REV_` int DEFAULT NULL,
+  `TIME_` datetime(3) NOT NULL,
+  `BYTEARRAY_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DOUBLE_` double DEFAULT NULL,
+  `LONG_` bigint DEFAULT NULL,
+  `TEXT_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TEXT2_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_IDX_HI_DETAIL_PROC_INST` (`PROC_INST_ID_`),
+  KEY `ACT_IDX_HI_DETAIL_ACT_INST` (`ACT_INST_ID_`),
+  KEY `ACT_IDX_HI_DETAIL_TIME` (`TIME_`),
+  KEY `ACT_IDX_HI_DETAIL_NAME` (`NAME_`),
+  KEY `ACT_IDX_HI_DETAIL_TASK_ID` (`TASK_ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_HI_DETAIL`
+--
+
+LOCK TABLES `ACT_HI_DETAIL` WRITE;
+/*!40000 ALTER TABLE `ACT_HI_DETAIL` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_HI_DETAIL` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_HI_ENTITYLINK`
+--
+
+DROP TABLE IF EXISTS `ACT_HI_ENTITYLINK`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_HI_ENTITYLINK` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `LINK_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` datetime(3) DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PARENT_ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REF_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REF_SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REF_SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ROOT_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ROOT_SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HIERARCHY_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_IDX_HI_ENT_LNK_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`,`LINK_TYPE_`),
+  KEY `ACT_IDX_HI_ENT_LNK_REF_SCOPE` (`REF_SCOPE_ID_`,`REF_SCOPE_TYPE_`,`LINK_TYPE_`),
+  KEY `ACT_IDX_HI_ENT_LNK_ROOT_SCOPE` (`ROOT_SCOPE_ID_`,`ROOT_SCOPE_TYPE_`,`LINK_TYPE_`),
+  KEY `ACT_IDX_HI_ENT_LNK_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`,`LINK_TYPE_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_HI_ENTITYLINK`
+--
+
+LOCK TABLES `ACT_HI_ENTITYLINK` WRITE;
+/*!40000 ALTER TABLE `ACT_HI_ENTITYLINK` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_HI_ENTITYLINK` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_HI_IDENTITYLINK`
+--
+
+DROP TABLE IF EXISTS `ACT_HI_IDENTITYLINK`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_HI_IDENTITYLINK` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `GROUP_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` datetime(3) DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_IDX_HI_IDENT_LNK_USER` (`USER_ID_`),
+  KEY `ACT_IDX_HI_IDENT_LNK_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_HI_IDENT_LNK_SUB_SCOPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_HI_IDENT_LNK_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_HI_IDENT_LNK_TASK` (`TASK_ID_`),
+  KEY `ACT_IDX_HI_IDENT_LNK_PROCINST` (`PROC_INST_ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_HI_IDENTITYLINK`
+--
+
+LOCK TABLES `ACT_HI_IDENTITYLINK` WRITE;
+/*!40000 ALTER TABLE `ACT_HI_IDENTITYLINK` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_HI_IDENTITYLINK` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_HI_PROCINST`
+--
+
+DROP TABLE IF EXISTS `ACT_HI_PROCINST`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_HI_PROCINST` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT '1',
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `BUSINESS_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `START_TIME_` datetime(3) NOT NULL,
+  `END_TIME_` datetime(3) DEFAULT NULL,
+  `DURATION_` bigint DEFAULT NULL,
+  `START_USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `START_ACT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `END_ACT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUPER_PROCESS_INSTANCE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DELETE_REASON_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CALLBACK_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CALLBACK_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REFERENCE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REFERENCE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PROPAGATED_STAGE_INST_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `BUSINESS_STATUS_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`),
+  UNIQUE KEY `PROC_INST_ID_` (`PROC_INST_ID_`),
+  KEY `ACT_IDX_HI_PRO_INST_END` (`END_TIME_`),
+  KEY `ACT_IDX_HI_PRO_I_BUSKEY` (`BUSINESS_KEY_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_HI_PROCINST`
+--
+
+LOCK TABLES `ACT_HI_PROCINST` WRITE;
+/*!40000 ALTER TABLE `ACT_HI_PROCINST` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_HI_PROCINST` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_HI_TASKINST`
+--
+
+DROP TABLE IF EXISTS `ACT_HI_TASKINST`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_HI_TASKINST` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT '1',
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_DEF_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PROPAGATED_STAGE_INST_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PARENT_TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DESCRIPTION_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ASSIGNEE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `START_TIME_` datetime(3) NOT NULL,
+  `CLAIM_TIME_` datetime(3) DEFAULT NULL,
+  `END_TIME_` datetime(3) DEFAULT NULL,
+  `DURATION_` bigint DEFAULT NULL,
+  `DELETE_REASON_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `PRIORITY_` int DEFAULT NULL,
+  `DUE_DATE_` datetime(3) DEFAULT NULL,
+  `FORM_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  `LAST_UPDATED_TIME_` datetime(3) DEFAULT NULL,
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_IDX_HI_TASK_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_HI_TASK_SUB_SCOPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_HI_TASK_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_HI_TASK_INST_PROCINST` (`PROC_INST_ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_HI_TASKINST`
+--
+
+LOCK TABLES `ACT_HI_TASKINST` WRITE;
+/*!40000 ALTER TABLE `ACT_HI_TASKINST` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_HI_TASKINST` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_HI_TSK_LOG`
+--
+
+DROP TABLE IF EXISTS `ACT_HI_TSK_LOG`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_HI_TSK_LOG` (
+  `ID_` bigint NOT NULL AUTO_INCREMENT,
+  `TYPE_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `TIME_STAMP_` timestamp(3) NOT NULL,
+  `USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `DATA_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_HI_TSK_LOG`
+--
+
+LOCK TABLES `ACT_HI_TSK_LOG` WRITE;
+/*!40000 ALTER TABLE `ACT_HI_TSK_LOG` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_HI_TSK_LOG` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_HI_VARINST`
+--
+
+DROP TABLE IF EXISTS `ACT_HI_VARINST`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_HI_VARINST` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT '1',
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `VAR_TYPE_` varchar(100) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `BYTEARRAY_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DOUBLE_` double DEFAULT NULL,
+  `LONG_` bigint DEFAULT NULL,
+  `TEXT_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TEXT2_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` datetime(3) DEFAULT NULL,
+  `LAST_UPDATED_TIME_` datetime(3) DEFAULT NULL,
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_IDX_HI_PROCVAR_NAME_TYPE` (`NAME_`,`VAR_TYPE_`),
+  KEY `ACT_IDX_HI_VAR_SCOPE_ID_TYPE` (`SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_HI_VAR_SUB_ID_TYPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_HI_PROCVAR_PROC_INST` (`PROC_INST_ID_`),
+  KEY `ACT_IDX_HI_PROCVAR_TASK_ID` (`TASK_ID_`),
+  KEY `ACT_IDX_HI_PROCVAR_EXE` (`EXECUTION_ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_HI_VARINST`
+--
+
+LOCK TABLES `ACT_HI_VARINST` WRITE;
+/*!40000 ALTER TABLE `ACT_HI_VARINST` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_HI_VARINST` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_PROCDEF_INFO`
+--
+
+DROP TABLE IF EXISTS `ACT_PROCDEF_INFO`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_PROCDEF_INFO` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `INFO_JSON_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`),
+  UNIQUE KEY `ACT_UNIQ_INFO_PROCDEF` (`PROC_DEF_ID_`),
+  KEY `ACT_IDX_INFO_PROCDEF` (`PROC_DEF_ID_`),
+  KEY `ACT_FK_INFO_JSON_BA` (`INFO_JSON_ID_`),
+  CONSTRAINT `ACT_FK_INFO_JSON_BA` FOREIGN KEY (`INFO_JSON_ID_`) REFERENCES `ACT_GE_BYTEARRAY` (`ID_`),
+  CONSTRAINT `ACT_FK_INFO_PROCDEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `ACT_RE_PROCDEF` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_PROCDEF_INFO`
+--
+
+LOCK TABLES `ACT_PROCDEF_INFO` WRITE;
+/*!40000 ALTER TABLE `ACT_PROCDEF_INFO` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_PROCDEF_INFO` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_RE_DEPLOYMENT`
+--
+
+DROP TABLE IF EXISTS `ACT_RE_DEPLOYMENT`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_RE_DEPLOYMENT` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  `DEPLOY_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `DERIVED_FROM_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DERIVED_FROM_ROOT_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PARENT_DEPLOYMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ENGINE_VERSION_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_RE_DEPLOYMENT`
+--
+
+LOCK TABLES `ACT_RE_DEPLOYMENT` WRITE;
+/*!40000 ALTER TABLE `ACT_RE_DEPLOYMENT` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_RE_DEPLOYMENT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_RE_MODEL`
+--
+
+DROP TABLE IF EXISTS `ACT_RE_MODEL`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_RE_MODEL` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `LAST_UPDATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `VERSION_` int DEFAULT NULL,
+  `META_INFO_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DEPLOYMENT_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EDITOR_SOURCE_VALUE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EDITOR_SOURCE_EXTRA_VALUE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_FK_MODEL_SOURCE` (`EDITOR_SOURCE_VALUE_ID_`),
+  KEY `ACT_FK_MODEL_SOURCE_EXTRA` (`EDITOR_SOURCE_EXTRA_VALUE_ID_`),
+  KEY `ACT_FK_MODEL_DEPLOYMENT` (`DEPLOYMENT_ID_`),
+  CONSTRAINT `ACT_FK_MODEL_DEPLOYMENT` FOREIGN KEY (`DEPLOYMENT_ID_`) REFERENCES `ACT_RE_DEPLOYMENT` (`ID_`),
+  CONSTRAINT `ACT_FK_MODEL_SOURCE` FOREIGN KEY (`EDITOR_SOURCE_VALUE_ID_`) REFERENCES `ACT_GE_BYTEARRAY` (`ID_`),
+  CONSTRAINT `ACT_FK_MODEL_SOURCE_EXTRA` FOREIGN KEY (`EDITOR_SOURCE_EXTRA_VALUE_ID_`) REFERENCES `ACT_GE_BYTEARRAY` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_RE_MODEL`
+--
+
+LOCK TABLES `ACT_RE_MODEL` WRITE;
+/*!40000 ALTER TABLE `ACT_RE_MODEL` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_RE_MODEL` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_RE_PROCDEF`
+--
+
+DROP TABLE IF EXISTS `ACT_RE_PROCDEF`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_RE_PROCDEF` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `KEY_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `VERSION_` int NOT NULL,
+  `DEPLOYMENT_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `RESOURCE_NAME_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DGRM_RESOURCE_NAME_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DESCRIPTION_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `HAS_START_FORM_KEY_` tinyint DEFAULT NULL,
+  `HAS_GRAPHICAL_NOTATION_` tinyint DEFAULT NULL,
+  `SUSPENSION_STATE_` int DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  `ENGINE_VERSION_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `DERIVED_FROM_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DERIVED_FROM_ROOT_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DERIVED_VERSION_` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID_`),
+  UNIQUE KEY `ACT_UNIQ_PROCDEF` (`KEY_`,`VERSION_`,`DERIVED_VERSION_`,`TENANT_ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_RE_PROCDEF`
+--
+
+LOCK TABLES `ACT_RE_PROCDEF` WRITE;
+/*!40000 ALTER TABLE `ACT_RE_PROCDEF` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_RE_PROCDEF` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_RU_ACTINST`
+--
+
+DROP TABLE IF EXISTS `ACT_RU_ACTINST`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_RU_ACTINST` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT '1',
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `ACT_ID_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CALL_PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ACT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ACT_TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `ASSIGNEE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `START_TIME_` datetime(3) NOT NULL,
+  `END_TIME_` datetime(3) DEFAULT NULL,
+  `DURATION_` bigint DEFAULT NULL,
+  `TRANSACTION_ORDER_` int DEFAULT NULL,
+  `DELETE_REASON_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_IDX_RU_ACTI_START` (`START_TIME_`),
+  KEY `ACT_IDX_RU_ACTI_END` (`END_TIME_`),
+  KEY `ACT_IDX_RU_ACTI_PROC` (`PROC_INST_ID_`),
+  KEY `ACT_IDX_RU_ACTI_PROC_ACT` (`PROC_INST_ID_`,`ACT_ID_`),
+  KEY `ACT_IDX_RU_ACTI_EXEC` (`EXECUTION_ID_`),
+  KEY `ACT_IDX_RU_ACTI_EXEC_ACT` (`EXECUTION_ID_`,`ACT_ID_`),
+  KEY `ACT_IDX_RU_ACTI_TASK` (`TASK_ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_RU_ACTINST`
+--
+
+LOCK TABLES `ACT_RU_ACTINST` WRITE;
+/*!40000 ALTER TABLE `ACT_RU_ACTINST` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_RU_ACTINST` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_RU_DEADLETTER_JOB`
+--
+
+DROP TABLE IF EXISTS `ACT_RU_DEADLETTER_JOB`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_RU_DEADLETTER_JOB` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `EXCLUSIVE_` tinyint(1) DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROCESS_INSTANCE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CORRELATION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DUEDATE_` timestamp(3) NULL DEFAULT NULL,
+  `REPEAT_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CUSTOM_VALUES_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_IDX_DEADLETTER_JOB_EXCEPTION_STACK_ID` (`EXCEPTION_STACK_ID_`),
+  KEY `ACT_IDX_DEADLETTER_JOB_CUSTOM_VALUES_ID` (`CUSTOM_VALUES_ID_`),
+  KEY `ACT_IDX_DEADLETTER_JOB_CORRELATION_ID` (`CORRELATION_ID_`),
+  KEY `ACT_IDX_DJOB_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_DJOB_SUB_SCOPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_DJOB_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_FK_DEADLETTER_JOB_EXECUTION` (`EXECUTION_ID_`),
+  KEY `ACT_FK_DEADLETTER_JOB_PROCESS_INSTANCE` (`PROCESS_INSTANCE_ID_`),
+  KEY `ACT_FK_DEADLETTER_JOB_PROC_DEF` (`PROC_DEF_ID_`),
+  CONSTRAINT `ACT_FK_DEADLETTER_JOB_CUSTOM_VALUES` FOREIGN KEY (`CUSTOM_VALUES_ID_`) REFERENCES `ACT_GE_BYTEARRAY` (`ID_`),
+  CONSTRAINT `ACT_FK_DEADLETTER_JOB_EXCEPTION` FOREIGN KEY (`EXCEPTION_STACK_ID_`) REFERENCES `ACT_GE_BYTEARRAY` (`ID_`),
+  CONSTRAINT `ACT_FK_DEADLETTER_JOB_EXECUTION` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`),
+  CONSTRAINT `ACT_FK_DEADLETTER_JOB_PROC_DEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `ACT_RE_PROCDEF` (`ID_`),
+  CONSTRAINT `ACT_FK_DEADLETTER_JOB_PROCESS_INSTANCE` FOREIGN KEY (`PROCESS_INSTANCE_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_RU_DEADLETTER_JOB`
+--
+
+LOCK TABLES `ACT_RU_DEADLETTER_JOB` WRITE;
+/*!40000 ALTER TABLE `ACT_RU_DEADLETTER_JOB` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_RU_DEADLETTER_JOB` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_RU_ENTITYLINK`
+--
+
+DROP TABLE IF EXISTS `ACT_RU_ENTITYLINK`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_RU_ENTITYLINK` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `CREATE_TIME_` datetime(3) DEFAULT NULL,
+  `LINK_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PARENT_ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REF_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REF_SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REF_SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ROOT_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ROOT_SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HIERARCHY_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_IDX_ENT_LNK_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`,`LINK_TYPE_`),
+  KEY `ACT_IDX_ENT_LNK_REF_SCOPE` (`REF_SCOPE_ID_`,`REF_SCOPE_TYPE_`,`LINK_TYPE_`),
+  KEY `ACT_IDX_ENT_LNK_ROOT_SCOPE` (`ROOT_SCOPE_ID_`,`ROOT_SCOPE_TYPE_`,`LINK_TYPE_`),
+  KEY `ACT_IDX_ENT_LNK_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`,`LINK_TYPE_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_RU_ENTITYLINK`
+--
+
+LOCK TABLES `ACT_RU_ENTITYLINK` WRITE;
+/*!40000 ALTER TABLE `ACT_RU_ENTITYLINK` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_RU_ENTITYLINK` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_RU_EVENT_SUBSCR`
+--
+
+DROP TABLE IF EXISTS `ACT_RU_EVENT_SUBSCR`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_RU_EVENT_SUBSCR` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `EVENT_TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `EVENT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ACTIVITY_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CONFIGURATION_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CREATED_` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_IDX_EVENT_SUBSCR_CONFIG_` (`CONFIGURATION_`),
+  KEY `ACT_FK_EVENT_EXEC` (`EXECUTION_ID_`),
+  CONSTRAINT `ACT_FK_EVENT_EXEC` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_RU_EVENT_SUBSCR`
+--
+
+LOCK TABLES `ACT_RU_EVENT_SUBSCR` WRITE;
+/*!40000 ALTER TABLE `ACT_RU_EVENT_SUBSCR` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_RU_EVENT_SUBSCR` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_RU_EXECUTION`
+--
+
+DROP TABLE IF EXISTS `ACT_RU_EXECUTION`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_RU_EXECUTION` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `BUSINESS_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PARENT_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SUPER_EXEC_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ROOT_PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ACT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `IS_ACTIVE_` tinyint DEFAULT NULL,
+  `IS_CONCURRENT_` tinyint DEFAULT NULL,
+  `IS_SCOPE_` tinyint DEFAULT NULL,
+  `IS_EVENT_SCOPE_` tinyint DEFAULT NULL,
+  `IS_MI_ROOT_` tinyint DEFAULT NULL,
+  `SUSPENSION_STATE_` int DEFAULT NULL,
+  `CACHED_ENT_STATE_` int DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `START_ACT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `START_TIME_` datetime(3) DEFAULT NULL,
+  `START_USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `LOCK_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `IS_COUNT_ENABLED_` tinyint DEFAULT NULL,
+  `EVT_SUBSCR_COUNT_` int DEFAULT NULL,
+  `TASK_COUNT_` int DEFAULT NULL,
+  `JOB_COUNT_` int DEFAULT NULL,
+  `TIMER_JOB_COUNT_` int DEFAULT NULL,
+  `SUSP_JOB_COUNT_` int DEFAULT NULL,
+  `DEADLETTER_JOB_COUNT_` int DEFAULT NULL,
+  `EXTERNAL_WORKER_JOB_COUNT_` int DEFAULT NULL,
+  `VAR_COUNT_` int DEFAULT NULL,
+  `ID_LINK_COUNT_` int DEFAULT NULL,
+  `CALLBACK_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CALLBACK_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REFERENCE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REFERENCE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PROPAGATED_STAGE_INST_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `BUSINESS_STATUS_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_IDX_EXEC_BUSKEY` (`BUSINESS_KEY_`),
+  KEY `ACT_IDC_EXEC_ROOT` (`ROOT_PROC_INST_ID_`),
+  KEY `ACT_IDX_EXEC_REF_ID_` (`REFERENCE_ID_`),
+  KEY `ACT_FK_EXE_PROCINST` (`PROC_INST_ID_`),
+  KEY `ACT_FK_EXE_PARENT` (`PARENT_ID_`),
+  KEY `ACT_FK_EXE_SUPER` (`SUPER_EXEC_`),
+  KEY `ACT_FK_EXE_PROCDEF` (`PROC_DEF_ID_`),
+  CONSTRAINT `ACT_FK_EXE_PARENT` FOREIGN KEY (`PARENT_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`) ON DELETE CASCADE,
+  CONSTRAINT `ACT_FK_EXE_PROCDEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `ACT_RE_PROCDEF` (`ID_`),
+  CONSTRAINT `ACT_FK_EXE_PROCINST` FOREIGN KEY (`PROC_INST_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `ACT_FK_EXE_SUPER` FOREIGN KEY (`SUPER_EXEC_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_RU_EXECUTION`
+--
+
+LOCK TABLES `ACT_RU_EXECUTION` WRITE;
+/*!40000 ALTER TABLE `ACT_RU_EXECUTION` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_RU_EXECUTION` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_RU_EXTERNAL_JOB`
+--
+
+DROP TABLE IF EXISTS `ACT_RU_EXTERNAL_JOB`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_RU_EXTERNAL_JOB` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `LOCK_EXP_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `EXCLUSIVE_` tinyint(1) DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROCESS_INSTANCE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CORRELATION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `RETRIES_` int DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DUEDATE_` timestamp(3) NULL DEFAULT NULL,
+  `REPEAT_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CUSTOM_VALUES_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_IDX_EXTERNAL_JOB_EXCEPTION_STACK_ID` (`EXCEPTION_STACK_ID_`),
+  KEY `ACT_IDX_EXTERNAL_JOB_CUSTOM_VALUES_ID` (`CUSTOM_VALUES_ID_`),
+  KEY `ACT_IDX_EXTERNAL_JOB_CORRELATION_ID` (`CORRELATION_ID_`),
+  KEY `ACT_IDX_EJOB_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_EJOB_SUB_SCOPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_EJOB_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`),
+  CONSTRAINT `ACT_FK_EXTERNAL_JOB_CUSTOM_VALUES` FOREIGN KEY (`CUSTOM_VALUES_ID_`) REFERENCES `ACT_GE_BYTEARRAY` (`ID_`),
+  CONSTRAINT `ACT_FK_EXTERNAL_JOB_EXCEPTION` FOREIGN KEY (`EXCEPTION_STACK_ID_`) REFERENCES `ACT_GE_BYTEARRAY` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_RU_EXTERNAL_JOB`
+--
+
+LOCK TABLES `ACT_RU_EXTERNAL_JOB` WRITE;
+/*!40000 ALTER TABLE `ACT_RU_EXTERNAL_JOB` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_RU_EXTERNAL_JOB` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_RU_HISTORY_JOB`
+--
+
+DROP TABLE IF EXISTS `ACT_RU_HISTORY_JOB`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_RU_HISTORY_JOB` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `LOCK_EXP_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `RETRIES_` int DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CUSTOM_VALUES_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ADV_HANDLER_CFG_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_RU_HISTORY_JOB`
+--
+
+LOCK TABLES `ACT_RU_HISTORY_JOB` WRITE;
+/*!40000 ALTER TABLE `ACT_RU_HISTORY_JOB` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_RU_HISTORY_JOB` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_RU_IDENTITYLINK`
+--
+
+DROP TABLE IF EXISTS `ACT_RU_IDENTITYLINK`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_RU_IDENTITYLINK` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `GROUP_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_IDX_IDENT_LNK_USER` (`USER_ID_`),
+  KEY `ACT_IDX_IDENT_LNK_GROUP` (`GROUP_ID_`),
+  KEY `ACT_IDX_IDENT_LNK_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_IDENT_LNK_SUB_SCOPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_IDENT_LNK_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_ATHRZ_PROCEDEF` (`PROC_DEF_ID_`),
+  KEY `ACT_FK_TSKASS_TASK` (`TASK_ID_`),
+  KEY `ACT_FK_IDL_PROCINST` (`PROC_INST_ID_`),
+  CONSTRAINT `ACT_FK_ATHRZ_PROCEDEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `ACT_RE_PROCDEF` (`ID_`),
+  CONSTRAINT `ACT_FK_IDL_PROCINST` FOREIGN KEY (`PROC_INST_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`),
+  CONSTRAINT `ACT_FK_TSKASS_TASK` FOREIGN KEY (`TASK_ID_`) REFERENCES `ACT_RU_TASK` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_RU_IDENTITYLINK`
+--
+
+LOCK TABLES `ACT_RU_IDENTITYLINK` WRITE;
+/*!40000 ALTER TABLE `ACT_RU_IDENTITYLINK` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_RU_IDENTITYLINK` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_RU_JOB`
+--
+
+DROP TABLE IF EXISTS `ACT_RU_JOB`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_RU_JOB` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `LOCK_EXP_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `EXCLUSIVE_` tinyint(1) DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROCESS_INSTANCE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CORRELATION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `RETRIES_` int DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DUEDATE_` timestamp(3) NULL DEFAULT NULL,
+  `REPEAT_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CUSTOM_VALUES_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_IDX_JOB_EXCEPTION_STACK_ID` (`EXCEPTION_STACK_ID_`),
+  KEY `ACT_IDX_JOB_CUSTOM_VALUES_ID` (`CUSTOM_VALUES_ID_`),
+  KEY `ACT_IDX_JOB_CORRELATION_ID` (`CORRELATION_ID_`),
+  KEY `ACT_IDX_JOB_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_JOB_SUB_SCOPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_JOB_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_FK_JOB_EXECUTION` (`EXECUTION_ID_`),
+  KEY `ACT_FK_JOB_PROCESS_INSTANCE` (`PROCESS_INSTANCE_ID_`),
+  KEY `ACT_FK_JOB_PROC_DEF` (`PROC_DEF_ID_`),
+  CONSTRAINT `ACT_FK_JOB_CUSTOM_VALUES` FOREIGN KEY (`CUSTOM_VALUES_ID_`) REFERENCES `ACT_GE_BYTEARRAY` (`ID_`),
+  CONSTRAINT `ACT_FK_JOB_EXCEPTION` FOREIGN KEY (`EXCEPTION_STACK_ID_`) REFERENCES `ACT_GE_BYTEARRAY` (`ID_`),
+  CONSTRAINT `ACT_FK_JOB_EXECUTION` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`),
+  CONSTRAINT `ACT_FK_JOB_PROC_DEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `ACT_RE_PROCDEF` (`ID_`),
+  CONSTRAINT `ACT_FK_JOB_PROCESS_INSTANCE` FOREIGN KEY (`PROCESS_INSTANCE_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_RU_JOB`
+--
+
+LOCK TABLES `ACT_RU_JOB` WRITE;
+/*!40000 ALTER TABLE `ACT_RU_JOB` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_RU_JOB` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_RU_SUSPENDED_JOB`
+--
+
+DROP TABLE IF EXISTS `ACT_RU_SUSPENDED_JOB`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_RU_SUSPENDED_JOB` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `EXCLUSIVE_` tinyint(1) DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROCESS_INSTANCE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CORRELATION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `RETRIES_` int DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DUEDATE_` timestamp(3) NULL DEFAULT NULL,
+  `REPEAT_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CUSTOM_VALUES_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_IDX_SUSPENDED_JOB_EXCEPTION_STACK_ID` (`EXCEPTION_STACK_ID_`),
+  KEY `ACT_IDX_SUSPENDED_JOB_CUSTOM_VALUES_ID` (`CUSTOM_VALUES_ID_`),
+  KEY `ACT_IDX_SUSPENDED_JOB_CORRELATION_ID` (`CORRELATION_ID_`),
+  KEY `ACT_IDX_SJOB_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_SJOB_SUB_SCOPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_SJOB_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_FK_SUSPENDED_JOB_EXECUTION` (`EXECUTION_ID_`),
+  KEY `ACT_FK_SUSPENDED_JOB_PROCESS_INSTANCE` (`PROCESS_INSTANCE_ID_`),
+  KEY `ACT_FK_SUSPENDED_JOB_PROC_DEF` (`PROC_DEF_ID_`),
+  CONSTRAINT `ACT_FK_SUSPENDED_JOB_CUSTOM_VALUES` FOREIGN KEY (`CUSTOM_VALUES_ID_`) REFERENCES `ACT_GE_BYTEARRAY` (`ID_`),
+  CONSTRAINT `ACT_FK_SUSPENDED_JOB_EXCEPTION` FOREIGN KEY (`EXCEPTION_STACK_ID_`) REFERENCES `ACT_GE_BYTEARRAY` (`ID_`),
+  CONSTRAINT `ACT_FK_SUSPENDED_JOB_EXECUTION` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`),
+  CONSTRAINT `ACT_FK_SUSPENDED_JOB_PROC_DEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `ACT_RE_PROCDEF` (`ID_`),
+  CONSTRAINT `ACT_FK_SUSPENDED_JOB_PROCESS_INSTANCE` FOREIGN KEY (`PROCESS_INSTANCE_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_RU_SUSPENDED_JOB`
+--
+
+LOCK TABLES `ACT_RU_SUSPENDED_JOB` WRITE;
+/*!40000 ALTER TABLE `ACT_RU_SUSPENDED_JOB` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_RU_SUSPENDED_JOB` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_RU_TASK`
+--
+
+DROP TABLE IF EXISTS `ACT_RU_TASK`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_RU_TASK` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PROPAGATED_STAGE_INST_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PARENT_TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DESCRIPTION_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_DEF_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ASSIGNEE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `DELEGATION_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PRIORITY_` int DEFAULT NULL,
+  `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `DUE_DATE_` datetime(3) DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUSPENSION_STATE_` int DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  `FORM_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CLAIM_TIME_` datetime(3) DEFAULT NULL,
+  `IS_COUNT_ENABLED_` tinyint DEFAULT NULL,
+  `VAR_COUNT_` int DEFAULT NULL,
+  `ID_LINK_COUNT_` int DEFAULT NULL,
+  `SUB_TASK_COUNT_` int DEFAULT NULL,
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_IDX_TASK_CREATE` (`CREATE_TIME_`),
+  KEY `ACT_IDX_TASK_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_TASK_SUB_SCOPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_TASK_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_FK_TASK_EXE` (`EXECUTION_ID_`),
+  KEY `ACT_FK_TASK_PROCINST` (`PROC_INST_ID_`),
+  KEY `ACT_FK_TASK_PROCDEF` (`PROC_DEF_ID_`),
+  CONSTRAINT `ACT_FK_TASK_EXE` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`),
+  CONSTRAINT `ACT_FK_TASK_PROCDEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `ACT_RE_PROCDEF` (`ID_`),
+  CONSTRAINT `ACT_FK_TASK_PROCINST` FOREIGN KEY (`PROC_INST_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_RU_TASK`
+--
+
+LOCK TABLES `ACT_RU_TASK` WRITE;
+/*!40000 ALTER TABLE `ACT_RU_TASK` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_RU_TASK` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_RU_TIMER_JOB`
+--
+
+DROP TABLE IF EXISTS `ACT_RU_TIMER_JOB`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_RU_TIMER_JOB` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `LOCK_EXP_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `EXCLUSIVE_` tinyint(1) DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROCESS_INSTANCE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CORRELATION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `RETRIES_` int DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DUEDATE_` timestamp(3) NULL DEFAULT NULL,
+  `REPEAT_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CUSTOM_VALUES_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_IDX_TIMER_JOB_EXCEPTION_STACK_ID` (`EXCEPTION_STACK_ID_`),
+  KEY `ACT_IDX_TIMER_JOB_CUSTOM_VALUES_ID` (`CUSTOM_VALUES_ID_`),
+  KEY `ACT_IDX_TIMER_JOB_CORRELATION_ID` (`CORRELATION_ID_`),
+  KEY `ACT_IDX_TIMER_JOB_DUEDATE` (`DUEDATE_`),
+  KEY `ACT_IDX_TJOB_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_TJOB_SUB_SCOPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_TJOB_SCOPE_DEF` (`SCOPE_DEFINITION_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_FK_TIMER_JOB_EXECUTION` (`EXECUTION_ID_`),
+  KEY `ACT_FK_TIMER_JOB_PROCESS_INSTANCE` (`PROCESS_INSTANCE_ID_`),
+  KEY `ACT_FK_TIMER_JOB_PROC_DEF` (`PROC_DEF_ID_`),
+  CONSTRAINT `ACT_FK_TIMER_JOB_CUSTOM_VALUES` FOREIGN KEY (`CUSTOM_VALUES_ID_`) REFERENCES `ACT_GE_BYTEARRAY` (`ID_`),
+  CONSTRAINT `ACT_FK_TIMER_JOB_EXCEPTION` FOREIGN KEY (`EXCEPTION_STACK_ID_`) REFERENCES `ACT_GE_BYTEARRAY` (`ID_`),
+  CONSTRAINT `ACT_FK_TIMER_JOB_EXECUTION` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`),
+  CONSTRAINT `ACT_FK_TIMER_JOB_PROC_DEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `ACT_RE_PROCDEF` (`ID_`),
+  CONSTRAINT `ACT_FK_TIMER_JOB_PROCESS_INSTANCE` FOREIGN KEY (`PROCESS_INSTANCE_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_RU_TIMER_JOB`
+--
+
+LOCK TABLES `ACT_RU_TIMER_JOB` WRITE;
+/*!40000 ALTER TABLE `ACT_RU_TIMER_JOB` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_RU_TIMER_JOB` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ACT_RU_VARIABLE`
+--
+
+DROP TABLE IF EXISTS `ACT_RU_VARIABLE`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ACT_RU_VARIABLE` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `BYTEARRAY_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DOUBLE_` double DEFAULT NULL,
+  `LONG_` bigint DEFAULT NULL,
+  `TEXT_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TEXT2_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`),
+  KEY `ACT_IDX_RU_VAR_SCOPE_ID_TYPE` (`SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_IDX_RU_VAR_SUB_ID_TYPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`),
+  KEY `ACT_FK_VAR_BYTEARRAY` (`BYTEARRAY_ID_`),
+  KEY `ACT_IDX_VARIABLE_TASK_ID` (`TASK_ID_`),
+  KEY `ACT_FK_VAR_EXE` (`EXECUTION_ID_`),
+  KEY `ACT_FK_VAR_PROCINST` (`PROC_INST_ID_`),
+  CONSTRAINT `ACT_FK_VAR_BYTEARRAY` FOREIGN KEY (`BYTEARRAY_ID_`) REFERENCES `ACT_GE_BYTEARRAY` (`ID_`),
+  CONSTRAINT `ACT_FK_VAR_EXE` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`),
+  CONSTRAINT `ACT_FK_VAR_PROCINST` FOREIGN KEY (`PROC_INST_ID_`) REFERENCES `ACT_RU_EXECUTION` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ACT_RU_VARIABLE`
+--
+
+LOCK TABLES `ACT_RU_VARIABLE` WRITE;
+/*!40000 ALTER TABLE `ACT_RU_VARIABLE` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ACT_RU_VARIABLE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `FLW_CHANNEL_DEFINITION`
+--
+
+DROP TABLE IF EXISTS `FLW_CHANNEL_DEFINITION`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `FLW_CHANNEL_DEFINITION` (
+  `ID_` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `NAME_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `VERSION_` int DEFAULT NULL,
+  `KEY_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `DEPLOYMENT_ID_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `CREATE_TIME_` datetime(3) DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `RESOURCE_NAME_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `DESCRIPTION_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `IMPLEMENTATION_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`),
+  UNIQUE KEY `ACT_IDX_CHANNEL_DEF_UNIQ` (`KEY_`,`VERSION_`,`TENANT_ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `FLW_CHANNEL_DEFINITION`
+--
+
+LOCK TABLES `FLW_CHANNEL_DEFINITION` WRITE;
+/*!40000 ALTER TABLE `FLW_CHANNEL_DEFINITION` DISABLE KEYS */;
+/*!40000 ALTER TABLE `FLW_CHANNEL_DEFINITION` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `FLW_EVENT_DEFINITION`
+--
+
+DROP TABLE IF EXISTS `FLW_EVENT_DEFINITION`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `FLW_EVENT_DEFINITION` (
+  `ID_` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `NAME_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `VERSION_` int DEFAULT NULL,
+  `KEY_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `DEPLOYMENT_ID_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `RESOURCE_NAME_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `DESCRIPTION_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`),
+  UNIQUE KEY `ACT_IDX_EVENT_DEF_UNIQ` (`KEY_`,`VERSION_`,`TENANT_ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `FLW_EVENT_DEFINITION`
+--
+
+LOCK TABLES `FLW_EVENT_DEFINITION` WRITE;
+/*!40000 ALTER TABLE `FLW_EVENT_DEFINITION` DISABLE KEYS */;
+/*!40000 ALTER TABLE `FLW_EVENT_DEFINITION` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `FLW_EVENT_DEPLOYMENT`
+--
+
+DROP TABLE IF EXISTS `FLW_EVENT_DEPLOYMENT`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `FLW_EVENT_DEPLOYMENT` (
+  `ID_` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `NAME_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `DEPLOY_TIME_` datetime(3) DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `PARENT_DEPLOYMENT_ID_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  PRIMARY KEY (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `FLW_EVENT_DEPLOYMENT`
+--
+
+LOCK TABLES `FLW_EVENT_DEPLOYMENT` WRITE;
+/*!40000 ALTER TABLE `FLW_EVENT_DEPLOYMENT` DISABLE KEYS */;
+/*!40000 ALTER TABLE `FLW_EVENT_DEPLOYMENT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `FLW_EVENT_RESOURCE`
+--
+
+DROP TABLE IF EXISTS `FLW_EVENT_RESOURCE`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `FLW_EVENT_RESOURCE` (
+  `ID_` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `NAME_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `DEPLOYMENT_ID_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `RESOURCE_BYTES_` longblob,
+  PRIMARY KEY (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `FLW_EVENT_RESOURCE`
+--
+
+LOCK TABLES `FLW_EVENT_RESOURCE` WRITE;
+/*!40000 ALTER TABLE `FLW_EVENT_RESOURCE` DISABLE KEYS */;
+/*!40000 ALTER TABLE `FLW_EVENT_RESOURCE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `FLW_EV_DATABASECHANGELOG`
+--
+
+DROP TABLE IF EXISTS `FLW_EV_DATABASECHANGELOG`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `FLW_EV_DATABASECHANGELOG` (
+  `ID` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `AUTHOR` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `FILENAME` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `DATEEXECUTED` datetime NOT NULL,
+  `ORDEREXECUTED` int NOT NULL,
+  `EXECTYPE` varchar(10) COLLATE utf8mb4_bin NOT NULL,
+  `MD5SUM` varchar(35) COLLATE utf8mb4_bin DEFAULT NULL,
+  `DESCRIPTION` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `COMMENTS` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `TAG` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `LIQUIBASE` varchar(20) COLLATE utf8mb4_bin DEFAULT NULL,
+  `CONTEXTS` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `LABELS` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `DEPLOYMENT_ID` varchar(10) COLLATE utf8mb4_bin DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `FLW_EV_DATABASECHANGELOG`
+--
+
+LOCK TABLES `FLW_EV_DATABASECHANGELOG` WRITE;
+/*!40000 ALTER TABLE `FLW_EV_DATABASECHANGELOG` DISABLE KEYS */;
+INSERT INTO `FLW_EV_DATABASECHANGELOG` VALUES ('1','flowable','org/flowable/eventregistry/db/liquibase/flowable-eventregistry-db-changelog.xml','2022-11-07 12:26:20',1,'EXECUTED','8:1b0c48c9cf7945be799d868a2626d687','createTable tableName=FLW_EVENT_DEPLOYMENT; createTable tableName=FLW_EVENT_RESOURCE; createTable tableName=FLW_EVENT_DEFINITION; createIndex indexName=ACT_IDX_EVENT_DEF_UNIQ, tableName=FLW_EVENT_DEFINITION; createTable tableName=FLW_CHANNEL_DEFIN...','',NULL,'4.9.1',NULL,NULL,'7795180103'),('2','flowable','org/flowable/eventregistry/db/liquibase/flowable-eventregistry-db-changelog.xml','2022-11-07 12:26:20',2,'EXECUTED','8:0ea825feb8e470558f0b5754352b9cda','addColumn tableName=FLW_CHANNEL_DEFINITION; addColumn tableName=FLW_CHANNEL_DEFINITION','',NULL,'4.9.1',NULL,NULL,'7795180103'),('3','flowable','org/flowable/eventregistry/db/liquibase/flowable-eventregistry-db-changelog.xml','2022-11-07 12:26:20',3,'EXECUTED','8:3c2bb293350b5cbe6504331980c9dcee','customChange','',NULL,'4.9.1',NULL,NULL,'7795180103');
+/*!40000 ALTER TABLE `FLW_EV_DATABASECHANGELOG` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `FLW_EV_DATABASECHANGELOGLOCK`
+--
+
+DROP TABLE IF EXISTS `FLW_EV_DATABASECHANGELOGLOCK`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `FLW_EV_DATABASECHANGELOGLOCK` (
+  `ID` int NOT NULL,
+  `LOCKED` bit(1) NOT NULL,
+  `LOCKGRANTED` datetime DEFAULT NULL,
+  `LOCKEDBY` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `FLW_EV_DATABASECHANGELOGLOCK`
+--
+
+LOCK TABLES `FLW_EV_DATABASECHANGELOGLOCK` WRITE;
+/*!40000 ALTER TABLE `FLW_EV_DATABASECHANGELOGLOCK` DISABLE KEYS */;
+INSERT INTO `FLW_EV_DATABASECHANGELOGLOCK` VALUES (1,_binary '\0',NULL,NULL);
+/*!40000 ALTER TABLE `FLW_EV_DATABASECHANGELOGLOCK` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `FLW_RU_BATCH`
+--
+
+DROP TABLE IF EXISTS `FLW_RU_BATCH`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `FLW_RU_BATCH` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `TYPE_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `SEARCH_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SEARCH_KEY2_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` datetime(3) NOT NULL,
+  `COMPLETE_TIME_` datetime(3) DEFAULT NULL,
+  `STATUS_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `BATCH_DOC_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `FLW_RU_BATCH`
+--
+
+LOCK TABLES `FLW_RU_BATCH` WRITE;
+/*!40000 ALTER TABLE `FLW_RU_BATCH` DISABLE KEYS */;
+/*!40000 ALTER TABLE `FLW_RU_BATCH` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `FLW_RU_BATCH_PART`
+--
+
+DROP TABLE IF EXISTS `FLW_RU_BATCH_PART`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `FLW_RU_BATCH_PART` (
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `REV_` int DEFAULT NULL,
+  `BATCH_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `SCOPE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SEARCH_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SEARCH_KEY2_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CREATE_TIME_` datetime(3) NOT NULL,
+  `COMPLETE_TIME_` datetime(3) DEFAULT NULL,
+  `STATUS_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `RESULT_DOC_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  PRIMARY KEY (`ID_`),
+  KEY `FLW_IDX_BATCH_PART` (`BATCH_ID_`),
+  CONSTRAINT `FLW_FK_BATCH_PART_PARENT` FOREIGN KEY (`BATCH_ID_`) REFERENCES `FLW_RU_BATCH` (`ID_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `FLW_RU_BATCH_PART`
+--
+
+LOCK TABLES `FLW_RU_BATCH_PART` WRITE;
+/*!40000 ALTER TABLE `FLW_RU_BATCH_PART` DISABLE KEYS */;
+/*!40000 ALTER TABLE `FLW_RU_BATCH_PART` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `me_product_line`
+--
+
+DROP TABLE IF EXISTS `me_product_line`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `me_product_line` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `name` varchar(64) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '名称',
+  `from_type` varchar(16) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '来源类型',
+  `from_id` bigint unsigned DEFAULT NULL COMMENT '来源ID',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `cost_center` bigint unsigned DEFAULT NULL COMMENT 'cost_center',
+  `cost_center_multiple` varchar(1024) COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'cost_center_multiple',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='产品线信息维护实体';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `me_product_line`
+--
+
+LOCK TABLES `me_product_line` WRITE;
+/*!40000 ALTER TABLE `me_product_line` DISABLE KEYS */;
+INSERT INTO `me_product_line` VALUES (1,'test','USER',NULL,1,'2022-11-08 15:27:38',1,'2022-10-29 23:42:24',1587088498225868802,NULL),(2,'test2','USER',NULL,2,'2022-11-08 15:27:38',2,'2022-10-29 23:42:43',1583822690246844417,NULL),(3,'test3','USER',NULL,3,'2022-11-08 15:27:38',3,'2022-10-29 05:10:55',1587088520011083778,'1583822690246844417,1583824814787584001'),(4,'test4','USER',NULL,4,'2022-11-08 15:27:38',4,'2022-10-29 12:55:44',1583826162119663617,NULL),(1590561827884687362,'1111','USER',NULL,1,'2022-11-10 17:11:26',1,'2022-11-10 12:27:46',1587088498225868802,'1584347991602769921,1584348027585703938,1587088498225868802'),(1590562947940016129,'22222','USER',NULL,1,'2022-11-10 12:32:13',1,'2022-11-10 12:32:13',1583824814787584001,'1584347991602769921,1584348027585703938'),(1590563064814297090,'333','USER',NULL,1,'2022-11-10 12:32:41',1,'2022-11-10 12:32:41',1583824814787584001,'1584347991602769921,1584348027585703938'),(1590715254166036481,'101100111','USER',NULL,1,'2022-11-10 22:37:25',1,'2022-11-10 22:37:25',1583824814787584001,'1584347991602769921,1584348027585703938');
+/*!40000 ALTER TABLE `me_product_line` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `modeling_entity_def`
+--
+
+DROP TABLE IF EXISTS `modeling_entity_def`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `modeling_entity_def` (
+  `id` bigint unsigned NOT NULL COMMENT '主键',
+  `mkey` varchar(64) COLLATE utf8mb4_bin NOT NULL COMMENT '标识',
+  `name` varchar(64) COLLATE utf8mb4_bin NOT NULL COMMENT '业务实体名称',
+  `remark` varchar(128) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '实体说明',
+  `status` tinyint NOT NULL COMMENT '状态',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='实体定义';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `modeling_entity_def`
+--
+
+LOCK TABLES `modeling_entity_def` WRITE;
+/*!40000 ALTER TABLE `modeling_entity_def` DISABLE KEYS */;
+INSERT INTO `modeling_entity_def` VALUES (1585918511255719937,'product_line','产品线信息','产品线信息维护实体',0,1,'2022-10-28 16:56:53',1,'2022-10-28 16:56:53');
+/*!40000 ALTER TABLE `modeling_entity_def` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `modeling_entity_page`
+--
+
+DROP TABLE IF EXISTS `modeling_entity_page`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `modeling_entity_page` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `mkey` varchar(64) COLLATE utf8mb4_bin NOT NULL COMMENT '实体标识',
+  `type` varchar(16) COLLATE utf8mb4_bin NOT NULL COMMENT '页面类型(ADD/EDIT)',
+  `scheme` json DEFAULT NULL COMMENT '页面定义',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='业务实体页面配置';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `modeling_entity_page`
+--
+
+LOCK TABLES `modeling_entity_page` WRITE;
+/*!40000 ALTER TABLE `modeling_entity_page` DISABLE KEYS */;
+/*!40000 ALTER TABLE `modeling_entity_page` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `modeling_field_def`
+--
+
+DROP TABLE IF EXISTS `modeling_field_def`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `modeling_field_def` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `field` varchar(128) COLLATE utf8mb4_bin NOT NULL COMMENT '数据库字段/表单字段',
+  `label` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '字段名/表单字段名',
+  `remark` varchar(256) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '字段说明',
+  `width` int NOT NULL DEFAULT '0' COMMENT '字段宽度',
+  `type` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '字段组件类型',
+  `scheme` json NOT NULL COMMENT '字段定义',
+  `scope` varchar(16) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '字段范围',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `modeling_field_def_field_index` (`field`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='流程字段定义';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `modeling_field_def`
+--
+
+LOCK TABLES `modeling_field_def` WRITE;
+/*!40000 ALTER TABLE `modeling_field_def` DISABLE KEYS */;
+INSERT INTO `modeling_field_def` VALUES (1583622160878735361,'id','编号','主键',8,'number','{\"type\": \"number\", \"precision\": 0}','WORKFLOW_DEFAULT',1,'2022-10-28 16:39:48',1,'2022-10-22 08:52:00'),(1584160647990243329,'process_instance_id','流程实例ID','流程引擎实例ID',36,'text','{\"type\": \"text\", \"defaultValue\": null}','WORKFLOW_DEFAULT',1,'2022-10-26 22:38:22',1,'2022-10-23 20:32:04'),(1584161060399378434,'code','编号','流程唯一编号',32,'text','{\"type\": \"text\", \"defaultValue\": null}','WORKFLOW_DEFAULT',1,'2022-10-26 22:38:22',1,'2022-10-23 20:33:24'),(1584161141097787394,'name','标题','流程标题',128,'text','{\"type\": \"text\", \"defaultValue\": null}','WORKFLOW_DEFAULT',1,'2022-10-26 22:38:22',1,'2022-10-23 20:33:43'),(1584161976175300609,'dept_id','所属部门','',32,'dept','{\"type\": \"dept\", \"multiple\": false}','WORKFLOW_DEFAULT',1,'2022-10-23 20:37:02',1,'2022-10-23 20:37:02'),(1584181666134118402,'create_by','创建人','发起流程的人',16,'user','{\"type\": \"user\", \"multiple\": false}','WORKFLOW_DEFAULT',1,'2022-10-28 09:36:03',1,'2022-10-23 21:55:17'),(1584181794765033473,'create_time','创建时间','发起流程的时间',16,'date','{\"type\": \"date\", \"format\": \"YYYY-MM-DD HH:mm:ss\", \"dateType\": \"datetime\", \"valueFormat\": \"YYYY-MM-DD HH:mm:ss\", \"defaultValue\": \"\"}','WORKFLOW_DEFAULT',1,'2022-10-26 22:38:22',1,'2022-10-23 21:55:47'),(1584182223049609217,'update_by','更新人','更新数据的人',16,'user','{\"type\": \"user\", \"multiple\": false}','WORKFLOW_DEFAULT',1,'2022-10-28 09:36:03',1,'2022-10-23 21:57:29'),(1584182320063860737,'update_time','更新时间','最后更新流程数据的时间',16,'date','{\"type\": \"date\", \"format\": \"YYYY-MM-DD HH:mm:ss\", \"dateType\": \"datetime\", \"valueFormat\": \"YYYY-MM-DD HH:mm:ss\", \"defaultValue\": \"\"}','WORKFLOW_DEFAULT',1,'2022-10-26 22:38:22',1,'2022-10-23 21:57:52'),(1584339977915265025,'cost_center','成本中心','成本中心下拉单选字段',16,'option','{\"type\": \"option\", \"multiple\": false, \"optionTypeId\": \"1583739849538342914\", \"optionComponent\": \"single-select\", \"optionDefaultValue\": [\"1583824814787584001\"]}','GLOBAL',1,'2022-10-28 09:34:22',1,'2022-10-24 08:24:21'),(1585589188166483969,'id','主键ID','主键',8,'number','{\"type\": \"number\", \"precision\": 0}','ENTITY_DEFAULT',1,'2022-10-28 16:39:48',1,'2022-10-27 19:08:16'),(1585589346233024513,'name','名称','标题',64,'text','{\"type\": \"text\"}','ENTITY_DEFAULT',1,'2022-10-27 22:49:00',1,'2022-10-27 19:08:54'),(1585589426855936002,'from_type','来源类型','流程、实体key',16,'text','{\"type\": \"text\"}','ENTITY_DEFAULT',1,'2022-10-28 13:33:48',1,'2022-10-28 13:33:48'),(1585590177913176065,'from_id','来源ID','来源实体、流程ID',8,'number','{\"type\": \"number\", \"precision\": 0}','ENTITY_DEFAULT',1,'2022-10-28 13:36:57',1,'2022-10-28 13:36:57'),(1585590278232539138,'update_by','更新人','最后更新的用户',8,'user','{\"type\": \"user\", \"multiple\": false}','ENTITY_DEFAULT',1,'2022-10-28 09:36:03',1,'2022-10-27 19:09:13'),(1585590372281417730,'update_time','更新时间','最后更新时间',8,'date','{\"type\": \"date\", \"format\": \"YYYY-MM-DD HH:mm:ss\", \"dateType\": \"datetime\", \"valueFormat\": \"YYYY-MM-DD HH:mm:ss\", \"defaultValue\": \"\"}','ENTITY_DEFAULT',1,'2022-10-27 20:04:20',1,'2022-10-27 19:12:12'),(1585867406723325954,'create_by','创建人','创建此单据的用户',8,'user','{\"type\": \"user\", \"multiple\": false}','ENTITY_DEFAULT',1,'2022-10-28 09:36:03',1,'2022-10-27 19:12:36'),(1585868195659325441,'create_time','创建时间','创建此单据的时间',16,'date','{\"type\": \"date\", \"format\": \"YYYY-MM-DD HH:mm:ss\", \"dateType\": \"datetime\", \"valueFormat\": \"YYYY-MM-DD HH:mm:ss\", \"defaultValue\": \"\"}','ENTITY_DEFAULT',1,'2022-10-27 20:04:20',1,'2022-10-27 19:12:58'),(1589631844999802881,'cost_center_multiple','多选成本中心','多选成本中心',16,'option','{\"type\": \"option\", \"multiple\": true, \"optionTypeId\": \"1583739849538342914\", \"optionComponent\": \"multi-select\", \"optionDefaultValue\": [\"1584347991602769921\", \"1584348027585703938\"]}','GLOBAL',1,'2022-11-07 22:52:20',1,'2022-11-07 22:52:20');
+/*!40000 ALTER TABLE `modeling_field_def` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `modeling_field_ref`
+--
+
+DROP TABLE IF EXISTS `modeling_field_ref`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `modeling_field_ref` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `module` varchar(16) COLLATE utf8mb4_bin NOT NULL COMMENT '模块',
+  `mkey` varchar(64) COLLATE utf8mb4_bin NOT NULL COMMENT '模型标识',
+  `field_id` bigint unsigned NOT NULL COMMENT '字段ID',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `key_unidx` (`module`,`mkey`,`field_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='流程字段引用关系表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `modeling_field_ref`
+--
+
+LOCK TABLES `modeling_field_ref` WRITE;
+/*!40000 ALTER TABLE `modeling_field_ref` DISABLE KEYS */;
+INSERT INTO `modeling_field_ref` VALUES (1586740378090631170,'ENTITY','product_line',1584339977915265025,1,'2022-10-30 23:22:41'),(1589242316271177729,'WORKFLOW','holiday',1584339977915265025,1,'2022-11-06 21:04:30'),(1589631884409483265,'ENTITY','product_line',1589631844999802881,1,'2022-11-07 22:52:30');
+/*!40000 ALTER TABLE `modeling_field_ref` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `modeling_option_type`
+--
+
+DROP TABLE IF EXISTS `modeling_option_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `modeling_option_type` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '信息名称',
+  `scope` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '信息范围',
+  `mkey` varchar(64) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '私有所属模型标识',
+  `remark` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '说明',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='工作流选项类型定义';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `modeling_option_type`
+--
+
+LOCK TABLES `modeling_option_type` WRITE;
+/*!40000 ALTER TABLE `modeling_option_type` DISABLE KEYS */;
+INSERT INTO `modeling_option_type` VALUES (1583739849538342914,'测试树数据源','GLOBAL',NULL,'测试',1,'2022-10-22 22:18:01',1,'2022-10-22 22:18:01'),(1585922292546605057,'测试数据源1','ENTITY_PRIVATE','product_line','1111111111111111',1,'2022-10-28 17:11:54',1,'2022-10-28 17:11:54');
+/*!40000 ALTER TABLE `modeling_option_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `modeling_option_value`
+--
+
+DROP TABLE IF EXISTS `modeling_option_value`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `modeling_option_value` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `type_id` bigint unsigned NOT NULL COMMENT '信息源ID',
+  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '选项值名称',
+  `pid` bigint DEFAULT NULL COMMENT '选项父级',
+  `order_no` int DEFAULT NULL COMMENT '排序号',
+  `disabled` tinyint NOT NULL DEFAULT '0' COMMENT '是否禁用',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `type_id_index` (`type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='流程选项值';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `modeling_option_value`
+--
+
+LOCK TABLES `modeling_option_value` WRITE;
+/*!40000 ALTER TABLE `modeling_option_value` DISABLE KEYS */;
+INSERT INTO `modeling_option_value` VALUES (1583820377780162561,1583739849538342914,'测试',NULL,1,0,1,'2022-10-22 22:07:58',1,'2022-10-22 22:07:58'),(1583822690246844417,1583739849538342914,'测试1',1583820377780162561,1,0,1,'2022-10-22 22:17:24',1,'2022-10-22 22:17:24'),(1583824814787584001,1583739849538342914,'测试2',1583820377780162561,2,0,1,'2022-10-22 22:17:28',1,'2022-10-22 22:17:28'),(1583826135649411074,1583739849538342914,'测试21',1583824814787584001,1,0,1,'2022-10-24 09:19:55',1,'2022-10-24 09:19:54'),(1583826162119663617,1583739849538342914,'测试211',1583826135649411074,1,0,1,'2022-10-22 22:22:37',1,'2022-10-22 22:22:37'),(1584347991602769921,1583739849538342914,'测试22',1583824814787584001,2,0,1,'2022-10-24 08:56:12',1,'2022-10-24 08:56:12'),(1584348027585703938,1583739849538342914,'测试23',1583824814787584001,3,0,1,'2022-10-24 08:56:20',1,'2022-10-24 08:56:20'),(1585922381004476418,1585922292546605057,'T1',NULL,1,0,1,'2022-10-28 17:12:15',1,'2022-10-28 17:12:15'),(1585922422700052481,1585922292546605057,'T2',NULL,2,0,1,'2022-10-28 17:12:25',1,'2022-10-28 17:12:25'),(1585922447207370754,1585922292546605057,'T3',NULL,3,0,1,'2022-10-28 17:12:31',1,'2022-10-28 17:12:31'),(1585922472754876418,1585922292546605057,'T4',1585922447207370754,1,0,1,'2022-10-28 17:12:37',1,'2022-10-28 17:12:37'),(1587088498225868802,1583739849538342914,'测试24',1583824814787584001,4,0,1,'2022-10-31 22:25:59',1,'2022-10-31 22:25:59'),(1587088508426416129,1583739849538342914,'测试25',1583824814787584001,5,0,1,'2022-10-31 22:26:02',1,'2022-10-31 22:26:02'),(1587088520011083778,1583739849538342914,'测试26',1583824814787584001,6,0,1,'2022-10-31 22:26:05',1,'2022-10-31 22:26:05'),(1589237578645434370,1585922292546605057,'11111',1585922472754876418,1,0,1,'2022-11-06 20:45:40',1,'2022-11-06 20:45:40'),(1589237611402948610,1585922292546605057,'2222',1585922472754876418,2,0,1,'2022-11-06 20:45:48',1,'2022-11-06 20:45:48'),(1589237628423434242,1585922292546605057,'3333',1585922472754876418,3,0,1,'2022-11-06 20:45:52',1,'2022-11-06 20:45:52'),(1589237646328918018,1585922292546605057,'4444',1585922472754876418,4,0,1,'2022-11-06 20:45:56',1,'2022-11-06 20:45:56');
+/*!40000 ALTER TABLE `modeling_option_value` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `modeling_page`
+--
+
+DROP TABLE IF EXISTS `modeling_page`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `modeling_page` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `module` varchar(16) COLLATE utf8mb4_bin NOT NULL COMMENT '模块',
+  `mkey` varchar(64) COLLATE utf8mb4_bin NOT NULL COMMENT '模型标识',
+  `name` varchar(128) COLLATE utf8mb4_bin NOT NULL COMMENT '页面名称',
+  `page_scheme` json NOT NULL COMMENT '页面定义',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `page_uidx` (`module`,`mkey`,`name`) COMMENT '唯一标识'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='建模页面绑定';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `modeling_page`
+--
+
+LOCK TABLES `modeling_page` WRITE;
+/*!40000 ALTER TABLE `modeling_page` DISABLE KEYS */;
+INSERT INTO `modeling_page` VALUES (1590561143630139394,'ENTITY','product_line','VIEW','{\"mode\": \"read\", \"size\": \"default\", \"style\": \"\", \"children\": [{\"id\": \"field_777tzlqyia\", \"attrs\": {\"tag\": \"div\", \"align\": \"top\", \"gutter\": 4, \"justify\": \"start\"}, \"category\": \"layout\", \"children\": [{\"id\": \"field_8lekmashiiw\", \"attrs\": {\"span\": 12}, \"category\": \"layout\", \"children\": [{\"id\": \"id\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"number-input\", \"formItemAttrs\": {\"label\": \"主键ID\"}}], \"component\": \"el-col\"}, {\"id\": \"field_2fa8rwyioi8\", \"attrs\": {\"span\": 12}, \"category\": \"layout\", \"children\": [{\"id\": \"name\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"名称\"}}], \"component\": \"el-col\"}, {\"id\": \"col_1kfoyibhoj4\", \"attrs\": {\"tag\": \"div\", \"pull\": 0, \"push\": 0, \"span\": 12, \"offset\": 0}, \"category\": \"layout\", \"children\": [{\"id\": \"from_type\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"来源类型\"}}], \"component\": \"el-col\"}, {\"id\": \"col_1i4334mr1h8\", \"attrs\": {\"tag\": \"div\", \"pull\": 0, \"push\": 0, \"span\": 12, \"offset\": 0}, \"category\": \"layout\", \"children\": [{\"id\": \"from_id\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"number-input\", \"formItemAttrs\": {\"label\": \"来源ID\"}}], \"component\": \"el-col\"}, {\"id\": \"col_1k61kgusbic\", \"attrs\": {\"tag\": \"div\", \"pull\": 0, \"push\": 0, \"span\": 12, \"offset\": 0}, \"category\": \"layout\", \"children\": [{\"id\": \"update_by\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"更新人\"}}], \"component\": \"el-col\"}, {\"id\": \"col_1ihv1lu15jj\", \"attrs\": {\"tag\": \"div\", \"pull\": 0, \"push\": 0, \"span\": 12, \"offset\": 0}, \"category\": \"layout\", \"children\": [{\"id\": \"update_time\", \"attrs\": {\"style\": \"width: 100%\", \"format\": \"YYYY-MM-DD HH:mm:ss\", \"dateType\": \"datetime\", \"valueFormat\": \"YYYY-MM-DD HH:mm:ss\"}, \"category\": \"form-item\", \"component\": \"date-picker\", \"formItemAttrs\": {\"label\": \"更新时间\"}}], \"component\": \"el-col\"}, {\"id\": \"field_1swxfyvkzqb\", \"attrs\": {\"tag\": \"div\", \"pull\": 0, \"push\": 0, \"span\": 12, \"offset\": 0}, \"category\": \"layout\", \"children\": [{\"id\": \"create_by\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"创建人\"}}], \"component\": \"el-col\"}, {\"id\": \"col_1xc0fj1rfhg\", \"attrs\": {\"tag\": \"div\", \"pull\": 0, \"push\": 0, \"span\": 12, \"offset\": 0}, \"category\": \"layout\", \"children\": [{\"id\": \"create_time\", \"attrs\": {\"style\": \"width: 100%\", \"format\": \"YYYY-MM-DD HH:mm:ss\", \"dateType\": \"datetime\", \"valueFormat\": \"YYYY-MM-DD HH:mm:ss\"}, \"category\": \"form-item\", \"component\": \"date-picker\", \"formItemAttrs\": {\"label\": \"创建时间\"}}], \"component\": \"el-col\"}], \"component\": \"el-row\"}, {\"id\": \"cost_center\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": \"1583824814787584001\", \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"single-select\", \"formItemAttrs\": {\"label\": \"成本中心\"}}, {\"id\": \"cost_center_multiple\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": [\"1584347991602769921\", \"1584348027585703938\"], \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"multi-select\", \"formItemAttrs\": {\"label\": \"多选成本中心\"}}], \"labelWidth\": \"120px\", \"labelPosition\": \"right\"}',1,'2022-11-10 12:25:03',1,'2022-11-10 12:25:03'),(1590562542854135810,'ENTITY','product_line','ADD','{\"mode\": \"edit\", \"size\": \"default\", \"style\": \"\", \"children\": [{\"id\": \"name\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"名称\"}}, {\"id\": \"cost_center\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": \"1583824814787584001\", \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"single-select\", \"formItemAttrs\": {\"label\": \"成本中心\"}}, {\"id\": \"cost_center_multiple\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": [\"1584347991602769921\", \"1584348027585703938\"], \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"multi-select\", \"formItemAttrs\": {\"label\": \"多选成本中心\"}}, {\"id\": \"from_type\", \"attrs\": {\"mode\": \"read\", \"style\": \"width: 100%\", \"defaultValue\": \"USER\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"来源类型\"}}], \"labelWidth\": \"120px\", \"labelPosition\": \"right\"}',1,'2022-11-10 12:30:36',1,'2022-11-10 12:30:36'),(1590632127657709570,'ENTITY','product_line','UPDATE','{\"mode\": \"edit\", \"size\": \"default\", \"style\": \"\", \"children\": [{\"id\": \"id\", \"attrs\": {\"mode\": \"read\", \"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"number-input\", \"formItemAttrs\": {\"label\": \"主键ID\"}}, {\"id\": \"name\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"名称\"}}, {\"id\": \"cost_center\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": \"1583824814787584001\", \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"single-select\", \"formItemAttrs\": {\"label\": \"成本中心\"}}, {\"id\": \"cost_center_multiple\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": [\"1584347991602769921\", \"1584348027585703938\"], \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"multi-select\", \"formItemAttrs\": {\"label\": \"多选成本中心\"}}, {\"id\": \"from_type\", \"attrs\": {\"mode\": \"read\", \"style\": \"width: 100%\", \"defaultValue\": \"USER\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"来源类型\"}}], \"labelWidth\": \"120px\", \"labelPosition\": \"right\"}',1,'2022-11-16 00:20:24',1,'2022-11-10 17:07:06');
+/*!40000 ALTER TABLE `modeling_page` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `modeling_page_ref`
+--
+
+DROP TABLE IF EXISTS `modeling_page_ref`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `modeling_page_ref` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `page_key` varchar(128) COLLATE utf8mb4_bin NOT NULL COMMENT '页面标识',
+  `page_id` bigint unsigned NOT NULL COMMENT '页面ID',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `page_uidx` (`page_key`,`page_id`) COMMENT '唯一标识'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='页面绑定关系表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `modeling_page_ref`
+--
+
+LOCK TABLES `modeling_page_ref` WRITE;
+/*!40000 ALTER TABLE `modeling_page_ref` DISABLE KEYS */;
+INSERT INTO `modeling_page_ref` VALUES (1,'VIEW',1590561143630139394,1,'2022-11-17 08:52:04',1,'2022-11-17 08:52:04'),(2,'ADD',1590562542854135810,1,'2022-11-17 08:52:05',1,'2022-11-17 08:52:05'),(3,'UPDATE',1590632127657709570,1,'2022-11-17 08:52:05',1,'2022-11-17 08:52:05');
+/*!40000 ALTER TABLE `modeling_page_ref` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `modeling_permission`
+--
+
+DROP TABLE IF EXISTS `modeling_permission`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `modeling_permission` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `role_id` bigint unsigned NOT NULL COMMENT '角色ID',
+  `module` varchar(16) COLLATE utf8mb4_bin NOT NULL COMMENT '模块',
+  `mkey` varchar(64) COLLATE utf8mb4_bin NOT NULL COMMENT '标识',
+  `flags` int NOT NULL COMMENT '权限组合标志位',
+  `content` json NOT NULL COMMENT '权限表达式内容',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `perm_unidx` (`role_id`,`module`,`mkey`),
+  KEY `modeling_permission_module_mkey_index` (`module`,`mkey`),
+  KEY `modeling_permission_role_id_index` (`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='模型权限表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `modeling_permission`
+--
+
+LOCK TABLES `modeling_permission` WRITE;
+/*!40000 ALTER TABLE `modeling_permission` DISABLE KEYS */;
+INSERT INTO `modeling_permission` VALUES (1589271441010688002,1,'ENTITY','product_line',1,'[{\"type\": \"BLOCK\", \"content\": {\"field\": \"cost_center\", \"value\": {\"type\": \"option\", \"option_value_id_list\": [\"1583820377780162561\", \"1583822690246844417\", \"1583824814787584001\", \"1583826135649411074\"]}, \"operator\": \"EQ\"}}, {\"type\": \"OR\", \"content\": null}, {\"type\": \"BLOCK\", \"content\": {\"field\": \"update_by\", \"value\": {\"type\": \"user\", \"dept_id\": \"7\", \"cascader\": true, \"user_id_list\": [\"SELF\", \"SELF_DPT\", \"CHILD_DPT\", \"2\", \"3\"]}, \"operator\": \"EQ\"}}]',1,'2022-11-06 23:00:13',1,'2022-11-06 23:00:13');
+/*!40000 ALTER TABLE `modeling_permission` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `modeling_view`
+--
+
+DROP TABLE IF EXISTS `modeling_view`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `modeling_view` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `module` varchar(16) COLLATE utf8mb4_bin NOT NULL COMMENT '业务实体/工作流',
+  `mkey` varchar(64) COLLATE utf8mb4_bin NOT NULL COMMENT '模型标识',
+  `name` varchar(64) COLLATE utf8mb4_bin NOT NULL COMMENT '名称',
+  `collation` json DEFAULT NULL COMMENT '排序规则',
+  `sn` int NOT NULL COMMENT '排序号',
+  `status` tinyint NOT NULL COMMENT '状态',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `view_name_unidx` (`module`,`mkey`,`name`) COMMENT '视图名称不可重复'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='模型列表视图';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `modeling_view`
+--
+
+LOCK TABLES `modeling_view` WRITE;
+/*!40000 ALTER TABLE `modeling_view` DISABLE KEYS */;
+INSERT INTO `modeling_view` VALUES (1586198087236075522,'ENTITY','product_line','基本视图','[{\"id\": 0, \"field\": \"update_time\", \"order\": \"desc\"}]',1,1,1,'2022-11-10 22:24:41',1,'2022-10-29 11:27:49'),(1586259976309735426,'ENTITY','product_line','基础视图2','[{\"id\": 1, \"field\": \"update_time\", \"order\": \"desc\"}]',2,1,1,'2022-11-10 22:29:40',1,'2022-10-29 15:33:44'),(1586260810221268994,'ENTITY','product_line','基础视图3','[]',3,1,1,'2022-11-10 22:36:02',1,'2022-10-29 15:37:03');
+/*!40000 ALTER TABLE `modeling_view` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `modeling_view_column`
+--
+
+DROP TABLE IF EXISTS `modeling_view_column`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `modeling_view_column` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `view_id` bigint unsigned NOT NULL COMMENT '视图ID',
+  `field_id` bigint unsigned NOT NULL COMMENT '字段ID',
+  `sn` int NOT NULL COMMENT '排序号',
+  `width` int NOT NULL COMMENT '列宽',
+  `align` varchar(8) COLLATE utf8mb4_bin NOT NULL COMMENT '对齐方式',
+  `filterable` tinyint NOT NULL COMMENT '是否可筛选',
+  `sortable` tinyint NOT NULL COMMENT '是否可排序',
+  `resizable` tinyint NOT NULL COMMENT '是否可拖动列宽',
+  `condition` varchar(128) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '初始条件',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='模型视图列配置表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `modeling_view_column`
+--
+
+LOCK TABLES `modeling_view_column` WRITE;
+/*!40000 ALTER TABLE `modeling_view_column` DISABLE KEYS */;
+INSERT INTO `modeling_view_column` VALUES (1590712047197003777,1586198087236075522,1585589346233024513,1,-1,'left',1,0,1,'',1,'2022-11-10 22:24:41',1,'2022-11-10 22:24:41'),(1590712047197003778,1586198087236075522,1585589426855936002,2,200,'left',1,0,1,'',1,'2022-11-10 22:24:41',1,'2022-11-10 22:24:41'),(1590712047209586689,1586198087236075522,1584339977915265025,3,200,'left',1,0,1,'',1,'2022-11-10 22:24:41',1,'2022-11-10 22:24:41'),(1590712047209586690,1586198087236075522,1589631844999802881,4,200,'left',1,0,1,'',1,'2022-11-10 22:24:41',1,'2022-11-10 22:24:41'),(1590712047209586691,1586198087236075522,1585590278232539138,5,200,'left',1,0,1,'SELF',1,'2022-11-10 22:24:41',1,'2022-11-10 22:24:41'),(1590712047209586692,1586198087236075522,1585590372281417730,6,300,'left',1,1,1,'',1,'2022-11-10 22:24:41',1,'2022-11-10 22:24:41'),(1590712047209586693,1586198087236075522,1585867406723325954,7,200,'left',1,0,1,'',1,'2022-11-10 22:24:41',1,'2022-11-10 22:24:41'),(1590712047209586694,1586198087236075522,1585868195659325441,8,300,'left',1,1,1,'',1,'2022-11-10 22:24:41',1,'2022-11-10 22:24:41'),(1590713303932116993,1586259976309735426,1585589346233024513,1,-1,'left',1,0,1,'',1,'2022-11-10 22:29:40',1,'2022-11-10 22:29:40'),(1590713303932116994,1586259976309735426,1584339977915265025,2,200,'left',1,0,1,'',1,'2022-11-10 22:29:40',1,'2022-11-10 22:29:40'),(1590713303932116995,1586259976309735426,1589631844999802881,3,200,'left',1,0,1,'',1,'2022-11-10 22:29:40',1,'2022-11-10 22:29:40'),(1590713303932116996,1586259976309735426,1585590278232539138,4,200,'left',1,0,1,'SELF',1,'2022-11-10 22:29:40',1,'2022-11-10 22:29:40'),(1590713303932116997,1586259976309735426,1585590372281417730,5,300,'left',1,1,1,'',1,'2022-11-10 22:29:40',1,'2022-11-10 22:29:40'),(1590713303932116998,1586259976309735426,1585867406723325954,6,200,'left',1,0,1,'',1,'2022-11-10 22:29:40',1,'2022-11-10 22:29:40'),(1590713303932116999,1586259976309735426,1585868195659325441,7,300,'left',1,1,1,'',1,'2022-11-10 22:29:40',1,'2022-11-10 22:29:40'),(1590715292262899713,1586260810221268994,1585589346233024513,1,-1,'left',1,0,1,'',1,'2022-11-10 22:37:34',1,'2022-11-10 22:37:34'),(1590715292262899714,1586260810221268994,1584339977915265025,2,200,'left',1,0,1,'',1,'2022-11-10 22:37:34',1,'2022-11-10 22:37:34'),(1590715292262899715,1586260810221268994,1589631844999802881,3,200,'left',1,0,1,'',1,'2022-11-10 22:37:34',1,'2022-11-10 22:37:34'),(1590715292262899716,1586260810221268994,1585590278232539138,4,200,'left',1,0,1,'',1,'2022-11-10 22:37:34',1,'2022-11-10 22:37:34'),(1590715292262899717,1586260810221268994,1585590372281417730,5,300,'left',1,1,1,'',1,'2022-11-10 22:37:34',1,'2022-11-10 22:37:34'),(1590715292262899718,1586260810221268994,1585867406723325954,6,200,'left',1,0,1,'',1,'2022-11-10 22:37:34',1,'2022-11-10 22:37:34'),(1590715292262899719,1586260810221268994,1585868195659325441,7,300,'left',1,1,1,'',1,'2022-11-10 22:37:34',1,'2022-11-10 22:37:34');
+/*!40000 ALTER TABLE `modeling_view_column` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_dept`
+--
+
+DROP TABLE IF EXISTS `sys_dept`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_dept` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '部门名称',
+  `simple_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '部门简称',
+  `description` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '部门描述',
+  `ident` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '部门编号',
+  `order_no` int DEFAULT '0' COMMENT '排序号',
+  `pid` bigint DEFAULT NULL COMMENT '行政上级',
+  `biz_pid` bigint DEFAULT '0' COMMENT '业务上级',
+  `owner` bigint DEFAULT NULL COMMENT '部门经理',
+  `assistant` bigint DEFAULT NULL COMMENT '部门助理',
+  `phone` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '部门电话',
+  `office_location` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '办公地点',
+  `address` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '详细地址',
+  `status` tinyint NOT NULL DEFAULT '0' COMMENT '状态',
+  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'admin' COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `sys_dept_ident_uindex` (`ident`),
+  KEY `sys_dept_pid_order_no_index` (`pid`,`order_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='部门表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_dept`
+--
+
+LOCK TABLES `sys_dept` WRITE;
+/*!40000 ALTER TABLE `sys_dept` DISABLE KEYS */;
+INSERT INTO `sys_dept` VALUES (1,'Admin','Admin','','admin',1,NULL,0,1,1,NULL,NULL,NULL,0,'admin','2022-10-14 14:15:40','2022-02-20 00:33:19'),(2,'全球研发中心-Central Engineering','全球研发中心','','CE',1,1,0,1,1,NULL,NULL,NULL,0,'1','2022-11-06 23:37:10','2022-02-20 00:56:30'),(3,'总部-HQ','总部','','HQ',2,1,0,2,13,NULL,NULL,NULL,0,'admin','2022-10-14 14:16:08','2022-02-20 00:59:41'),(4,'长沙分公司','长沙','','WL',3,1,0,3,6,NULL,NULL,NULL,0,'1','2022-11-06 23:36:54','2022-02-20 01:00:14'),(5,'常州分公司','常州','','EX',4,1,0,3,2,NULL,NULL,NULL,0,'1','2022-11-06 23:37:00','2022-02-20 01:14:19'),(6,'杭州分公司','杭州','','DL',5,1,0,3,6,NULL,NULL,NULL,0,'1','2022-11-06 23:37:04','2022-02-20 01:14:48'),(7,'CE IT','数字信息','','CE001',1,2,0,8,5,NULL,NULL,NULL,0,'admin','2022-10-14 14:11:43','2022-02-20 01:17:21'),(8,'CE ID','工业设计','','CE013',2,2,0,4,7,NULL,NULL,NULL,0,'1','2022-11-08 22:30:57','2022-02-20 01:17:38'),(9,'CE Intelligent S&T','智能设计院','','CE006',3,2,0,1,2,NULL,NULL,NULL,0,'admin','2022-10-14 14:11:06','2022-02-20 01:18:31'),(10,'CE Big Data & AI R&D','大数据','','CE014',1,9,0,10,14,NULL,NULL,NULL,0,'1','2022-11-08 22:31:06','2022-02-20 01:18:48'),(11,'CE Smart Jobsite R&D','智能施工','','CE016',3,9,0,17,20,NULL,NULL,NULL,0,'1','2022-11-08 22:31:14','2022-02-20 01:24:25'),(12,'CE Smart Machine R&D','智能产品','','CE015',4,9,0,20,2,NULL,NULL,NULL,0,'1','2022-11-08 22:31:24','2022-02-20 01:26:03'),(13,'数字信息','总部DT','总部DT','HQ-DT',1,3,0,1,7,NULL,NULL,NULL,0,'1','2022-11-08 22:31:29','2022-08-26 00:50:28'),(14,'信息技术','HQ-IT','总部IT','HQ-IT',2,3,0,1,8,NULL,NULL,NULL,0,'1','2022-11-08 22:31:35','2022-08-26 21:56:08'),(15,'宁波分公司','宁波','1111111111','NB',5,1,0,2,4,NULL,NULL,NULL,0,'1','2022-11-06 23:37:18','2022-09-08 12:05:28'),(1580801456333443073,'市场营销','市场部','','Market',4,2,0,1,1,NULL,NULL,NULL,0,'admin','2022-10-14 14:05:54','2022-10-14 14:03:31');
+/*!40000 ALTER TABLE `sys_dept` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_menu`
+--
+
+DROP TABLE IF EXISTS `sys_menu`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_menu` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '菜单名称',
+  `pid` bigint unsigned DEFAULT NULL COMMENT '上级菜单',
+  `type` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '菜单类型',
+  `path` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '路由地址',
+  `component` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '组件地址',
+  `icon` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '图标',
+  `order_no` int NOT NULL DEFAULT '1' COMMENT '排序号',
+  `closeable` tinyint DEFAULT '1' COMMENT '可否关闭',
+  `state` int DEFAULT NULL COMMENT '状态',
+  `remark` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '说明',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='系统菜单表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_menu`
+--
+
+LOCK TABLES `sys_menu` WRITE;
+/*!40000 ALTER TABLE `sys_menu` DISABLE KEYS */;
+INSERT INTO `sys_menu` VALUES (1,'Dashboard',NULL,'PAGE','/home','/home','House',1,0,0,NULL,1,'2022-10-14 08:38:18',1,'2022-10-05 23:04:20'),(2,'系统管理',NULL,'FOLDER',NULL,NULL,'Setting',2,0,0,NULL,1,'2022-10-14 08:38:18',1,'2022-10-05 23:04:20'),(3,'用户管理',2,'PAGE','/sys/user','/sys/user/user','User',1,1,0,NULL,1,'2022-10-14 08:38:18',1,'2022-10-05 23:04:20'),(4,'角色管理',2,'PAGE','/sys/role','/sys/role/role','UserRole',2,1,0,NULL,1,'2022-10-14 16:34:03',1,'2022-10-05 23:10:20'),(5,'菜单管理',2,'PAGE','/sys/menus','/sys/menu/menus','Menu',3,1,0,NULL,1,'2022-10-14 08:38:18',1,'2022-10-05 23:10:20'),(6,'部门管理',2,'PAGE','/sys/dept','/sys/dept/dept','Department',4,1,0,NULL,1,'2022-10-14 08:38:19',1,'2022-10-05 23:11:48'),(9,'个人设置',NULL,'FOLDER',NULL,NULL,'UserSettings',3,0,0,NULL,1,'2022-10-14 08:38:18',1,'2022-10-05 23:04:20'),(10,'个人信息',9,'PAGE','/user/profile','/user/profile','UserProfile',1,1,0,NULL,1,'2022-10-14 08:38:18',1,'2022-10-05 23:14:50'),(11,'修改密码',9,'PAGE','/user/password','/user/password','Password',2,1,0,NULL,1,'2022-10-14 08:38:18',1,'2022-10-05 23:14:50'),(12,'流程管理',NULL,'FOLDER',NULL,NULL,'Cluster',4,0,0,NULL,1,'2022-10-14 08:38:18',1,'2022-10-05 23:15:50'),(13,'待认领流程',12,'PAGE','/process/task/unclaim','/process/task/unclaim','InstanceVirtual',1,1,0,NULL,1,'2022-10-14 08:38:18',1,'2022-10-05 23:16:24'),(14,'我的待办',12,'PAGE','/process/task/todo','/process/task/todo','Task',2,1,0,NULL,1,'2022-10-14 08:38:18',1,'2022-10-05 23:16:24'),(15,'我经办的流程',12,'PAGE','/process/manage/history/mine','/process/manage/history/mine','Task',3,1,0,NULL,1,'2022-10-14 08:38:18',1,'2022-10-05 23:16:24'),(16,'流程设计',NULL,'FOLDER',NULL,NULL,'Cluster',5,1,0,NULL,1,'2022-10-14 08:38:18',1,'2022-10-05 23:18:00'),(17,'流程模型',16,'PAGE','/process/model','/workflow/model/WorkflowTypeList','Cluster',1,1,0,NULL,1,'2022-10-19 20:14:21',1,'2022-10-05 23:25:33'),(18,'流程表单',16,'PAGE','/process/form/designer','/process/form/designer','Form',2,1,0,NULL,1,'2022-10-14 08:38:18',1,'2022-10-05 23:25:33'),(1580568369258364930,'创建用户',3,'BUTTON',NULL,'sysetm:user:create','Setting',2,0,0,NULL,1,'2022-10-14 08:38:18',1,'2022-10-13 22:37:19'),(1583611174964719617,'全局字段',16,'PAGE','/modeling/field','/modeling/field/GlobalField','TextField',3,1,0,'全局字段',1,'2022-11-06 20:10:10',1,'2022-10-22 08:08:20'),(1583661590087798785,'选项配置',16,'PAGE','/modeling/option/global','/modeling/option/GlobalOption','Operation',4,1,0,'全局数据源配置',1,'2022-11-06 20:47:22',1,'2022-10-22 11:28:40'),(1589232440304267265,'业务实体',16,'PAGE','/modeling/entity','/modeling/entity/ModelingEntity','Apple',2,1,0,'业务实体定义',1,'2022-11-06 20:44:52',1,'2022-11-06 20:25:15'),(1589243190770978817,'OA模块',NULL,'FOLDER',NULL,NULL,'ChromeFilled',1,1,0,'简单OA流程',1,'2022-11-06 21:07:58',1,'2022-11-06 21:07:58'),(1589243737485922305,'请假模块',1589243190770978817,'TAB','/oa/holiday','/modeling/ModelingPageTabsContainer','AlarmClock',1,1,0,'',1,'2022-11-06 21:10:08',1,'2022-11-06 21:10:08'),(1589245602978123777,'测试实体',1589243737485922305,'ENTITY','product_line','','AlarmClock',1,1,0,'',1,'2022-11-06 21:17:33',1,'2022-11-06 21:17:33');
+/*!40000 ALTER TABLE `sys_menu` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_role`
+--
+
+DROP TABLE IF EXISTS `sys_role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_role` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '角色名称',
+  `order_no` int DEFAULT NULL COMMENT '排序号',
+  `status` tinyint DEFAULT '0' COMMENT '状态',
+  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '更新人',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='角色';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_role`
+--
+
+LOCK TABLES `sys_role` WRITE;
+/*!40000 ALTER TABLE `sys_role` DISABLE KEYS */;
+INSERT INTO `sys_role` VALUES (1,'系统管理员',1,0,'admin','2022-02-18 17:54:42','2022-02-18 17:54:42'),(2,'董事长',2,0,'admin','2022-02-18 17:54:58','2022-02-18 17:54:58'),(3,'总经理',3,0,'admin','2022-02-18 17:55:04','2022-02-18 17:55:04'),(4,'总监',4,0,'admin','2022-02-18 17:55:11','2022-02-18 17:55:11'),(5,'主管',5,0,'admin','2022-02-18 17:55:18','2022-02-18 17:55:18'),(7,'成员',7,0,'admin','2022-02-18 17:55:28','2022-02-18 17:55:28');
+/*!40000 ALTER TABLE `sys_role` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_role_menu`
+--
+
+DROP TABLE IF EXISTS `sys_role_menu`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_role_menu` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `role_id` bigint NOT NULL COMMENT '角色ID',
+  `menu_id` bigint NOT NULL COMMENT '菜单ID',
+  `create_by` bigint NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `sys_role_menu_role_id_menu_id_uindex` (`role_id`,`menu_id`),
+  KEY `sys_role_menu_menu_idx` (`menu_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1590719591697203203 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='角色菜单表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_role_menu`
+--
+
+LOCK TABLES `sys_role_menu` WRITE;
+/*!40000 ALTER TABLE `sys_role_menu` DISABLE KEYS */;
+INSERT INTO `sys_role_menu` VALUES (1581799650580299778,2,1,1,'2022-10-23 20:20:53'),(1581799650580299779,2,2,1,'2022-10-23 20:20:53'),(1581799650580299780,2,3,1,'2022-10-23 20:20:53'),(1581799650580299781,2,4,1,'2022-10-23 20:20:53'),(1581799650580299782,2,5,1,'2022-10-23 20:20:53'),(1581799650580299783,2,6,1,'2022-10-23 20:20:53'),(1581799650580299784,2,9,1,'2022-10-23 20:20:53'),(1581799650580299785,2,10,1,'2022-10-23 20:20:53'),(1581799650580299786,2,11,1,'2022-10-23 20:20:53'),(1581799650580299787,2,12,1,'2022-10-23 20:20:53'),(1581799650580299788,2,13,1,'2022-10-23 20:20:53'),(1581799650580299789,2,14,1,'2022-10-23 20:20:53'),(1581799650580299790,2,15,1,'2022-10-23 20:20:53'),(1581799650580299791,2,16,1,'2022-10-23 20:20:53'),(1581799650580299792,2,17,1,'2022-10-23 20:20:53'),(1581799650580299793,2,18,1,'2022-10-23 20:20:53'),(1590719591562985473,1,1,1,'2022-11-10 22:54:39'),(1590719591571374081,1,2,1,'2022-11-10 22:54:39'),(1590719591571374082,1,3,1,'2022-11-10 22:54:39'),(1590719591571374083,1,4,1,'2022-11-10 22:54:39'),(1590719591571374084,1,5,1,'2022-11-10 22:54:39'),(1590719591571374085,1,6,1,'2022-11-10 22:54:39'),(1590719591571374086,1,9,1,'2022-11-10 22:54:39'),(1590719591571374087,1,10,1,'2022-11-10 22:54:39'),(1590719591571374088,1,11,1,'2022-11-10 22:54:39'),(1590719591634288642,1,12,1,'2022-11-10 22:54:39'),(1590719591634288643,1,13,1,'2022-11-10 22:54:39'),(1590719591634288644,1,14,1,'2022-11-10 22:54:39'),(1590719591634288645,1,15,1,'2022-11-10 22:54:39'),(1590719591634288646,1,16,1,'2022-11-10 22:54:39'),(1590719591634288647,1,17,1,'2022-11-10 22:54:39'),(1590719591634288648,1,18,1,'2022-11-10 22:54:39'),(1590719591634288649,1,1580568369258364930,1,'2022-11-10 22:54:39'),(1590719591634288650,1,1583611174964719617,1,'2022-11-10 22:54:39'),(1590719591634288651,1,1583661590087798785,1,'2022-11-10 22:54:39'),(1590719591634288652,1,1589232440304267265,1,'2022-11-10 22:54:39'),(1590719591634288653,1,1589243190770978817,1,'2022-11-10 22:54:39'),(1590719591697203201,1,1589243737485922305,1,'2022-11-10 22:54:39'),(1590719591697203202,1,1589245602978123777,1,'2022-11-10 22:54:39');
+/*!40000 ALTER TABLE `sys_role_menu` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_user`
+--
+
+DROP TABLE IF EXISTS `sys_user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_user` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `username` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '用户名',
+  `dept_id` bigint DEFAULT NULL COMMENT '部门ID',
+  `nickname` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '用户姓名',
+  `nickname_pinyin` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '昵称拼音',
+  `password` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '用户密码',
+  `phone` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '手机号',
+  `avatar` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '头像地址',
+  `register_ip` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '注册IP',
+  `status` tinyint NOT NULL DEFAULT '0' COMMENT '用户状态',
+  `email` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '邮箱',
+  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '更新人',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `sys_user_username_uindex` (`username`),
+  UNIQUE KEY `sys_user_email_uindex` (`email`),
+  UNIQUE KEY `sys_user_phone_uindex` (`phone`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='用户表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_user`
+--
+
+LOCK TABLES `sys_user` WRITE;
+/*!40000 ALTER TABLE `sys_user` DISABLE KEYS */;
+INSERT INTO `sys_user` VALUES (1,'admin',7,'Admin',NULL,'e10adc3949ba59abbe56e057f20f883e','18877811997','https://q4.qlogo.cn/g?b=qq&nk=942664114&s=0',NULL,0,'l1yp@qq.com','admin','2022-10-13 09:00:47','2022-02-16 15:32:27'),(2,'A52747',7,'不知火舞','buzhihuowu','e10adc3949ba59abbe56e057f20f883e','18077855148','https://q4.qlogo.cn/g?b=qq&nk=10001',NULL,0,'12353@qq.com','1','2022-10-23 15:05:19','2022-02-22 21:30:42'),(3,'A52736',8,'伽罗','jialuo','e10adc3949ba59abbe56e057f20f883e','18077855137','/head/伽罗.jpg',NULL,0,'18877185@qq.com','admin','2022-10-23 15:05:19','2022-02-22 20:11:26'),(4,'A52737',7,'公孙离','gongsunli','e10adc3949ba59abbe56e057f20f883e','18077855138','/head/公孙离.jpg',NULL,0,'18877195@qq.com','1','2022-10-23 15:05:19','2022-02-22 20:16:56'),(5,'A52738',7,'刘禅','liushan','e10adc3949ba59abbe56e057f20f883e','18077855139','/head/刘禅.jpg',NULL,0,'35295921@qq.com','1','2022-10-23 15:05:19','2022-02-22 21:12:05'),(6,'A52739',7,'不大知乔','budazhiqiao','e10adc3949ba59abbe56e057f20f883e','18077855140','/head/大乔.jpg',NULL,0,'12345@qq.com','1','2022-10-23 15:05:19','2022-02-22 21:12:05'),(7,'A52740',5,'嫦娥','change','e10adc3949ba59abbe56e057f20f883e','18077855141','/head/嫦娥.jpg',NULL,0,'12346@qq.com','admin','2022-10-23 15:05:19','2022-02-22 21:12:05'),(8,'A52741',6,'安琪拉','anqila','e10adc3949ba59abbe56e057f20f883e','18077855142','/head/安琪拉.jpg',NULL,0,'12347@qq.com','admin','2022-10-23 15:05:19','2022-02-22 21:12:05'),(9,'A52742',15,'李白','libai','e10adc3949ba59abbe56e057f20f883e','18077855143','/head/李白.jpg',NULL,0,'12348@qq.com','admin','2022-10-23 15:05:19','2022-02-22 21:12:06'),(10,'A52743',13,'瑶','yao','e10adc3949ba59abbe56e057f20f883e','18077855144','/head/瑶.jpg',NULL,0,'12349@qq.com','admin','2022-10-23 15:05:19','2022-02-22 21:12:06'),(12,'A52744',3,'甄姬','zhenji','e10adc3949ba59abbe56e057f20f883e','18077855145','/head/甄姬.jpg',NULL,0,'12350@qq.com','admin','2022-10-23 15:05:19','2022-02-22 21:30:41'),(13,'A52745',14,'百里玄策','bailixuance','e10adc3949ba59abbe56e057f20f883e','18077855146','/head/百里玄策.jpg',NULL,0,'12351@qq.com','admin','2022-10-23 15:05:19','2022-02-22 21:30:41'),(14,'A52746',11,'花木兰','huamulan','e10adc3949ba59abbe56e057f20f883e','18077855147','/head/花木兰.jpg',NULL,0,'12352@qq.com','admin','2022-10-23 15:05:19','2022-02-22 21:30:41'),(17,'A52751',8,'虞姬','yuji','e10adc3949ba59abbe56e057f20f883e','18077855152','/head/虞姬.jpg',NULL,0,'12357@qq.com',NULL,'2022-10-23 15:05:19','2022-06-08 22:57:12'),(18,'A52748',7,'西施','xishi','e10adc3949ba59abbe56e057f20f883e','18077855149','/head/西施.jpg',NULL,0,'12354@qq.com',NULL,'2022-10-23 15:05:19','2022-06-08 22:57:12'),(19,'A52749',7,'诸葛亮','zhugeliang','e10adc3949ba59abbe56e057f20f883e','18077855150','/head/诸葛亮.jpg',NULL,0,'12355@qq.com',NULL,'2022-10-23 15:05:19','2022-06-08 22:57:12'),(20,'A52750',7,'貂蝉','diaochan','e10adc3949ba59abbe56e057f20f883e','18077855151','/head/貂蝉.jpg',NULL,0,'12356@qq.com',NULL,'2022-10-23 15:05:19','2022-06-08 22:57:12');
+/*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_user_dept`
+--
+
+DROP TABLE IF EXISTS `sys_user_dept`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_user_dept` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `uid` bigint NOT NULL COMMENT '用户ID',
+  `dept_id` bigint DEFAULT NULL COMMENT '部门ID',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `sys_user_dept_uid_dept_id_uindex` (`uid`,`dept_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1582717323777470470 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='兼职部门表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_user_dept`
+--
+
+LOCK TABLES `sys_user_dept` WRITE;
+/*!40000 ALTER TABLE `sys_user_dept` DISABLE KEYS */;
+INSERT INTO `sys_user_dept` VALUES (1580448967646068737,1,2,1,'2022-10-23 20:22:00','2022-10-13 14:42:51'),(1580448967646068738,1,3,1,'2022-10-23 20:22:00','2022-10-13 14:42:51'),(1580448967646068739,1,7,1,'2022-10-23 20:22:00','2022-10-13 14:42:51'),(1580448967646068740,1,8,1,'2022-10-23 20:22:00','2022-10-13 14:42:51'),(1580448967646068741,1,9,1,'2022-10-23 20:22:00','2022-10-13 14:42:51'),(1580807330078765058,2,2,1,'2022-10-14 14:26:52','2022-10-14 14:26:52'),(1580807330078765059,2,3,1,'2022-10-14 14:26:52','2022-10-14 14:26:52'),(1580807330078765060,2,7,1,'2022-10-14 14:26:52','2022-10-14 14:26:52'),(1580807330078765061,2,8,1,'2022-10-14 14:26:52','2022-10-14 14:26:52'),(1580807330078765062,2,9,1,'2022-10-14 14:26:52','2022-10-14 14:26:52'),(1582717285303119874,4,2,1,'2022-10-19 20:56:20','2022-10-19 20:56:20'),(1582717285303119875,4,3,1,'2022-10-19 20:56:20','2022-10-19 20:56:20'),(1582717285303119876,4,7,1,'2022-10-19 20:56:20','2022-10-19 20:56:20'),(1582717285303119877,4,8,1,'2022-10-19 20:56:20','2022-10-19 20:56:20'),(1582717285303119878,4,9,1,'2022-10-19 20:56:20','2022-10-19 20:56:20'),(1582717302201970689,5,2,1,'2022-10-19 20:56:24','2022-10-19 20:56:24'),(1582717302201970690,5,3,1,'2022-10-19 20:56:24','2022-10-19 20:56:24'),(1582717302201970691,5,7,1,'2022-10-19 20:56:24','2022-10-19 20:56:24'),(1582717302201970692,5,8,1,'2022-10-19 20:56:24','2022-10-19 20:56:24'),(1582717302201970693,5,9,1,'2022-10-19 20:56:24','2022-10-19 20:56:24'),(1582717323777470465,6,2,1,'2022-10-19 20:56:30','2022-10-19 20:56:30'),(1582717323777470466,6,3,1,'2022-10-19 20:56:30','2022-10-19 20:56:30'),(1582717323777470467,6,7,1,'2022-10-19 20:56:30','2022-10-19 20:56:30'),(1582717323777470468,6,8,1,'2022-10-19 20:56:30','2022-10-19 20:56:30'),(1582717323777470469,6,9,1,'2022-10-19 20:56:30','2022-10-19 20:56:30');
+/*!40000 ALTER TABLE `sys_user_dept` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_user_role`
+--
+
+DROP TABLE IF EXISTS `sys_user_role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sys_user_role` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `uid` bigint NOT NULL COMMENT '用户ID',
+  `role_id` bigint NOT NULL COMMENT '角色ID',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1582717323777470471 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='用户角色表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_user_role`
+--
+
+LOCK TABLES `sys_user_role` WRITE;
+/*!40000 ALTER TABLE `sys_user_role` DISABLE KEYS */;
+INSERT INTO `sys_user_role` VALUES (24,3,1,1,'2022-05-19 08:40:12','2022-05-19 08:40:12'),(25,7,1,1,'2022-05-19 08:40:22','2022-05-19 08:40:22'),(26,8,1,1,'2022-05-19 08:40:28','2022-05-19 08:40:28'),(27,9,1,1,'2022-05-19 08:40:31','2022-05-19 08:40:31'),(28,10,1,1,'2022-05-19 08:40:33','2022-05-19 08:40:33'),(29,12,1,1,'2022-05-19 08:40:36','2022-05-19 08:40:36'),(30,13,1,1,'2022-05-19 08:40:39','2022-05-19 08:40:39'),(31,14,1,1,'2022-05-19 08:40:45','2022-05-19 08:40:45'),(1580448967646068742,1,1,1,'2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068743,1,2,1,'2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068744,1,3,1,'2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068745,1,4,1,'2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068746,1,5,1,'2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068747,1,6,1,'2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580448967646068748,1,7,1,'2022-10-13 14:42:51','2022-10-13 14:42:51'),(1580807330103930881,2,1,1,'2022-10-14 14:26:52','2022-10-14 14:26:52'),(1582717285303119879,4,1,1,'2022-10-19 20:56:20','2022-10-19 20:56:20'),(1582717302201970694,5,1,1,'2022-10-19 20:56:24','2022-10-19 20:56:24'),(1582717323777470470,6,1,1,'2022-10-19 20:56:30','2022-10-19 20:56:30');
+/*!40000 ALTER TABLE `sys_user_role` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wf_holiday`
+--
+
+DROP TABLE IF EXISTS `wf_holiday`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `wf_holiday` (
+  `id` bigint unsigned NOT NULL COMMENT '编号',
+  `process_instance_id` varchar(36) COLLATE utf8mb4_bin NOT NULL COMMENT '流程实例ID',
+  `code` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '编号',
+  `name` varchar(128) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '标题',
+  `dept_id` bigint unsigned DEFAULT NULL COMMENT '所属部门',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` varchar(16) COLLATE utf8mb4_bin NOT NULL COMMENT '更新时间',
+  `cost_center` bigint unsigned DEFAULT NULL COMMENT 'cost_center',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='员工通用的请假流程';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wf_holiday`
+--
+
+LOCK TABLES `wf_holiday` WRITE;
+/*!40000 ALTER TABLE `wf_holiday` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wf_holiday` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `workflow_field_def`
+--
+
+DROP TABLE IF EXISTS `workflow_field_def`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `workflow_field_def` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `field` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '数据库字段/表单字段',
+  `label` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '字段名/表单字段名',
+  `remark` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '字段说明',
+  `width` int NOT NULL DEFAULT '0' COMMENT '字段宽度',
+  `type` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '字段组件类型',
+  `scheme` json NOT NULL COMMENT '字段定义',
+  `scope` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '字段范围',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='流程字段定义';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `workflow_field_def`
+--
+
+LOCK TABLES `workflow_field_def` WRITE;
+/*!40000 ALTER TABLE `workflow_field_def` DISABLE KEYS */;
+INSERT INTO `workflow_field_def` VALUES (1583622160878735361,'id','编号','主键',8,'number','{\"max\": null, \"min\": null, \"type\": \"number\", \"parser\": null, \"formatter\": null, \"precision\": null, \"defaultValue\": null}','DEFAULT',1,'2022-10-25 07:56:01',1,'2022-10-22 08:52:00'),(1584160647990243329,'process_instance_id','流程实例ID','流程引擎实例ID',36,'text','{\"type\": \"text\", \"defaultValue\": null}','DEFAULT',1,'2022-10-25 07:56:01',1,'2022-10-23 20:32:04'),(1584161060399378434,'code','编号','流程唯一编号',32,'text','{\"type\": \"text\", \"defaultValue\": null}','DEFAULT',1,'2022-10-25 07:56:01',1,'2022-10-23 20:33:24'),(1584161141097787394,'name','标题','流程标题',128,'text','{\"type\": \"text\", \"defaultValue\": null}','DEFAULT',1,'2022-10-25 07:56:01',1,'2022-10-23 20:33:43'),(1584161976175300609,'dept_id','所属部门','',32,'dept','{\"type\": \"dept\", \"multiple\": false}','DEFAULT',1,'2022-10-23 20:37:02',1,'2022-10-23 20:37:02'),(1584181666134118402,'create_by','创建人','发起流程的人',16,'user','{\"type\": \"user\", \"multiple\": false, \"userContent\": {\"from\": \"ALL\"}}','DEFAULT',1,'2022-10-25 07:56:01',1,'2022-10-23 21:55:17'),(1584181794765033473,'create_time','创建时间','发起流程的时间',16,'date','{\"type\": \"date\", \"format\": \"YYYY-MM-DD HH:mm:ss\", \"dateType\": \"datetime\", \"valueFormat\": \"YYYY-MM-DD HH:mm:ss\", \"defaultValue\": \"\"}','DEFAULT',1,'2022-10-25 07:56:01',1,'2022-10-23 21:55:47'),(1584182223049609217,'update_by','更新人','更新数据的人',16,'user','{\"type\": \"user\", \"multiple\": false, \"userContent\": {\"from\": \"ALL\"}}','DEFAULT',1,'2022-10-25 07:56:01',1,'2022-10-23 21:57:29'),(1584182320063860737,'update_time','更新时间','最后更新流程数据的时间',16,'date','{\"type\": \"date\", \"format\": \"YYYY-MM-DD HH:mm:ss\", \"dateType\": \"datetime\", \"valueFormat\": \"YYYY-MM-DD HH:mm:ss\", \"defaultValue\": \"\"}','DEFAULT',1,'2022-10-25 07:56:01',1,'2022-10-23 21:57:52'),(1584339977915265025,'cost_center','成本中心','成本中心下拉单选字段',16,'option','{\"type\": \"option\", \"component\": \"single-select\", \"optionContent\": {\"from\": \"DEFAULT\", \"defaultValue\": [\"1583824814787584001\"], \"optionTypeId\": \"1583739849538342914\"}}','GLOBAL',1,'2022-10-25 07:56:01',1,'2022-10-24 08:24:21');
+/*!40000 ALTER TABLE `workflow_field_def` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `workflow_field_ref`
+--
+
+DROP TABLE IF EXISTS `workflow_field_ref`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `workflow_field_ref` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `wf_key` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '流程标识',
+  `field_id` bigint unsigned NOT NULL COMMENT '字段ID',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `wf_field_idx` (`wf_key`,`field_id`),
+  KEY `workflow_field_ref_field_id_index` (`field_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='流程字段引用关系表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `workflow_field_ref`
+--
+
+LOCK TABLES `workflow_field_ref` WRITE;
+/*!40000 ALTER TABLE `workflow_field_ref` DISABLE KEYS */;
+INSERT INTO `workflow_field_ref` VALUES (1584340013306802177,'destory_holiday',1584339977915265025,1,'2022-10-24 08:24:29'),(1584451703407083521,'holiday',1584339977915265025,1,'2022-10-24 15:48:18');
+/*!40000 ALTER TABLE `workflow_field_ref` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `workflow_option_type`
+--
+
+DROP TABLE IF EXISTS `workflow_option_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `workflow_option_type` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '信息名称',
+  `scope` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '信息范围',
+  `wf_key` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '私有所属流程标识',
+  `remark` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '说明',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='工作流选项类型定义';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `workflow_option_type`
+--
+
+LOCK TABLES `workflow_option_type` WRITE;
+/*!40000 ALTER TABLE `workflow_option_type` DISABLE KEYS */;
+INSERT INTO `workflow_option_type` VALUES (1583739849538342914,'测试树数据源','GLOBAL',NULL,'测试',1,'2022-10-22 22:18:01',1,'2022-10-22 22:18:01');
+/*!40000 ALTER TABLE `workflow_option_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `workflow_option_value`
+--
+
+DROP TABLE IF EXISTS `workflow_option_value`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `workflow_option_value` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `type_id` bigint unsigned NOT NULL COMMENT '信息源ID',
+  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '选项值名称',
+  `pid` bigint DEFAULT NULL COMMENT '选项父级',
+  `order_no` int DEFAULT NULL COMMENT '排序号',
+  `disabled` tinyint NOT NULL DEFAULT '0' COMMENT '是否禁用',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `type_id_index` (`type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='流程选项值';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `workflow_option_value`
+--
+
+LOCK TABLES `workflow_option_value` WRITE;
+/*!40000 ALTER TABLE `workflow_option_value` DISABLE KEYS */;
+INSERT INTO `workflow_option_value` VALUES (1583820377780162561,1583739849538342914,'测试',NULL,1,0,1,'2022-10-22 22:07:58',1,'2022-10-22 22:07:58'),(1583822690246844417,1583739849538342914,'测试1',1583820377780162561,1,0,1,'2022-10-22 22:17:24',1,'2022-10-22 22:17:24'),(1583824814787584001,1583739849538342914,'测试2',1583820377780162561,2,0,1,'2022-10-22 22:17:28',1,'2022-10-22 22:17:28'),(1583826135649411074,1583739849538342914,'测试21',1583824814787584001,1,0,1,'2022-10-24 09:19:55',1,'2022-10-24 09:19:54'),(1583826162119663617,1583739849538342914,'测试211',1583826135649411074,1,0,1,'2022-10-22 22:22:37',1,'2022-10-22 22:22:37'),(1584347991602769921,1583739849538342914,'测试22',1583824814787584001,2,0,1,'2022-10-24 08:56:12',1,'2022-10-24 08:56:12'),(1584348027585703938,1583739849538342914,'测试23',1583824814787584001,3,0,1,'2022-10-24 08:56:20',1,'2022-10-24 08:56:20');
+/*!40000 ALTER TABLE `workflow_option_value` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `workflow_type_def`
+--
+
+DROP TABLE IF EXISTS `workflow_type_def`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `workflow_type_def` (
+  `id` bigint unsigned NOT NULL COMMENT '主键ID',
+  `key` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8_bin NOT NULL COMMENT '流程标识',
+  `name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8_bin NOT NULL COMMENT '流程名称',
+  `remark` varchar(256) CHARACTER SET utf8mb3 COLLATE utf8_bin DEFAULT NULL COMMENT '流程说明',
+  `code_gen_rule` json NOT NULL COMMENT '编码生成规则',
+  `process_definition_id` varchar(128) CHARACTER SET utf8mb3 COLLATE utf8_bin DEFAULT NULL COMMENT '流程定义ID',
+  `status` int DEFAULT NULL COMMENT '状态',
+  `update_by` bigint unsigned NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `def_key_uidx` (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin COMMENT='流程类型模型表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `workflow_type_def`
+--
+
+LOCK TABLES `workflow_type_def` WRITE;
+/*!40000 ALTER TABLE `workflow_type_def` DISABLE KEYS */;
+INSERT INTO `workflow_type_def` VALUES (1589241285277700097,'holiday','请假流程','员工通用的请假流程','{\"type\": \"fixed\", \"joiner\": null, \"prefix\": \"HL\", \"delimiter\": null, \"num_format\": 5, \"date_format\": \"yyyyMMdd\"}',NULL,0,1,'2022-11-06 21:00:24',1,'2022-11-06 21:00:24');
+/*!40000 ALTER TABLE `workflow_type_def` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `workflow_type_ver`
+--
+
+DROP TABLE IF EXISTS `workflow_type_ver`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `workflow_type_ver` (
+  `id` bigint unsigned NOT NULL,
+  `key` varchar(64) COLLATE utf8mb4_bin NOT NULL COMMENT '流程类型标识',
+  `ver` int NOT NULL COMMENT '版本',
+  `remark` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '升级备注',
+  `status` tinyint NOT NULL COMMENT '激活状态: 0=挂起, 1=激活',
+  `update_by` bigint unsigned NOT NULL,
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `create_by` bigint unsigned NOT NULL,
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `xml` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `process_definition_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '流程定义ID',
+  PRIMARY KEY (`id`),
+  KEY `def_id_idx` (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='流程模型版本管理';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `workflow_type_ver`
+--
+
+LOCK TABLES `workflow_type_ver` WRITE;
+/*!40000 ALTER TABLE `workflow_type_ver` DISABLE KEYS */;
+INSERT INTO `workflow_type_ver` VALUES (1589241285311254529,'holiday',1,'初始化',0,1,'2022-11-16 21:35:22',1,'2022-11-06 21:00:24','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:omgdc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:omgdi=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:flowable=\"http://flowable.org/bpmn\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" targetNamespace=\"http://www.flowable.org/processdef\"><process id=\"holiday\" name=\"请假流程\"><startEvent id=\"startEvent_39f7426\" name=\"开始\" flowable:initiator=\"creator\"><outgoing>Flow_1f48sbw</outgoing></startEvent><userTask id=\"Activity_184zomg\" name=\"发起人\"><incoming>Flow_1f48sbw</incoming><outgoing>Flow_0kpigu3</outgoing></userTask><sequenceFlow id=\"Flow_1f48sbw\" sourceRef=\"startEvent_39f7426\" targetRef=\"Activity_184zomg\" /><userTask id=\"Activity_0jxjobw\" name=\"主管审核\"><incoming>Flow_0kpigu3</incoming><outgoing>Flow_0peryzy</outgoing></userTask><sequenceFlow id=\"Flow_0kpigu3\" sourceRef=\"Activity_184zomg\" targetRef=\"Activity_0jxjobw\" /><endEvent id=\"Event_1kummqp\"><incoming>Flow_0peryzy</incoming></endEvent><sequenceFlow id=\"Flow_0peryzy\" sourceRef=\"Activity_0jxjobw\" targetRef=\"Event_1kummqp\" /></process><bpmndi:BPMNDiagram id=\"BPMNDiagram_1\"><bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"holiday\"><bpmndi:BPMNEdge id=\"Flow_0peryzy_di\" bpmnElement=\"Flow_0peryzy\"><omgdi:waypoint x=\"-190\" y=\"-20\" /><omgdi:waypoint x=\"-128\" y=\"-20\" /></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_0kpigu3_di\" bpmnElement=\"Flow_0kpigu3\"><omgdi:waypoint x=\"-350\" y=\"-20\" /><omgdi:waypoint x=\"-290\" y=\"-20\" /></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_1f48sbw_di\" bpmnElement=\"Flow_1f48sbw\"><omgdi:waypoint x=\"-502\" y=\"-20\" /><omgdi:waypoint x=\"-450\" y=\"-20\" /></bpmndi:BPMNEdge><bpmndi:BPMNShape id=\"_BPMNShape_StartEvent_2\" bpmnElement=\"startEvent_39f7426\"><omgdc:Bounds x=\"-538\" y=\"-38\" width=\"36\" height=\"36\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-531\" y=\"-2\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_184zomg_di\" bpmnElement=\"Activity_184zomg\"><omgdc:Bounds x=\"-450\" y=\"-60\" width=\"100\" height=\"80\" /><bpmndi:BPMNLabel /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_0jxjobw_di\" bpmnElement=\"Activity_0jxjobw\"><omgdc:Bounds x=\"-290\" y=\"-60\" width=\"100\" height=\"80\" /><bpmndi:BPMNLabel /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Event_1kummqp_di\" bpmnElement=\"Event_1kummqp\"><omgdc:Bounds x=\"-128\" y=\"-38\" width=\"36\" height=\"36\" /></bpmndi:BPMNShape></bpmndi:BPMNPlane></bpmndi:BPMNDiagram></definitions>',NULL);
+/*!40000 ALTER TABLE `workflow_type_ver` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2022-11-17  9:11:33
