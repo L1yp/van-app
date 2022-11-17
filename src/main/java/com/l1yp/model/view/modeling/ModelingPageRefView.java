@@ -1,21 +1,16 @@
 package com.l1yp.model.view.modeling;
 
 import com.l1yp.model.db.modeling.ModelingModule;
-import com.l1yp.model.db.modeling.page.PageScheme;
 
 import java.util.Date;
 
-public class ModelingPageView {
+public class ModelingPageRefView {
 
     private String id;
 
-    private ModelingModule module;
+    private String pageKey;
 
-    private String mkey;
-
-    private String name;
-
-    private PageScheme pageScheme;
+    private String pageId;
 
     private String updateBy;
 
@@ -33,36 +28,20 @@ public class ModelingPageView {
         this.id = id;
     }
 
-    public ModelingModule getModule() {
-        return module;
+    public String getPageKey() {
+        return pageKey;
     }
 
-    public void setModule(ModelingModule module) {
-        this.module = module;
+    public void setPageKey(String pageKey) {
+        this.pageKey = pageKey;
     }
 
-    public String getMkey() {
-        return mkey;
+    public String getPageId() {
+        return pageId;
     }
 
-    public void setMkey(String mkey) {
-        this.mkey = mkey;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public PageScheme getPageScheme() {
-        return pageScheme;
-    }
-
-    public void setPageScheme(PageScheme pageScheme) {
-        this.pageScheme = pageScheme;
+    public void setPageId(String pageId) {
+        this.pageId = pageId;
     }
 
     public String getUpdateBy() {

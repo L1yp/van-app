@@ -79,7 +79,7 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
                 <?xml version="1.0" encoding="UTF-8"?>
                 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" targetNamespace="http://www.flowable.org/processdef">
                     <process id="{{PROCESS_ID}}" name="{{PROCESS_NAME}}">
-                        <startEvent id="{{START_EVENT_ID}}" name="开始" flowable:initiator="creator" />
+                        <startEvent id="{{START_EVENT_ID}}" name="开始" />
                     </process>
                     <bpmndi:BPMNDiagram id="BPMNDiagram_1">
                         <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="{{PROCESS_ID}}">

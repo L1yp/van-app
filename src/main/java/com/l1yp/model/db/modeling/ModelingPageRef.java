@@ -7,25 +7,21 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.l1yp.model.db.modeling.page.PageScheme;
+import com.l1yp.model.view.modeling.ModelingPageRefView;
 import com.l1yp.model.view.modeling.ModelingPageView;
 import com.l1yp.util.BeanCopierUtil;
 
 import java.util.Date;
 
-@TableName(value = "modeling_page", autoResultMap = true)
-public class ModelingPage {
+@TableName(value = "modeling_page_ref", autoResultMap = true)
+public class ModelingPageRef {
 
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
 
-    private ModelingModule module;
+    private String pageKey;
 
-    private String mkey;
-
-    private String name;
-
-    @TableField(typeHandler = JacksonTypeHandler.class)
-    private PageScheme pageScheme;
+    private String pageId;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updateBy;
@@ -44,36 +40,20 @@ public class ModelingPage {
         this.id = id;
     }
 
-    public ModelingModule getModule() {
-        return module;
+    public String getPageKey() {
+        return pageKey;
     }
 
-    public void setModule(ModelingModule module) {
-        this.module = module;
+    public void setPageKey(String pageKey) {
+        this.pageKey = pageKey;
     }
 
-    public String getMkey() {
-        return mkey;
+    public String getPageId() {
+        return pageId;
     }
 
-    public void setMkey(String mkey) {
-        this.mkey = mkey;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public PageScheme getPageScheme() {
-        return pageScheme;
-    }
-
-    public void setPageScheme(PageScheme pageScheme) {
-        this.pageScheme = pageScheme;
+    public void setPageId(String pageId) {
+        this.pageId = pageId;
     }
 
     public String getUpdateBy() {
@@ -108,8 +88,8 @@ public class ModelingPage {
         this.createTime = createTime;
     }
 
-    public ModelingPageView toView() {
-        var view = new ModelingPageView();
+    public ModelingPageRefView toView() {
+        var view = new ModelingPageRefView();
         BeanCopierUtil.copy(this, view);
         return view;
     }

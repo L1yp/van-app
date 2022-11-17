@@ -4,27 +4,9 @@ import com.l1yp.model.db.modeling.ModelingModule;
 
 public class ModelingPageUnbindParam {
 
-    private ModelingModule module;
-
-    private String mkey;
-
     private String pageKey;
 
-    public ModelingModule getModule() {
-        return module;
-    }
-
-    public void setModule(ModelingModule module) {
-        this.module = module;
-    }
-
-    public String getMkey() {
-        return mkey;
-    }
-
-    public void setMkey(String mkey) {
-        this.mkey = mkey;
-    }
+    private String pageId;
 
     public String getPageKey() {
         return pageKey;
@@ -32,5 +14,13 @@ public class ModelingPageUnbindParam {
 
     public void setPageKey(String pageKey) {
         this.pageKey = pageKey;
+    }
+
+    public String getPageId() {
+        return pageId;
+    }
+
+    public void setPageId(String pageId) {
+        this.pageId = pageId;
     }
 }
