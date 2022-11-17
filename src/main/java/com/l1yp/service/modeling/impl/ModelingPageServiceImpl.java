@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ModelingPageServiceImpl extends ServiceImpl<ModelingPageMapper, ModelingPage> implements IModelingPageService {
@@ -31,11 +32,11 @@ public class ModelingPageServiceImpl extends ServiceImpl<ModelingPageMapper, Mod
 
     @Override
     public List<ModelingPageView> getModulePages(ModelingPageModuleFindParam param) {
-        var pageList = list(Wrappers.<ModelingPage>lambdaQuery()
+        List<ModelingPage> pageList = list(Wrappers.<ModelingPage>lambdaQuery()
                 .eq(ModelingPage::getModule, param.getModule())
                 .eq(ModelingPage::getMkey, param.getMkey())
         );
-        return pageList.stream().map(ModelingPage::toView).toList();
+        return pageList.stream().map(ModelingPage::toView).collect(Collectors.toList());
     }
 
     @Override
@@ -54,7 +55,7 @@ public class ModelingPageServiceImpl extends ServiceImpl<ModelingPageMapper, Mod
     @Override
     @Transactional
     public void bindPage(ModelingPageBindParam param) {
-        var page = getOne(Wrappers.<ModelingPage>lambdaQuery()
+        ModelingPage page = getOne(Wrappers.<ModelingPage>lambdaQuery()
                         .eq(ModelingPage::getModule, param.getModule())
                         .eq(ModelingPage::getMkey, param.getMkey())
                         .eq(ModelingPage::getName, param.getName()));
@@ -63,7 +64,7 @@ public class ModelingPageServiceImpl extends ServiceImpl<ModelingPageMapper, Mod
             BeanCopierUtil.copy(param, page);
             save(page);
         } else {
-            var newPage = new ModelingPage();
+            ModelingPage newPage = new ModelingPage();
             newPage.setId(page.getId());
             newPage.setPageScheme(param.getPageScheme());
             updateById(newPage);

@@ -20,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IRoleService {
@@ -28,7 +29,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     public List<RoleView> findRole() {
         List<Role> roles = getBaseMapper().selectList(null);
 
-        return roles.stream().map(Role::toView).toList();
+        return roles.stream().map(Role::toView).collect(Collectors.toList());
     }
 
     @Override
@@ -74,6 +75,6 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     @Override
     public List<String> menuBound(String roleId) {
         List<RoleMenu> roleMenus = roleMenuService.getBaseMapper().selectList(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, roleId));
-        return roleMenus.stream().map(RoleMenu::getMenuId).toList();
+        return roleMenus.stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
     }
 }

@@ -17,7 +17,8 @@ public class PageData<T> {
     public PageData(){}
 
     public PageData(List<T> data){
-        if (data instanceof Page<?> page) {
+        if (data instanceof Page<?>) {
+            Page<?> page = (Page<?>) data;
             setTotal((int) page.getTotal());
             setPageIdx(page.getPageNum());
             setPageSize(page.getPageSize());
@@ -85,7 +86,8 @@ public class PageData<T> {
     }
 
     public void initPage(List<?> data) {
-        if (data instanceof Page<?> page) {
+        if (data instanceof Page<?>) {
+            Page<?> page = (Page<?>) data;
             setTotal((int) page.getTotal());
             setPageIdx(page.getPageNum());
             setPageSize(page.getPageSize());
@@ -93,7 +95,8 @@ public class PageData<T> {
     }
 
     public void setData(List<T> data) {
-        if (data instanceof Page<T> page) {
+        if (data instanceof Page) {
+            Page<?> page = (Page<?>) data;
             setTotal((int) page.getTotal());
             setPageIdx(page.getPageNum());
             setPageSize(page.getPageSize());

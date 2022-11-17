@@ -13,9 +13,7 @@ import java.util.Map;
 public interface ModelingEntityMapper extends BaseMapper<ModelingEntity> {
 
 
-    @Insert("""
-            ${createDDL}
-            """)
+    @Insert("${createDDL}")
     void createTable(@Param("createDDL") String createDDL);
 
     @Delete("drop table ${tableName}")

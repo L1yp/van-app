@@ -34,6 +34,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, ModelingField> implements IModelingFieldService {
@@ -50,16 +51,16 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
         if (param.getScope() != null) {
             wrapper.eq(ModelingField::getScope, param.getScope());
             List<ModelingField> workflowFieldDefs = getBaseMapper().selectList(wrapper);
-            return workflowFieldDefs.stream().map(ModelingField::toView).toList();
+            return workflowFieldDefs.stream().map(ModelingField::toView).collect(Collectors.toList());
         }
 
         if (StringUtils.hasText(param.getMkey())) {
             if (param.getModule() == ModelingModule.ENTITY) {
                 List<ModelingField> modelingFields = getBaseMapper().selectEntityFields(param);
-                return modelingFields.stream().map(ModelingField::toView).toList();
+                return modelingFields.stream().map(ModelingField::toView).collect(Collectors.toList());
             } else if (param.getModule() == ModelingModule.WORKFLOW) {
                 List<ModelingField> modelingFields = getBaseMapper().selectWFFields(param);
-                return modelingFields.stream().map(ModelingField::toView).toList();
+                return modelingFields.stream().map(ModelingField::toView).collect(Collectors.toList());
             }
         }
         return Collections.emptyList();

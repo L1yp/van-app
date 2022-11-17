@@ -18,7 +18,7 @@ public class ModelingPermissionServiceImpl extends ServiceImpl<ModelingPermissio
 
     @Override
     public ModelingPermissionView getPermission(ModelingPermissionFindParam param) {
-        var permission = getOne(Wrappers.<ModelingPermission>lambdaQuery()
+        ModelingPermission permission = getOne(Wrappers.<ModelingPermission>lambdaQuery()
                 .eq(ModelingPermission::getRoleId, param.getRoleId())
                 .eq(ModelingPermission::getModule, param.getModule())
                 .eq(ModelingPermission::getMkey, param.getMkey())
@@ -26,7 +26,7 @@ public class ModelingPermissionServiceImpl extends ServiceImpl<ModelingPermissio
         if (permission == null) {
             return null;
         }
-        var view = new ModelingPermissionView();
+        ModelingPermissionView view = new ModelingPermissionView();
         BeanCopierUtil.copy(permission, view);
         return view;
     }
@@ -38,7 +38,7 @@ public class ModelingPermissionServiceImpl extends ServiceImpl<ModelingPermissio
                 .eq(ModelingPermission::getModule, param.getModule())
                 .eq(ModelingPermission::getMkey, param.getMkey()));
 
-        var permission = new ModelingPermission();
+        ModelingPermission permission = new ModelingPermission();
         BeanCopierUtil.copy(param, permission);
         save(permission);
     }

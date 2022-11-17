@@ -24,7 +24,7 @@ public class BeanCopierUtil {
         private BeanCopierKey() {}
 
         public static BeanCopierKey buildKey(Class<?> sourceClazz, Class<?> targetClazz) {
-            var bean = new BeanCopierKey();
+            BeanCopierKey bean = new BeanCopierKey();
             bean.sourceClazz = sourceClazz;
             bean.targetClazz = targetClazz;
             return bean;

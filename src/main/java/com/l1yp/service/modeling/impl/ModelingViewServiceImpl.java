@@ -91,12 +91,12 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
             return Collections.emptyList();
         }
 
-        List<String> viewIds = modelingViews.stream().map(ModelingView::getId).toList();
+        List<String> viewIds = modelingViews.stream().map(ModelingView::getId).collect(Collectors.toList());
         List<ModelingViewColumn> columnList = modelingViewColumnService.list(Wrappers.<ModelingViewColumn>lambdaQuery().in(ModelingViewColumn::getViewId, viewIds));
-        List<ModelingViewColumnView> columnViewList = columnList.stream().map(ModelingViewColumn::toView).toList();
+        List<ModelingViewColumnView> columnViewList = columnList.stream().map(ModelingViewColumn::toView).collect(Collectors.toList());
         Map<String, List<ModelingViewColumnView>> columnMap = columnViewList.stream().collect(Collectors.groupingBy(ModelingViewColumnView::getViewId, Collectors.toList()));
 
-        var fieldParam = new ModelingFieldFindParam();
+        ModelingFieldFindParam fieldParam = new ModelingFieldFindParam();
         fieldParam.setModule(param.getModule());
         fieldParam.setMkey(param.getMkey());
         List<ModelingFieldDefView> fields = modelingFieldService.findFields(fieldParam);
@@ -145,9 +145,9 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
         Map<String, UserView> userMap = users.stream().map(User::toView).collect(Collectors.toMap(UserView::getId, it -> it));
 
         // 查询视图配置详情
-        List<String> viewIds = modelingViews.stream().map(ModelingView::getId).toList();
+        List<String> viewIds = modelingViews.stream().map(ModelingView::getId).collect(Collectors.toList());
         List<ModelingViewColumn> columnList = modelingViewColumnService.list(Wrappers.<ModelingViewColumn>lambdaQuery().in(ModelingViewColumn::getViewId, viewIds));
-        List<ModelingViewColumnView> columnViewList = columnList.stream().map(ModelingViewColumn::toView).toList();
+        List<ModelingViewColumnView> columnViewList = columnList.stream().map(ModelingViewColumn::toView).collect(Collectors.toList());
         // 视图ID -> column list
         Map<String, List<ModelingViewColumnView>> columnMap = columnViewList.stream().collect(Collectors.groupingBy(ModelingViewColumnView::getViewId, Collectors.toList()));
 
@@ -167,7 +167,7 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
     @Override
     @Transactional
     public void addView(ModelingViewAddParam param) {
-        var count = count(Wrappers.<ModelingView>lambdaQuery()
+        long count = count(Wrappers.<ModelingView>lambdaQuery()
                 .eq(ModelingView::getModule, param.getModule())
                 .eq(ModelingView::getMkey, param.getMkey())
                 .eq(ModelingView::getName, param.getName()));
@@ -202,7 +202,7 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
         if (modelingView == null) {
             throw new VanException(400, "视图ID有误");
         }
-        var count = count(Wrappers.<ModelingView>lambdaQuery()
+        long count = count(Wrappers.<ModelingView>lambdaQuery()
                 .eq(ModelingView::getModule, modelingView.getModule())
                 .eq(ModelingView::getMkey, modelingView.getMkey())
                 .ne(ModelingView::getId, param.getId())
@@ -243,7 +243,7 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
 
     @Override
     public PageData<Map<String, Object>> pageModelingInstance(ModelFindPageParam param) {
-        var fieldParam = new ModelingFieldFindParam();
+        ModelingFieldFindParam fieldParam = new ModelingFieldFindParam();
         fieldParam.setModule(param.getModule());
         fieldParam.setMkey(param.getMkey());
         List<ModelingFieldDefView> fields = modelingFieldService.findFields(fieldParam);
@@ -342,7 +342,7 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
 
         List<Map<String, Object>> data = getBaseMapper().pageEntity(pageSql, args);
 
-        List<ModelingFieldDefView> columnList = columnNames.stream().map(fieldNameMap::get).toList();
+        List<ModelingFieldDefView> columnList = columnNames.stream().map(fieldNameMap::get).collect(Collectors.toList());
 
         Set<String> optionIds = new HashSet<>();
         Set<String> userIds = new HashSet<>();
@@ -402,7 +402,8 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
         } else {
             data.forEach(it -> {
                 Object value = it.get(field.getField());
-                if (value instanceof Number number) {
+                if (value instanceof Number) {
+                    Number number = (Number) value;
                     it.put(field.getField(), String.valueOf(number));
                 }
             });

@@ -202,7 +202,7 @@ public class Department {
 
 
     public DepartmentView toView() {
-        var view = new DepartmentView();
+        DepartmentView view = new DepartmentView();
         BeanCopierUtil.copy(this, view);
         return view;
     }

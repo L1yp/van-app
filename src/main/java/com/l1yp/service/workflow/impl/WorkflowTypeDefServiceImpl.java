@@ -75,21 +75,19 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
         workflowTypeVer.setVer(1);
         workflowTypeVer.setStatus(WorkflowTypeVer.PENDING);
         workflowTypeVer.setRemark("初始化");
-        String xml = """
-                <?xml version="1.0" encoding="UTF-8"?>
-                <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" targetNamespace="http://www.flowable.org/processdef">
-                    <process id="{{PROCESS_ID}}" name="{{PROCESS_NAME}}">
-                        <startEvent id="{{START_EVENT_ID}}" name="开始" />
-                    </process>
-                    <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-                        <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="{{PROCESS_ID}}">
-                            <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="{{START_EVENT_ID}}">
-                                <dc:Bounds x="156" y="81" width="36" height="36" />
-                            </bpmndi:BPMNShape>
-                        </bpmndi:BPMNPlane>
-                    </bpmndi:BPMNDiagram>
-                </definitions>
-                """;
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "                <definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:omgdc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:omgdi=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:flowable=\"http://flowable.org/bpmn\" targetNamespace=\"http://www.flowable.org/processdef\">\n" +
+                "                    <process id=\"{{PROCESS_ID}}\" name=\"{{PROCESS_NAME}}\">\n" +
+                "                        <startEvent id=\"{{START_EVENT_ID}}\" name=\"开始\" />\n" +
+                "                    </process>\n" +
+                "                    <bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">\n" +
+                "                        <bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"{{PROCESS_ID}}\">\n" +
+                "                            <bpmndi:BPMNShape id=\"_BPMNShape_StartEvent_2\" bpmnElement=\"{{START_EVENT_ID}}\">\n" +
+                "                                <dc:Bounds x=\"156\" y=\"81\" width=\"36\" height=\"36\" />\n" +
+                "                            </bpmndi:BPMNShape>\n" +
+                "                        </bpmndi:BPMNPlane>\n" +
+                "                    </bpmndi:BPMNDiagram>\n" +
+                "                </definitions>";
         xml = xml.replace("{{PROCESS_ID}}", param.getKey());
         xml = xml.replace("{{PROCESS_NAME}}", param.getName());
         xml = xml.replace("{{START_EVENT_ID}}", "startEvent_" + HexUtil.randomCode(7));
@@ -177,7 +175,7 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
         PageData<WorkflowTypeDefView> pageData = new PageData<>();
         pageData.initPage(workflowTypeDefs);
 
-        List<WorkflowTypeDefView> data = workflowTypeDefs.stream().map(WorkflowTypeDef::toView).toList();
+        List<WorkflowTypeDefView> data = workflowTypeDefs.stream().map(WorkflowTypeDef::toView).collect(Collectors.toList());
 
         Set<String> userIds = new HashSet<>();
         data.forEach(it -> {
@@ -185,7 +183,7 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
             userIds.add(it.getCreateBy());
         });
 
-        List<String> keys = data.stream().map(WorkflowTypeDefView::getKey).toList();
+        List<String> keys = data.stream().map(WorkflowTypeDefView::getKey).collect(Collectors.toList());
 
         List<WorkflowTypeVer> workflowTypeVers = workflowTypeVerService.getBaseMapper().selectList(Wrappers.<WorkflowTypeVer>lambdaQuery().in(WorkflowTypeVer::getKey, keys));
         Map<String, List<WorkflowTypeVerView>> verMap = workflowTypeVers.stream().map(WorkflowTypeVer::toView).collect(Collectors.groupingBy(WorkflowTypeVerView::getKey, Collectors.toList()));

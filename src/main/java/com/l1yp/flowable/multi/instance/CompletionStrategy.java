@@ -25,7 +25,7 @@ public class CompletionStrategy {
         if (nrOfInstances == nrOfCompletedInstances) {
             Set<String> variableNames = execution.getVariableNames();
             // 取出口流线名称
-            List<String> outgoings = variableNames.stream().filter(it -> it.startsWith("$$$$")).toList();
+            List<String> outgoings = variableNames.stream().filter(it -> it.startsWith("$$$$")).collect(Collectors.toList());
 
             // 取出口流程 次数
             Map<String, Integer> map = outgoings.stream().collect(Collectors.toMap(it -> it, it -> (Integer) execution.getVariable(it)));
