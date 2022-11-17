@@ -2,12 +2,10 @@ package com.l1yp.controller.modeling;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.l1yp.model.common.ResultData;
-import com.l1yp.model.param.modeling.page.ModelingPageAddAndBindParam;
-import com.l1yp.model.param.modeling.page.ModelingPageAddParam;
 import com.l1yp.model.param.modeling.page.ModelingPageBindParam;
 import com.l1yp.model.param.modeling.page.ModelingPageFindParam;
+import com.l1yp.model.param.modeling.page.ModelingPageModuleFindParam;
 import com.l1yp.model.param.modeling.page.ModelingPageUnbindParam;
-import com.l1yp.model.param.modeling.page.ModelingPageUpdateParam;
 import com.l1yp.model.view.modeling.ModelingPageView;
 import com.l1yp.service.modeling.IModelingPageService;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Validated
 @RestController
@@ -35,27 +34,14 @@ public class ModelingPageController {
     }
 
     @GetMapping("/find")
-    public ResultData<ModelingPageView> findPage(@Validated ModelingPageFindParam param) {
-        return ResultData.ok(service.findPage(param));
-    }
-
-    @PostMapping("/add")
-    public ResultData<Void> addPage(@Validated @RequestBody ModelingPageAddParam param) {
-        service.addPage(param);
-        return ResultData.OK;
-    }
-
-    @PostMapping("/add_and_bind")
-    public ResultData<Void> addAndBindPage(@Validated @RequestBody ModelingPageAddAndBindParam param) {
-        service.addAndBindPage(param);
-        return ResultData.OK;
+    public ResultData<ModelingPageView> getPage(@Validated ModelingPageFindParam param) {
+        return ResultData.ok(service.getPage(param));
     }
 
 
-    @GetMapping("/update")
-    public ResultData<Void> updatePage(@Validated @RequestBody ModelingPageUpdateParam param) {
-        service.updatePage(param);
-        return ResultData.OK;
+    @GetMapping("/module/find")
+    public ResultData<List<ModelingPageView>> getModulePages(@Validated ModelingPageModuleFindParam param) {
+        return ResultData.ok(service.getModulePages(param));
     }
 
     @PostMapping("/bind")
