@@ -91,8 +91,7 @@ public class ModelingView {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof Collation) {
-                Collation collation = (Collation) obj;
+            if (obj instanceof Collation collation) {
                 return collation.getOrder().equals(order) && collation.getField().equals(field);
             }
             return false;

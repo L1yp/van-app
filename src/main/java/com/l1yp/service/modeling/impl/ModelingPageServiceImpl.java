@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ModelingPageServiceImpl extends ServiceImpl<ModelingPageMapper, ModelingPage> implements IModelingPageService {
@@ -36,7 +35,7 @@ public class ModelingPageServiceImpl extends ServiceImpl<ModelingPageMapper, Mod
                 .eq(ModelingPage::getModule, param.getModule())
                 .eq(ModelingPage::getMkey, param.getMkey())
         );
-        return pageList.stream().map(ModelingPage::toView).collect(Collectors.toList());
+        return pageList.stream().map(ModelingPage::toView).toList();
     }
 
     @Override

@@ -67,7 +67,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
         List<User> users = userService.listByIds(userIds);
         Map<String, UserView> userMap = users.stream().map(User::toView).collect(Collectors.toMap(UserView::getId, it -> it));
 
-        List<DepartmentView> departmentViews = departments.stream().map(Department::toView).collect(Collectors.toList());
+        List<DepartmentView> departmentViews = departments.stream().map(Department::toView).toList();
 
         departmentViews.stream().filter(it -> StringUtils.hasText(it.getOwner())).forEach(it -> it.setOwnerInfo(userMap.get(it.getOwner())));
         departmentViews.stream().filter(it -> StringUtils.hasText(it.getAssistant())).forEach(it -> it.setAssistantInfo(userMap.get(it.getAssistant())));

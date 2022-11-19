@@ -8,10 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -44,6 +41,6 @@ public class ProcessCompletedEventListener implements FlowableEventListener {
 
     @Override
     public Collection<? extends FlowableEventType> getTypes() {
-        return new HashSet<>(Collections.singletonList(FlowableEngineEventType.PROCESS_COMPLETED));
+        return Set.of(FlowableEngineEventType.PROCESS_COMPLETED);
     }
 }

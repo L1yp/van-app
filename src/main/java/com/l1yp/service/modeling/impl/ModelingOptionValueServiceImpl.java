@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ModelingOptionValueServiceImpl extends ServiceImpl<ModelingOptionValueMapper, ModelingOptionValue> implements IModelingOptionValueService {
@@ -23,7 +22,7 @@ public class ModelingOptionValueServiceImpl extends ServiceImpl<ModelingOptionVa
     @Override
     public List<ModelingOptionValueView> findValues(ModelingOptionValueFindParam param) {
         List<ModelingOptionValue> modelingOptionValues = getBaseMapper().selectList(Wrappers.<ModelingOptionValue>lambdaQuery().eq(ModelingOptionValue::getTypeId, param.getTypeId()));
-        return modelingOptionValues.stream().map(ModelingOptionValue::toView).collect(Collectors.toList());
+        return modelingOptionValues.stream().map(ModelingOptionValue::toView).toList();
     }
 
     @Override

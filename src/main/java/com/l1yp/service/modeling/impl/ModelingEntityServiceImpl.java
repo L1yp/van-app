@@ -129,12 +129,12 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
 
         if (!userIds.isEmpty()) {
             List<User> users = userMapper.selectBatchIds(userIds);
-            List<UserView> userList = users.stream().map(User::toView).collect(Collectors.toList());
+            List<UserView> userList = users.stream().map(User::toView).toList();
             Map<String, UserView> userMap = userList.stream().collect(Collectors.toMap(UserView::getId, it -> it));
             pageData.setAdditional(userMap);
         }
 
-        List<ModelingEntityView> modelingEntityViews = list.stream().map(ModelingEntity::toView).collect(Collectors.toList());
+        List<ModelingEntityView> modelingEntityViews = list.stream().map(ModelingEntity::toView).toList();
 
         pageData.initPage(list);
         pageData.setData(modelingEntityViews);
@@ -214,7 +214,7 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
                 .eq(ModelingFieldRef::getModule, ModelingModule.ENTITY)
                 .eq(ModelingFieldRef::getMkey, fromEntity.getMkey()));
         if (!CollectionUtils.isEmpty(refFields)) {
-            List<String> fieldIds = refFields.stream().map(ModelingFieldRef::getFieldId).collect(Collectors.toList());
+            List<String> fieldIds = refFields.stream().map(ModelingFieldRef::getFieldId).toList();
 
             // 只删除私有字段
             modelingFieldMapper.delete(Wrappers.<ModelingField>lambdaQuery()
@@ -223,7 +223,7 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
             );
 
             // 引用字段主键列表
-            List<String> refIds = refFields.stream().map(ModelingFieldRef::getId).collect(Collectors.toList());
+            List<String> refIds = refFields.stream().map(ModelingFieldRef::getId).toList();
 
             // 接触所有引用关系 包括全局
             modelingFieldRefMapper.deleteBatchIds(refIds);
@@ -237,7 +237,7 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
         );
 
         if (!CollectionUtils.isEmpty(modelingOptionTypes)) {
-            List<String> typeIds = modelingOptionTypes.stream().map(ModelingOptionType::getId).collect(Collectors.toList());
+            List<String> typeIds = modelingOptionTypes.stream().map(ModelingOptionType::getId).toList();
 
             // 删除选项定义
             modelingOptionTypeMapper.delete(Wrappers.<ModelingOptionType>lambdaQuery().in(ModelingOptionType::getId, typeIds));
@@ -253,7 +253,7 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
                 .eq(ModelingView::getMkey, fromEntity.getMkey())
         );
         if (CollectionUtils.isNotEmpty(modelingViews)) {
-            List<String> viewIdList = modelingViews.stream().map(ModelingView::getId).collect(Collectors.toList());
+            List<String> viewIdList = modelingViews.stream().map(ModelingView::getId).toList();
             modelingViewColumnMapper.delete(Wrappers.<ModelingViewColumn>lambdaQuery().in(ModelingViewColumn::getViewId, viewIdList));
             modelingViewMapper.delete(Wrappers.<ModelingView>lambdaQuery().in(ModelingView::getId, viewIdList));
         }
@@ -285,7 +285,7 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
         fieldFindParam.setMkey(param.getMkey());
         List<ModelingFieldDefView> fields = modelingFieldService.findFields(fieldFindParam);
         Map<String, ModelingFieldDefView> fieldMap = fields.stream().collect(Collectors.toMap(ModelingFieldDefView::getField, it -> it));
-        List<String> excludeKeys = data.keySet().stream().filter(it -> !fieldMap.containsKey(it) || excludeInputFields.contains(it)).collect(Collectors.toList());
+        List<String> excludeKeys = data.keySet().stream().filter(it -> !fieldMap.containsKey(it) || excludeInputFields.contains(it)).toList();
 
         Map<String, Object> formData = data.entrySet().stream().filter(it -> !excludeKeys.contains(it.getKey())).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
         List<String> columnFields = new ArrayList<>(formData.keySet());
@@ -329,7 +329,7 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
         fieldFindParam.setMkey(param.getMkey());
         List<ModelingFieldDefView> fields = modelingFieldService.findFields(fieldFindParam);
         Map<String, ModelingFieldDefView> fieldMap = fields.stream().collect(Collectors.toMap(ModelingFieldDefView::getField, it -> it));
-        List<String> excludeKeys = data.keySet().stream().filter(it -> !fieldMap.containsKey(it) || excludeInputFields.contains(it)).collect(Collectors.toList());
+        List<String> excludeKeys = data.keySet().stream().filter(it -> !fieldMap.containsKey(it) || excludeInputFields.contains(it)).toList();
 
         Map<String, Object> formData = data.entrySet().stream().filter(it -> !excludeKeys.contains(it.getKey())).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
         List<String> columnFields = new ArrayList<>(formData.keySet());

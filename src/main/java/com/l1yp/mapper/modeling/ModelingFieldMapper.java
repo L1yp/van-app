@@ -27,28 +27,42 @@ public interface ModelingFieldMapper extends BaseMapper<ModelingField> {
     @Select("SELECT COLUMN_NAME name, COLUMN_COMMENT comment FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'van' AND TABLE_NAME = #{tableName}")
     List<TableScheme> getTableColumn(@Param("tableName") String tableName);
 
-    @Select("SELECT * FROM modeling_field_def WHERE id IN ( SELECT field_id FROM modeling_field_ref WHERE mkey = #{mkey} ) OR scope = 'WORKFLOW_DEFAULT'")
+    @Select("""
+            SELECT *
+            FROM modeling_field_def
+            WHERE id IN ( SELECT field_id FROM modeling_field_ref WHERE mkey = #{mkey} ) OR scope = 'WORKFLOW_DEFAULT'
+            """)
     @ResultMap(MYBATIS_PLUS + UNDERSCORE + "ModelingField")
     List<ModelingField> selectWFFields(ModelingFieldFindParam param);
 
-    @Select("SELECT * FROM modeling_field_def WHERE id IN ( SELECT field_id FROM modeling_field_ref WHERE mkey = #{mkey} AND module = #{module} ) OR scope = 'ENTITY_DEFAULT' ")
+    @Select("""
+            SELECT *
+            FROM modeling_field_def
+            WHERE id IN ( SELECT field_id FROM modeling_field_ref WHERE mkey = #{mkey} AND module = #{module} ) OR scope = 'ENTITY_DEFAULT'
+            """)
     @ResultMap(MYBATIS_PLUS + UNDERSCORE + "ModelingField")
     List<ModelingField> selectEntityFields(ModelingFieldFindParam param);
 
 
-    @Insert("ALTER TABLE `${tableName}` ADD `${field}` ${dbType} NULL COMMENT '${label}'")
+    @Insert("""
+            ALTER TABLE `${tableName}` ADD `${field}` ${dbType} NULL COMMENT '${label}'
+            """)
     void addTableColumn(@Param("tableName") String tableName,
                         @Param("field") String field,
                         @Param("dbType") String dbType,
                         @Param("label") String label);
 
-    @Update("ALTER TABLE `${tableName}` MODIFY `${field}` ${dbType} NULL COMMENT '${label}'")
+    @Update("""
+            ALTER TABLE `${tableName}` MODIFY `${field}` ${dbType} NULL COMMENT '${label}'
+            """)
     void modifyColumn(@Param("tableName") String tableName,
                       @Param("field") String field,
                       @Param("dbType") String dbType,
                       @Param("label") String label);
 
-    @Delete("ALTER TABLE ${tableName} DROP COLUMN ${field}")
+    @Delete("""
+            ALTER TABLE ${tableName} DROP COLUMN ${field}
+            """)
     void dropTableColumn(@Param("tableName") String tableName, @Param("field") String field);
 
 

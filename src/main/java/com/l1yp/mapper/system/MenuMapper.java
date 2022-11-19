@@ -8,7 +8,12 @@ import java.util.List;
 import java.util.Set;
 
 public interface MenuMapper extends BaseMapper<Menu> {
-    @Select("SELECT DISTINCT rm.menu_id FROM sys_user_role ur INNER JOIN sys_role_menu rm ON ur.role_id = rm.role_id AND ur.uid = #{uid}")
+    @Select("""
+            SELECT
+              DISTINCT rm.menu_id
+            FROM sys_user_role ur
+            INNER JOIN sys_role_menu rm ON ur.role_id = rm.role_id AND ur.uid = #{uid}
+            """)
     List<String> selectUserRoleMenuList(String uid);
 
 

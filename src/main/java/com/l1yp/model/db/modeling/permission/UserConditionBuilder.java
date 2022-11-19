@@ -26,8 +26,8 @@ public class UserConditionBuilder implements IFieldCondition {
 
         if (!CollectionUtils.isEmpty(userConditionModel.getUsers())) {
             List<String> users = userConditionModel.getUsers();
-            List<String> varOptions = users.stream().filter(UserConditionModel.VAR_USER_OPTIONS::contains).collect(Collectors.toList());
-            List<String> plainUsers = users.stream().filter(it -> !UserConditionModel.VAR_USER_OPTIONS.contains(it)).collect(Collectors.toList());
+            List<String> varOptions = users.stream().filter(UserConditionModel.VAR_USER_OPTIONS::contains).toList();
+            List<String> plainUsers = users.stream().filter(it -> !UserConditionModel.VAR_USER_OPTIONS.contains(it)).toList();
 
 
             // 纯用户查询

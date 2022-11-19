@@ -2,18 +2,14 @@ package com.l1yp.service;
 
 import cn.dev33.satoken.stp.StpInterface;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.l1yp.mapper.system.RoleMapper;
 import com.l1yp.mapper.system.RoleMenuMapper;
 import com.l1yp.mapper.system.UserRoleMapper;
-import com.l1yp.model.db.system.RoleMenu;
 import com.l1yp.model.db.system.UserRole;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 自定义权限验证接口扩展 
@@ -45,7 +41,7 @@ public class StpInterfaceImpl implements StpInterface {
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
         List<UserRole> userRoles = userRoleMapper.selectList(new LambdaQueryWrapper<UserRole>().eq(UserRole::getUid, loginId));
-        return userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList());
+        return userRoles.stream().map(UserRole::getRoleId).toList();
     }
 
 }

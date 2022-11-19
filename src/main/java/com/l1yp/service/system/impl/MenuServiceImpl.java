@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IMenuService {
@@ -71,7 +70,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
             MenuView view = new MenuView();
             BeanCopierUtil.copy(it, view);
             return view;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     @Override
@@ -79,6 +78,6 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
         User loginUser = RequestUtils.getLoginUser();
         List<String> menuIdList = getBaseMapper().selectUserRoleMenuList(loginUser.getId());
         List<Menu> menuList = getBaseMapper().selectBatchIds(menuIdList);
-        return menuList.stream().map(Menu::toView).collect(Collectors.toList());
+        return menuList.stream().map(Menu::toView).toList();
     }
 }

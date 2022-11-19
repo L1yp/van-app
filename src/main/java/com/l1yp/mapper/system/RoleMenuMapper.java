@@ -14,7 +14,14 @@ public interface RoleMenuMapper extends BaseMapper<RoleMenu> {
     int deleteRoleMenu(@Param("roleId") String roleId);
 
 
-    @Select("SELECT m.component FROM sys_role_menu rm LEFT JOIN sys_user_role ur ON ur.role_id = rm.role_id AND ur.uid = #{userId} LEFT JOIN sys_menu m ON rm.menu_id = m.id WHERE m.type = 'BUTTON' ")
+    @Select("""
+            SELECT
+              m.component
+            FROM sys_role_menu rm
+            LEFT JOIN sys_user_role ur ON ur.role_id = rm.role_id AND ur.uid = #{userId}
+            LEFT JOIN sys_menu m ON rm.menu_id = m.id
+            WHERE m.type = 'BUTTON'
+            """)
     List<String> selectPermissions(String userId);
 
 

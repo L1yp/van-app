@@ -118,14 +118,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         List<User> users = getBaseMapper().selectList(wrapper);
         pageData.initPage(users);
 
-        List<UserView> userViews = users.stream().map(User::toView).collect(Collectors.toList());
+        List<UserView> userViews = users.stream().map(User::toView).toList();
 
         Set<String> deptIds = userViews.stream().map(UserView::getDeptId).filter(Objects::nonNull).collect(Collectors.toSet());
         Map<String, Object> additional = new HashMap<>();
         pageData.setAdditional(additional);
         if (!CollectionUtils.isEmpty(deptIds)) {
             List<Department> departments = departmentService.listByIds(deptIds);
-            List<DepartmentView> departmentViews = departments.stream().map(Department::toView).collect(Collectors.toList());
+            List<DepartmentView> departmentViews = departments.stream().map(Department::toView).toList();
             Map<String, DepartmentView> deptMap = departmentViews.stream().collect(Collectors.toMap(DepartmentView::getId, it -> it));
             additional.put("dept", deptMap);
         }
@@ -148,7 +148,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
 
         List<User> users = getBaseMapper().selectList(wrapper);
-        return users.stream().map(User::toView).collect(Collectors.toList());
+        return users.stream().map(User::toView).toList();
     }
 
     @Override
@@ -213,18 +213,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public List<String> findPartTimeDept() {
         User loginUser = RequestUtils.getLoginUser();
         List<UserDept> userDeptList = userDeptService.getBaseMapper().selectList(Wrappers.<UserDept>lambdaQuery().eq(UserDept::getUid, loginUser.getId()));
-        return userDeptList.stream().map(UserDept::getDeptId).collect(Collectors.toList());
+        return userDeptList.stream().map(UserDept::getDeptId).toList();
     }
 
     @Override
     public List<String> findRoles(String uid) {
         List<UserRole> userRoles = userRoleService.getBaseMapper().selectList(Wrappers.<UserRole>lambdaQuery().eq(UserRole::getUid, uid));
-        return userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList());
+        return userRoles.stream().map(UserRole::getRoleId).toList();
     }
 
     @Override
     public List<UserView> listUserViewByIdList(List<String> idList) {
         List<User> users = listByIds(idList);
-        return users.stream().map(User::toView).collect(Collectors.toList());
+        return users.stream().map(User::toView).toList();
     }
 }

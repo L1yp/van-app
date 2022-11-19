@@ -39,7 +39,7 @@ public class ModelingOptionTypeServiceImpl extends ServiceImpl<ModelingOptionTyp
             wrapper.eq(ModelingOptionType::getMkey, param.getMkey());
         }
         List<ModelingOptionType> modelingOptionTypes = getBaseMapper().selectList(wrapper);
-        return modelingOptionTypes.stream().map(ModelingOptionType::toView).collect(Collectors.toList());
+        return modelingOptionTypes.stream().map(ModelingOptionType::toView).toList();
     }
 
     @Override

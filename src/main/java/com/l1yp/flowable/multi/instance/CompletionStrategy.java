@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,7 +24,7 @@ public class CompletionStrategy {
         if (nrOfInstances == nrOfCompletedInstances) {
             Set<String> variableNames = execution.getVariableNames();
             // 取出口流线名称
-            List<String> outgoings = variableNames.stream().filter(it -> it.startsWith("$$$$")).collect(Collectors.toList());
+            List<String> outgoings = variableNames.stream().filter(it -> it.startsWith("$$$$")).toList();
 
             // 取出口流程 次数
             Map<String, Integer> map = outgoings.stream().collect(Collectors.toMap(it -> it, it -> (Integer) execution.getVariable(it)));
