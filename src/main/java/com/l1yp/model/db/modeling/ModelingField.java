@@ -88,6 +88,17 @@ public class ModelingField {
          * 全局字段
          */
         GLOBAL,
+        ;
+
+        public ModelingModule toModelingModule() {
+            if (this == ENTITY_PRIVATE || this == ENTITY_DEFAULT) {
+                return ModelingModule.ENTITY;
+            } else if (this == WORKFLOW_PRIVATE || this == WORKFLOW_DEFAULT) {
+                return ModelingModule.WORKFLOW;
+            } else {
+                return null;
+            }
+        }
     }
 
     public String getId() {

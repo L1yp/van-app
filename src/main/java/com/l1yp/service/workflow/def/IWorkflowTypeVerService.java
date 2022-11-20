@@ -1,4 +1,4 @@
-package com.l1yp.service.workflow;
+package com.l1yp.service.workflow.def;
 
 import com.l1yp.model.param.workflow.WorkflowTypeVerActiveParam;
 import com.l1yp.model.param.workflow.WorkflowTypeVerCopyParam;

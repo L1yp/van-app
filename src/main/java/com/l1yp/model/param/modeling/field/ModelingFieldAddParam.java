@@ -12,7 +12,7 @@ public class ModelingFieldAddParam {
      * 可选字段：是否关联流程
      */
     @Pattern(regexp = "^[a-zA-Z_][a-zA-Z0-9_]*$", message = "key必须字母或下划线开头")
-    private String key;
+    private String mkey;
 
     /**
      * 字段名
@@ -49,12 +49,12 @@ public class ModelingFieldAddParam {
     @NotNull
     private FieldScope scope;
 
-    public String getKey() {
-        return key;
+    public String getMkey() {
+        return mkey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setMkey(String mkey) {
+        this.mkey = mkey;
     }
 
     public String getField() {

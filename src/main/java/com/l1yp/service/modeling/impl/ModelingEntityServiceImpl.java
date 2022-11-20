@@ -36,9 +36,7 @@ import com.l1yp.model.param.modeling.entity.ModelingEntityInstanceDeleteParam;
 import com.l1yp.model.param.modeling.entity.ModelingEntityInstanceFindParam;
 import com.l1yp.model.param.modeling.entity.ModelingEntityInstanceUpdateParam;
 import com.l1yp.model.param.modeling.entity.ModelingEntityUpdateParam;
-import com.l1yp.model.param.modeling.field.ModelingFieldFindParam;
 import com.l1yp.model.view.modeling.ModelingEntityView;
-import com.l1yp.model.view.modeling.ModelingFieldDefView;
 import com.l1yp.model.view.system.UserView;
 import com.l1yp.service.modeling.IModelingEntityService;
 import com.l1yp.util.BeanCopierUtil;
@@ -280,11 +278,8 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
         String tableName = ModelingEntity.buildEntityTableName(param.getMkey());
         Map<String, Object> data = param.getData();
 
-        ModelingFieldFindParam fieldFindParam = new ModelingFieldFindParam();
-        fieldFindParam.setModule(ModelingModule.ENTITY);
-        fieldFindParam.setMkey(param.getMkey());
-        List<ModelingFieldDefView> fields = modelingFieldService.findFields(fieldFindParam);
-        Map<String, ModelingFieldDefView> fieldMap = fields.stream().collect(Collectors.toMap(ModelingFieldDefView::getField, it -> it));
+        List<ModelingField> fields = modelingFieldService.findModelFields(ModelingModule.ENTITY, param.getMkey());
+        Map<String, ModelingField> fieldMap = fields.stream().collect(Collectors.toMap(ModelingField::getField, it -> it));
         List<String> excludeKeys = data.keySet().stream().filter(it -> !fieldMap.containsKey(it) || excludeInputFields.contains(it)).toList();
 
         Map<String, Object> formData = data.entrySet().stream().filter(it -> !excludeKeys.contains(it.getKey())).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
@@ -324,11 +319,8 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
         String tableName = ModelingEntity.buildEntityTableName(param.getMkey());
         Map<String, Object> data = param.getData();
 
-        ModelingFieldFindParam fieldFindParam = new ModelingFieldFindParam();
-        fieldFindParam.setModule(ModelingModule.ENTITY);
-        fieldFindParam.setMkey(param.getMkey());
-        List<ModelingFieldDefView> fields = modelingFieldService.findFields(fieldFindParam);
-        Map<String, ModelingFieldDefView> fieldMap = fields.stream().collect(Collectors.toMap(ModelingFieldDefView::getField, it -> it));
+        List<ModelingField> fields = modelingFieldService.findModelFields(ModelingModule.ENTITY, param.getMkey());
+        Map<String, ModelingField> fieldMap = fields.stream().collect(Collectors.toMap(ModelingField::getField, it -> it));
         List<String> excludeKeys = data.keySet().stream().filter(it -> !fieldMap.containsKey(it) || excludeInputFields.contains(it)).toList();
 
         Map<String, Object> formData = data.entrySet().stream().filter(it -> !excludeKeys.contains(it.getKey())).collect(Collectors.toMap(Entry::getKey, Entry::getValue));

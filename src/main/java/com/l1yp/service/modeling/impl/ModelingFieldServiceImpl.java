@@ -27,6 +27,11 @@ import com.l1yp.model.param.modeling.field.ModelingFieldRefParam;
 import com.l1yp.model.view.modeling.ModelingFieldDefView;
 import com.l1yp.service.modeling.IModelingFieldService;
 import com.l1yp.util.BeanCopierUtil;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -66,17 +71,46 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
     }
 
     @Override
+    @Cacheable(value = "modeling_field", key = "#p0.toString() + ':' + #p1", condition = "#p0 != null and #p1 != ''", unless = "#result.size() == 0")
+    public List<ModelingField> findModelFields(ModelingModule module, String mkey) {
+        ModelingFieldFindParam param = new ModelingFieldFindParam();
+        param.setModule(module);
+        param.setMkey(mkey);
+        if (module == ModelingModule.ENTITY) {
+            return getBaseMapper().selectEntityFields(param);
+        } else {
+            return getBaseMapper().selectWFFields(param);
+        }
+    }
+
+    @Override
     @Transactional
+    @CacheEvict(
+            cacheNames = "modeling_field",
+            key = "#p0.scope.toModelingModule().toString() + ':' + #p0.mkey",
+            condition = "#p0.scope.toModelingModule() != null and #p0.mkey != ''"
+    )
     public void addField(ModelingFieldAddParam param) {
+        if (param.getScope() == FieldScope.WORKFLOW_PRIVATE || param.getScope() == FieldScope.ENTITY_PRIVATE) {
+            if (!StringUtils.hasText(param.getMkey())) {
+                throw new VanException(400, "私有字段必传mkey");
+            }
+        }
 
         ModelingField modelingField = new ModelingField();
         BeanCopierUtil.copy(param, modelingField);
 
         save(modelingField);
-        if (StringUtils.hasText(param.getKey())) {
+        if (StringUtils.hasText(param.getMkey())) {
             ModelingFieldRef modelingFieldRef = new ModelingFieldRef();
+            if (param.getScope() == FieldScope.WORKFLOW_PRIVATE) {
+                modelingFieldRef.setModule(ModelingModule.WORKFLOW);
+            }
+            if (param.getScope() == FieldScope.ENTITY_PRIVATE) {
+                modelingFieldRef.setModule(ModelingModule.ENTITY);
+            }
             modelingFieldRef.setFieldId(modelingField.getId());
-            modelingFieldRef.setMkey(param.getKey());
+            modelingFieldRef.setMkey(param.getMkey());
             modelingFieldRefMapper.insert(modelingFieldRef);
 
             // 开始添加字段
@@ -85,10 +119,10 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
             String tableName = null;
             FieldScope scope = param.getScope();
             if (scope == FieldScope.WORKFLOW_PRIVATE) {
-                tableName = WorkflowTypeDef.buildEntityTableName(param.getKey());
+                tableName = WorkflowTypeDef.buildEntityTableName(param.getMkey());
             }
             else if (scope == FieldScope.ENTITY_PRIVATE) {
-                tableName = ModelingEntity.buildEntityTableName(param.getKey());
+                tableName = ModelingEntity.buildEntityTableName(param.getMkey());
             }
 
 
@@ -131,6 +165,9 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
         return dbType;
     }
 
+    @Resource
+    CacheManager cacheManager;
+
     @Override
     @Transactional
     public void updateField(ModelingFieldUpdateParam param) {
@@ -138,6 +175,9 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
         if (originalField == null) {
             throw new VanException(400, "字段不存在");
         }
+
+
+
         ModelingField modelingField = new ModelingField();
         BeanCopierUtil.copy(param, modelingField);
         updateById(modelingField);
@@ -149,6 +189,13 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
             List<ModelingFieldRef> modelingFieldRefs = modelingFieldRefMapper.selectList(Wrappers.<ModelingFieldRef>lambdaQuery()
                     .eq(ModelingFieldRef::getFieldId, param.getId())
             );
+
+            // 删除缓存
+            for (ModelingFieldRef modelingFieldRef : modelingFieldRefs) {
+                evictFieldsCache(originalField.getScope().toModelingModule(), modelingFieldRef.getMkey());
+            }
+
+
 
 
             // 获取数据库类型
@@ -205,6 +252,8 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
             // 私有字段不可能重复
             ModelingFieldRef modelingFieldRef = modelingFieldRefMapper.selectOne(Wrappers.<ModelingFieldRef>lambdaQuery().eq(ModelingFieldRef::getFieldId, fieldId));
 
+
+
             modelingFieldRefMapper.delete(Wrappers.<ModelingFieldRef>lambdaQuery().eq(ModelingFieldRef::getFieldId, fieldId));
 
             String tableName;
@@ -217,6 +266,8 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
             // 删除字段
             getBaseMapper().dropTableColumn(tableName, modelingField.getField());
 
+            // 删除缓存
+            evictFieldsCache(modelingField.getScope().toModelingModule(), modelingFieldRef.getMkey());
         }
 
     }
@@ -235,7 +286,6 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
         modelingFieldRefMapper.insert(modelingFieldRef);
         // 新增字段
 
-
         String tableName;
         if (param.getModule() == ModelingModule.WORKFLOW) {
             tableName = WorkflowTypeDef.buildEntityTableName(param.getMkey());
@@ -246,6 +296,8 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
 
         getBaseMapper().addTableColumn(tableName, modelingField.getField(), dbType, modelingField.getField());
 
+        // 删除缓存
+        evictFieldsCache(param.getModule(), param.getMkey());
     }
 
     @Override
@@ -268,5 +320,15 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
         // 删除字段
         getBaseMapper().dropTableColumn(tableName, modelingField.getField());
 
+        evictFieldsCache(param.getModule(), param.getMkey());
     }
+
+
+    private void evictFieldsCache(ModelingModule module, String mkey) {
+        Cache modelingFieldCache = cacheManager.getCache("modeling_field");
+        if (modelingFieldCache != null) {
+            modelingFieldCache.evictIfPresent(module.toString() + ":" + mkey);
+        }
+    }
+
 }

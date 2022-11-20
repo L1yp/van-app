@@ -1,4 +1,4 @@
-package com.l1yp.service.workflow.impl;
+package com.l1yp.service.workflow.def.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -22,7 +22,7 @@ import com.l1yp.model.view.workflow.WorkflowTypeDefView;
 import com.l1yp.model.view.workflow.WorkflowTypeVerView;
 import com.l1yp.service.modeling.impl.ModelingFieldServiceImpl;
 import com.l1yp.service.system.impl.UserServiceImpl;
-import com.l1yp.service.workflow.IWorkflowTypeDefService;
+import com.l1yp.service.workflow.def.IWorkflowTypeDefService;
 import com.l1yp.util.BeanCopierUtil;
 import com.l1yp.util.HexUtil;
 import org.slf4j.Logger;
@@ -124,8 +124,13 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
         }
         String tableName = WorkflowTypeDef.buildEntityTableName(param.getKey());
 
+        Set<String> uniqueFields = new HashSet<>(Arrays.asList("process_instance_id", "code"));
+        String uniqueConstraint =  uniqueFields.stream().map(it -> "constraint " + tableName + "_" + it + " unique (" + it + ")").collect(Collectors.joining(","));
+
+
         // TODO: 防止SQL注入
-        String createDDL = columnDefs.stream().collect(Collectors.joining(",\n", "CREATE TABLE `" + tableName + "` (\n"  , "\n) COMMENT '" + param.getRemark() + "'"));
+        String createDDL = columnDefs.stream().collect(Collectors.joining(",\n", "CREATE TABLE `" + tableName + "` (\n"  ,
+                "\n" + uniqueConstraint + "\n) COMMENT '" + param.getRemark() + "'"));
         log.info("create table ddl: {}", createDDL);
         modelingEntityMapper.createTable(createDDL);
 

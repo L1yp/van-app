@@ -1,4 +1,4 @@
-package com.l1yp.service.workflow.impl;
+package com.l1yp.service.workflow.def.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.l1yp.exception.VanException;
@@ -9,7 +9,7 @@ import com.l1yp.model.param.workflow.WorkflowTypeVerCopyParam;
 import com.l1yp.model.param.workflow.WorkflowTypeVerPendingParam;
 import com.l1yp.model.param.workflow.WorkflowTypeVerUpdateXmlParam;
 import com.l1yp.model.view.workflow.WorkflowTypeVerView;
-import com.l1yp.service.workflow.IWorkflowTypeVerService;
+import com.l1yp.service.workflow.def.IWorkflowTypeVerService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

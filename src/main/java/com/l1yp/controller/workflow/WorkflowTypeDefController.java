@@ -7,7 +7,7 @@ import com.l1yp.model.param.workflow.WorkflowTypeDefAddParam;
 import com.l1yp.model.param.workflow.WorkflowTypeDefPageParam;
 import com.l1yp.model.param.workflow.WorkflowTypeDefUpdateParam;
 import com.l1yp.model.view.workflow.WorkflowTypeDefView;
-import com.l1yp.service.workflow.impl.WorkflowTypeDefServiceImpl;
+import com.l1yp.service.workflow.def.impl.WorkflowTypeDefServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

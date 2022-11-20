@@ -9,6 +9,7 @@ import com.l1yp.exception.VanException;
 import com.l1yp.mapper.modeling.ModelingViewMapper;
 import com.l1yp.model.common.PageData;
 import com.l1yp.model.db.modeling.ModelingEntity;
+import com.l1yp.model.db.modeling.ModelingField;
 import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.ModelingOptionValue;
 import com.l1yp.model.db.modeling.ModelingView;
@@ -22,7 +23,6 @@ import com.l1yp.model.db.modeling.field.UserFieldScheme;
 import com.l1yp.model.db.system.User;
 import com.l1yp.model.db.workflow.model.WorkflowTypeDef;
 import com.l1yp.model.param.modeling.entity.ModelFindPageParam;
-import com.l1yp.model.param.modeling.field.ModelingFieldFindParam;
 import com.l1yp.model.param.modeling.view.ModelingViewAddParam;
 import com.l1yp.model.param.modeling.view.ModelingViewColumnParam;
 import com.l1yp.model.param.modeling.view.ModelingViewFindParam;
@@ -96,11 +96,8 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
         List<ModelingViewColumnView> columnViewList = columnList.stream().map(ModelingViewColumn::toView).toList();
         Map<String, List<ModelingViewColumnView>> columnMap = columnViewList.stream().collect(Collectors.groupingBy(ModelingViewColumnView::getViewId, Collectors.toList()));
 
-        ModelingFieldFindParam fieldParam = new ModelingFieldFindParam();
-        fieldParam.setModule(param.getModule());
-        fieldParam.setMkey(param.getMkey());
-        List<ModelingFieldDefView> fields = modelingFieldService.findFields(fieldParam);
-        Map<String, ModelingFieldDefView> fieldMap = fields.stream().collect(Collectors.toMap(ModelingFieldDefView::getId, it -> it));
+        List<ModelingField> fields = modelingFieldService.findModelFields(param.getModule(), param.getMkey());
+        Map<String, ModelingFieldDefView> fieldMap = fields.stream().collect(Collectors.toMap(ModelingField::getId, ModelingField::toView));
 
         List<ModelingViewSimpleInfo> result = new ArrayList<>();
         for (ModelingView modelingView : modelingViews) {
@@ -243,11 +240,8 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
 
     @Override
     public PageData<Map<String, Object>> pageModelingInstance(ModelFindPageParam param) {
-        ModelingFieldFindParam fieldParam = new ModelingFieldFindParam();
-        fieldParam.setModule(param.getModule());
-        fieldParam.setMkey(param.getMkey());
-        List<ModelingFieldDefView> fields = modelingFieldService.findFields(fieldParam);
-        Map<String, ModelingFieldDefView> fieldNameMap = fields.stream().collect(Collectors.toMap(ModelingFieldDefView::getField, it -> it));
+        List<ModelingField> fields = modelingFieldService.findModelFields(param.getModule(), param.getMkey());
+        Map<String, ModelingField> fieldNameMap = fields.stream().collect(Collectors.toMap(ModelingField::getField, it -> it));
 
         List<String> columnNames = new ArrayList<>(param.getConditionMap().keySet());
         columnNames.add("id");
@@ -271,7 +265,7 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
             if (StringUtils.isBlank(value)) {
                 continue;
             }
-            ModelingFieldDefView field = fieldNameMap.get(key);
+            ModelingField field = fieldNameMap.get(key);
             String type = field.getType();
             if (type.equals("user")) {
                 if (value.equals("SELF")) {
@@ -342,12 +336,12 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
 
         List<Map<String, Object>> data = getBaseMapper().pageEntity(pageSql, args);
 
-        List<ModelingFieldDefView> columnList = columnNames.stream().map(fieldNameMap::get).toList();
+        List<ModelingField> columnList = columnNames.stream().map(fieldNameMap::get).toList();
 
         Set<String> optionIds = new HashSet<>();
         Set<String> userIds = new HashSet<>();
         Set<String> deptIds = new HashSet<>();
-        for (ModelingFieldDefView field : columnList) {
+        for (ModelingField field : columnList) {
             FieldScheme scheme = field.getScheme();
             FieldType type = scheme.getType();
             if (type == FieldType.option) {
@@ -389,7 +383,7 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
         return pageData;
     }
 
-    private void collectOptionFieldId(List<Map<String, Object>> data, Set<String> fieldValueIds, ModelingFieldDefView field, boolean multiple) {
+    private void collectOptionFieldId(List<Map<String, Object>> data, Set<String> fieldValueIds, ModelingField field, boolean multiple) {
         if (multiple) {
             data.stream()
                     .map(it -> it.get(field.getField()))
@@ -402,8 +396,7 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
         } else {
             data.forEach(it -> {
                 Object value = it.get(field.getField());
-                if (value instanceof Number) {
-                    Number number = (Number) value;
+                if (value instanceof Number number) {
                     it.put(field.getField(), String.valueOf(number));
                 }
             });
