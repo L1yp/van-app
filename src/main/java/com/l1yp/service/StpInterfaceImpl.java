@@ -6,6 +6,8 @@ import com.l1yp.mapper.system.RoleMapper;
 import com.l1yp.mapper.system.RoleMenuMapper;
 import com.l1yp.mapper.system.UserRoleMapper;
 import com.l1yp.model.db.system.UserRole;
+import com.l1yp.service.system.impl.RoleServiceImpl;
+import com.l1yp.service.system.impl.UserServiceImpl;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -26,6 +28,12 @@ public class StpInterfaceImpl implements StpInterface {
     @Resource
     RoleMenuMapper roleMenuMapper;
 
+    @Resource
+    RoleServiceImpl roleService;
+
+    @Resource
+    UserServiceImpl userService;
+
 
     /**
      * 返回一个账号所拥有的权限码集合 
@@ -40,8 +48,7 @@ public class StpInterfaceImpl implements StpInterface {
      */
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        List<UserRole> userRoles = userRoleMapper.selectList(new LambdaQueryWrapper<UserRole>().eq(UserRole::getUid, loginId));
-        return userRoles.stream().map(UserRole::getRoleId).toList();
+        return userService.findRoles((String) loginId);
     }
 
 }

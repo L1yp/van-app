@@ -15,4 +15,12 @@ public class RequestUtils {
         return (User) StpUtil.getSession().get(SESSION_USER_KEY);
     }
 
+    public static String getLoginUserId() {
+        User loginUser = getLoginUser();
+        if (loginUser == null) {
+            return null;
+        }
+        return loginUser.getId();
+    }
+
 }

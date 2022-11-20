@@ -20,6 +20,7 @@ import com.l1yp.model.db.modeling.field.FieldScheme;
 import com.l1yp.model.db.modeling.field.FieldType;
 import com.l1yp.model.db.modeling.field.OptionFieldScheme;
 import com.l1yp.model.db.modeling.field.UserFieldScheme;
+import com.l1yp.model.db.system.Department;
 import com.l1yp.model.db.system.User;
 import com.l1yp.model.db.workflow.model.WorkflowTypeDef;
 import com.l1yp.model.param.modeling.entity.ModelFindPageParam;
@@ -33,6 +34,7 @@ import com.l1yp.model.view.modeling.ModelingOptionValueView;
 import com.l1yp.model.view.modeling.ModelingViewColumnView;
 import com.l1yp.model.view.modeling.ModelingViewDetailInfo;
 import com.l1yp.model.view.modeling.ModelingViewSimpleInfo;
+import com.l1yp.model.view.system.DepartmentView;
 import com.l1yp.model.view.system.UserView;
 import com.l1yp.service.modeling.IModelingViewService;
 import com.l1yp.service.system.impl.DepartmentServiceImpl;
@@ -42,6 +44,10 @@ import com.l1yp.util.NumberUtil;
 import com.l1yp.util.RequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,7 +85,11 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
     @Resource
     ModelingFieldServiceImpl modelingFieldService;
 
+    @Resource
+    CacheManager cacheManager;
+
     @Override
+    @Cacheable(cacheNames = "modeling_view", key = "#p0.module + ':' + #p0.mkey")
     public List<ModelingViewSimpleInfo> findView(ModelingViewFindParam param) {
         LambdaQueryWrapper<ModelingView> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(ModelingView::getModule, param.getModule());
@@ -88,7 +98,7 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
 
         List<ModelingView> modelingViews = list(wrapper);
         if (CollectionUtils.isEmpty(modelingViews)) {
-            return Collections.emptyList();
+            return new ArrayList<>();
         }
 
         List<String> viewIds = modelingViews.stream().map(ModelingView::getId).toList();
@@ -138,8 +148,8 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
             userIds.add(it.getCreateBy());
         });
 
-        List<User> users = userService.listByIds(userIds);
-        Map<String, UserView> userMap = users.stream().map(User::toView).collect(Collectors.toMap(UserView::getId, it -> it));
+        List<UserView> users = userService.listUserViewByIdList(userIds);
+        Map<String, UserView> userMap = users.stream().collect(Collectors.toMap(UserView::getId, it -> it));
 
         // 查询视图配置详情
         List<String> viewIds = modelingViews.stream().map(ModelingView::getId).toList();
@@ -163,6 +173,7 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "modeling_view", key = "#p0.module + ':' + #p0.mkey")
     public void addView(ModelingViewAddParam param) {
         long count = count(Wrappers.<ModelingView>lambdaQuery()
                 .eq(ModelingView::getModule, param.getModule())
@@ -230,11 +241,26 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
             }
             modelingViewColumnService.saveBatch(viewColumns);
         }
+
+        Cache cache = cacheManager.getCache("modeling_view");
+        if (cache != null) {
+            cache.evictIfPresent(modelingView.getModule() + ":" + modelingView.getMkey());
+        }
+
     }
 
     @Override
     public void deleteView(String id) {
+        ModelingView modelingView = getById(id);
+        if (modelingView == null) {
+            throw new VanException(404, "此视图不存在");
+        }
         modelingViewColumnService.remove(Wrappers.<ModelingViewColumn>lambdaQuery().eq(ModelingViewColumn::getViewId, id));
+
+        Cache cache = cacheManager.getCache("modeling_view");
+        if (cache != null) {
+            cache.evictIfPresent(modelingView.getModule() + ":" + modelingView.getMkey());
+        }
     }
 
 
@@ -360,15 +386,17 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
         log.info("optionIds: {}, userIds: {}, deptIds: {}", optionIds, userIds, deptIds);
         Map<String, Object> additional = new HashMap<>();
         if (!CollectionUtils.isEmpty(userIds)) {
-            Map<String, UserView> userMap = userService.listByIds(userIds).stream().map(User::toView).collect(Collectors.toMap(UserView::getId, it -> it));
+            Map<String, UserView> userMap = userService.listUserViewByIdList(userIds).stream().collect(Collectors.toMap(UserView::getId, it -> it));
             additional.put("userMap", userMap);
         }
-        if (!CollectionUtils.isEmpty(userIds)) {
-            Map<String, UserView> userMap = userService.listByIds(userIds).stream().map(User::toView).collect(Collectors.toMap(UserView::getId, it -> it));
-            additional.put("userMap", userMap);
+        if (!CollectionUtils.isEmpty(deptIds)) {
+            Map<String, DepartmentView> deptMap = departmentService.getDepartmentListByIds(deptIds)
+                    .stream().map(Department::toView)
+                    .collect(Collectors.toMap(DepartmentView::getId, it -> it));
+            additional.put("deptMap", deptMap);
         }
         if (!CollectionUtils.isEmpty(optionIds)) {
-            Map<String, ModelingOptionValueView> optionMap = optionValueService.listByIds(optionIds).stream().map(ModelingOptionValue::toView).collect(Collectors.toMap(ModelingOptionValueView::getId, it -> it));
+            Map<String, ModelingOptionValueView> optionMap = optionValueService.getOptionValueByIdList(optionIds).stream().map(ModelingOptionValue::toView).collect(Collectors.toMap(ModelingOptionValueView::getId, it -> it));
             additional.put("optionMap", optionMap);
         }
 

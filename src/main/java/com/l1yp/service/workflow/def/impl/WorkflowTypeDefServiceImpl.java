@@ -137,9 +137,6 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
     }
 
 
-
-
-
     @Override
     @Transactional
     public void update(WorkflowTypeDefUpdateParam param) {
@@ -206,8 +203,8 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
 
 
 
-        List<User> users = userService.listByIds(userIds);
-        Map<String, UserView> userMap = users.stream().map(User::toView).collect(Collectors.toMap(UserView::getId, it -> it));
+        List<UserView> users = userService.listUserViewByIdList(userIds);
+        Map<String, UserView> userMap = users.stream().collect(Collectors.toMap(UserView::getId, it -> it));
         pageData.setAdditional(userMap);
         return pageData;
     }

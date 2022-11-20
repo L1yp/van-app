@@ -17,6 +17,6 @@ public interface IMenuService {
     List<MenuView> findAllMenu();
 
 
-    List<MenuView> findUserMenu();
+    List<MenuView> findUserMenu(String userId);
 
 }

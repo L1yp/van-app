@@ -8,18 +8,23 @@ import com.l1yp.mapper.system.MenuMapper;
 import com.l1yp.mapper.system.RoleMenuMapper;
 import com.l1yp.model.db.system.Menu;
 import com.l1yp.model.db.system.RoleMenu;
-import com.l1yp.model.db.system.User;
 import com.l1yp.model.param.system.menu.MenuCreateParam;
 import com.l1yp.model.param.system.menu.MenuUpdateParam;
 import com.l1yp.model.view.system.MenuView;
 import com.l1yp.service.system.IMenuService;
 import com.l1yp.util.BeanCopierUtil;
-import com.l1yp.util.RequestUtils;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IMenuService {
@@ -27,8 +32,27 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     @Resource
     RoleMenuMapper roleMenuMapper;
 
+    @Cacheable(cacheNames = "menu", key = "#p0")
+    public Menu getMenu(String menuId) {
+        return getById(menuId);
+    }
+
+    public List<Menu> getMenuList(Collection<String> menuIds) {
+        List<Menu> menuList = new ArrayList<>();
+        for (String menuId : menuIds) {
+            Menu menu = ((MenuServiceImpl) AopContext.currentProxy()).getMenu(menuId);
+            if (menu != null) {
+                menuList.add(menu);
+            }
+        }
+        return menuList;
+    }
+
+
+
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "menus", key = "'all'")
     public void createMenu(MenuCreateParam param) {
         Menu menu = new Menu();
         BeanCopierUtil.copy(param, menu);
@@ -40,6 +64,10 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "menus", key = "'all'"),
+            @CacheEvict(cacheNames = "menu", key = "#p0.id")
+    })
     public void updateMenu(MenuUpdateParam param) {
         Long count = getBaseMapper().selectCount(Wrappers.<Menu>lambdaQuery().eq(Menu::getId, param.getId()));
         if (count == null || count == 0) {
@@ -55,6 +83,10 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "menus", key = "'all'"),
+            @CacheEvict(cacheNames = "menu", key = "#p0.id")
+    })
     public void deleteMenu(Long id) {
         Long count = roleMenuMapper.selectCount(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getMenuId, id));
         if (count > 0) {
@@ -64,20 +96,23 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     }
 
     @Override
+    @Cacheable(cacheNames = "menus", key = "'all'")
     public List<MenuView> findAllMenu() {
         List<Menu> menus = getBaseMapper().selectList(null);
-        return menus.stream().map(it -> {
-            MenuView view = new MenuView();
-            BeanCopierUtil.copy(it, view);
-            return view;
-        }).toList();
+        return menus.stream().map(Menu::toView).collect(Collectors.toList());
     }
 
     @Override
-    public List<MenuView> findUserMenu() {
-        User loginUser = RequestUtils.getLoginUser();
-        List<String> menuIdList = getBaseMapper().selectUserRoleMenuList(loginUser.getId());
-        List<Menu> menuList = getBaseMapper().selectBatchIds(menuIdList);
-        return menuList.stream().map(Menu::toView).toList();
+    public List<MenuView> findUserMenu(String userId) {
+        List<String> menuIdList = findUserMenuIdList(userId);
+        List<Menu> menuList = getMenuList(menuIdList);
+        return menuList.stream().map(Menu::toView).collect(Collectors.toList());
     }
+
+    @Cacheable(cacheNames = "user_menu", key = "#p0")
+    public List<String> findUserMenuIdList(String userId) {
+        return getBaseMapper().selectUserRoleMenuList(userId);
+    }
+
+
 }

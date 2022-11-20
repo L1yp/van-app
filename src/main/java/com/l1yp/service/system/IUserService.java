@@ -7,6 +7,7 @@ import com.l1yp.model.param.system.user.UserUpdateParam;
 import com.l1yp.model.view.LoginResult;
 import com.l1yp.model.view.system.UserView;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface IUserService {
@@ -36,9 +37,9 @@ public interface IUserService {
 
     void bindRole(UserBindRoleParam param);
 
-    List<String> findPartTimeDept();
+    List<String> findPartTimeDept(String uid);
 
     List<String> findRoles(String uid);
 
-    List<UserView> listUserViewByIdList(List<String> idList);
+    List<UserView> listUserViewByIdList(Collection<String> idList);
 }

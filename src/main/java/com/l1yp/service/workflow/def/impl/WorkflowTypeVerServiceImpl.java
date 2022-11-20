@@ -10,6 +10,8 @@ import com.l1yp.model.param.workflow.WorkflowTypeVerPendingParam;
 import com.l1yp.model.param.workflow.WorkflowTypeVerUpdateXmlParam;
 import com.l1yp.model.view.workflow.WorkflowTypeVerView;
 import com.l1yp.service.workflow.def.IWorkflowTypeVerService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +42,7 @@ public class WorkflowTypeVerServiceImpl extends ServiceImpl<WorkflowTypeVerMappe
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "wf_ver", key = "#p0.id")
     public void updateXml(WorkflowTypeVerUpdateXmlParam param) {
         WorkflowTypeVer workflowTypeVer = getById(param.getId());
         if (workflowTypeVer == null) {
@@ -50,6 +53,7 @@ public class WorkflowTypeVerServiceImpl extends ServiceImpl<WorkflowTypeVerMappe
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "wf_ver", key = "#p0.id")
     public void activeVer(WorkflowTypeVerActiveParam param) {
         WorkflowTypeVer workflowTypeVer = getById(param.getId());
         if (workflowTypeVer == null) {
@@ -62,11 +66,13 @@ public class WorkflowTypeVerServiceImpl extends ServiceImpl<WorkflowTypeVerMappe
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "wf_ver", key = "#p0.id")
     public void pendingVer(WorkflowTypeVerPendingParam param) {
         getBaseMapper().pendingVer(param.getId());
     }
 
     @Override
+    @Cacheable(cacheNames = "wf_ver", key = "#p0", unless = "#p0 == null")
     public WorkflowTypeVerView findVer(String verId) {
         WorkflowTypeVer workflowTypeVer = getById(verId);
         if (workflowTypeVer == null) {

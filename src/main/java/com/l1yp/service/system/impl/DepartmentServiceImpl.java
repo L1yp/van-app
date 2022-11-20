@@ -10,10 +10,14 @@ import com.l1yp.model.view.system.DepartmentView;
 import com.l1yp.model.view.system.UserView;
 import com.l1yp.service.system.IDepartmentService;
 import com.l1yp.util.BeanCopierUtil;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +31,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     UserServiceImpl userService;
 
     @Override
+    @CacheEvict(cacheNames = "departments", key = "'all'")
     public void add(DeptAddParam param) {
         Department department = new Department();
         BeanCopierUtil.copy(param, department);
@@ -34,6 +39,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     }
 
     @Override
+    @CacheEvict(cacheNames = "departments", key = "'all'")
     public void update(DeptUpdateParam param) {
         Department department = new Department();
         BeanCopierUtil.copy(param, department);
@@ -41,18 +47,20 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     }
 
     @Override
+    @CacheEvict(cacheNames = "departments", key = "'all'")
     public void delete(String id) {
         removeById(id);
     }
 
     @Override
+    @CacheEvict(cacheNames = "departments", key = "'all'")
     public void deleteByIds(List<String> ids) {
         removeByIds(ids);
     }
 
     @Override
     public List<DepartmentView> findDept() {
-        List<Department> departments = getBaseMapper().selectList(null);
+        List<Department> departments = getAllDepartment();
 
         Set<String> userIds = new HashSet<>();
         for (Department department : departments) {
@@ -64,8 +72,8 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
             }
         }
 
-        List<User> users = userService.listByIds(userIds);
-        Map<String, UserView> userMap = users.stream().map(User::toView).collect(Collectors.toMap(UserView::getId, it -> it));
+        List<UserView> users = userService.listUserViewByIdList(userIds);
+        Map<String, UserView> userMap = users.stream().collect(Collectors.toMap(UserView::getId, it -> it));
 
         List<DepartmentView> departmentViews = departments.stream().map(Department::toView).toList();
 
@@ -74,4 +82,19 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
 
         return departmentViews;
     }
+
+    @Cacheable(cacheNames = "departments", key = "'all'")
+    public List<Department> getAllDepartment() {
+        return getBaseMapper().selectList(null);
+    }
+
+
+    public List<Department> getDepartmentListByIds(Collection<String> idList) {
+        Set<String> ids = new HashSet<>(idList);
+        DepartmentServiceImpl service = (DepartmentServiceImpl) AopContext.currentProxy();
+        List<Department> departmentList = service.getAllDepartment();
+        return departmentList.stream().filter(it -> ids.contains(it.getId())).collect(Collectors.toList());
+    }
+
+
 }

@@ -14,23 +14,28 @@ import com.l1yp.model.param.system.role.RoleUpdateParam;
 import com.l1yp.model.view.system.RoleView;
 import com.l1yp.service.system.IRoleService;
 import com.l1yp.util.BeanCopierUtil;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IRoleService {
 
     @Override
+    @Cacheable(cacheNames = "roles")
     public List<RoleView> findRole() {
         List<Role> roles = getBaseMapper().selectList(null);
 
-        return roles.stream().map(Role::toView).toList();
+        return roles.stream().map(Role::toView).collect(Collectors.toList());
     }
 
     @Override
+    @CacheEvict(cacheNames = "roles")
     public void addRole(RoleAddParam param) {
         Role role = new Role();
         BeanCopierUtil.copy(param, role);
@@ -38,6 +43,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
+    @CacheEvict(cacheNames = "roles")
     public void updateRole(RoleUpdateParam param) {
         Role role = new Role();
         BeanCopierUtil.copy(param, role);
@@ -45,11 +51,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
+    @CacheEvict(cacheNames = "roles")
     public void deleteRole(String id) {
         removeById(id);
     }
 
     @Override
+    @CacheEvict(cacheNames = "roles")
     public void batchDeleteRole(List<String> ids) {
         removeBatchByIds(ids);
     }
@@ -58,6 +66,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     RoleMenuServiceImpl roleMenuService;
 
     @Override
+    @CacheEvict(cacheNames = "role_menu", key = "#p0.roleId")
     public void bindMenu(RoleMenuBindParam param) {
         roleMenuService.getBaseMapper().deleteRoleMenu(param.getRoleId());
         List<RoleMenu> roleMenus = new ArrayList<>();
@@ -71,8 +80,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
+    @Cacheable(cacheNames = "role_menu", key = "#p0")
     public List<String> menuBound(String roleId) {
         List<RoleMenu> roleMenus = roleMenuService.getBaseMapper().selectList(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, roleId));
-        return roleMenus.stream().map(RoleMenu::getMenuId).toList();
+        return roleMenus.stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
     }
 }

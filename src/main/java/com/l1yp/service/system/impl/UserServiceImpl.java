@@ -29,12 +29,17 @@ import com.l1yp.service.system.IUserService;
 import com.l1yp.util.BeanCopierUtil;
 import com.l1yp.util.PinyinUtil;
 import com.l1yp.util.RequestUtils;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -81,7 +86,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         UserInfo userInfo = new UserInfo();
         BeanCopierUtil.copy(user, userInfo);
 
-        List<MenuView> userMenu = menuService.findUserMenu();
+        List<MenuView> userMenu = menuService.findUserMenu(user.getId());
         LoginResult result = new LoginResult();
         result.setUserInfo(userInfo);
         result.setMenus(userMenu);
@@ -124,7 +129,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         Map<String, Object> additional = new HashMap<>();
         pageData.setAdditional(additional);
         if (!CollectionUtils.isEmpty(deptIds)) {
-            List<Department> departments = departmentService.listByIds(deptIds);
+            List<Department> departments = departmentService.getDepartmentListByIds(deptIds);
             List<DepartmentView> departmentViews = departments.stream().map(Department::toView).toList();
             Map<String, DepartmentView> deptMap = departmentViews.stream().collect(Collectors.toMap(DepartmentView::getId, it -> it));
             additional.put("dept", deptMap);
@@ -153,6 +158,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "user", key = "#p0.id"),
+            @CacheEvict(cacheNames = "user_role", key = "#p0.id"),
+            @CacheEvict(cacheNames = "user_dept", key = "#p0.id")
+    })
     public void update(UserUpdateParam param) {
         User nowUser = getById(param.getId());
         if (nowUser == null) {
@@ -197,6 +207,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "user_role", key = "#p0.uid")
     public void bindRole(UserBindRoleParam param) {
         userRoleService.getBaseMapper().deleteByUid(param.getUid());
         List<UserRole> userRoles = new ArrayList<>();
@@ -210,21 +221,37 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public List<String> findPartTimeDept() {
+    @Cacheable(cacheNames = "user_dept")
+    public List<String> findPartTimeDept(String uid) {
         User loginUser = RequestUtils.getLoginUser();
         List<UserDept> userDeptList = userDeptService.getBaseMapper().selectList(Wrappers.<UserDept>lambdaQuery().eq(UserDept::getUid, loginUser.getId()));
-        return userDeptList.stream().map(UserDept::getDeptId).toList();
+        return userDeptList.stream().map(UserDept::getDeptId).collect(Collectors.toList());
     }
 
     @Override
+    @Cacheable(cacheNames = "user_role", key = "#p0")
     public List<String> findRoles(String uid) {
         List<UserRole> userRoles = userRoleService.getBaseMapper().selectList(Wrappers.<UserRole>lambdaQuery().eq(UserRole::getUid, uid));
-        return userRoles.stream().map(UserRole::getRoleId).toList();
+        return userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList());
     }
 
     @Override
-    public List<UserView> listUserViewByIdList(List<String> idList) {
-        List<User> users = listByIds(idList);
-        return users.stream().map(User::toView).toList();
+    public List<UserView> listUserViewByIdList(Collection<String> idList) {
+        List<UserView> result = new ArrayList<>();
+        for (String id : idList) {
+            User user = ((UserServiceImpl) AopContext.currentProxy()).findById(id);
+            if (user != null) {
+                result.add(user.toView());
+            }
+        }
+        return result;
     }
+
+    @Cacheable(cacheNames = "user", key = "#p0")
+    public User findById(String id) {
+        return getById(id);
+    }
+
+
+
 }

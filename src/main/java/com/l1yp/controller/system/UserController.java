@@ -10,6 +10,7 @@ import com.l1yp.model.param.system.user.UserUpdateParam;
 import com.l1yp.model.view.LoginResult;
 import com.l1yp.model.view.system.UserView;
 import com.l1yp.service.system.IUserService;
+import com.l1yp.util.RequestUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +55,10 @@ public class UserController {
         return ResultData.OK;
     }
 
+    /**
+     * 管理员权限操作
+     * @param uid 用户名
+     */
     @SaCheckLogin
     @GetMapping("/role")
     public ResultData<List<String>> role(@RequestParam String uid) {
@@ -80,7 +85,7 @@ public class UserController {
     @SaCheckLogin
     @GetMapping("/pt/dept")
     public ResultData<List<String>> findPartTimeDept() {
-        return ResultData.ok(userService.findPartTimeDept());
+        return ResultData.ok(userService.findPartTimeDept(RequestUtils.getLoginUserId()));
     }
 
     @GetMapping("/list/{id_list}")

@@ -27,6 +27,7 @@ import com.l1yp.model.param.modeling.field.ModelingFieldRefParam;
 import com.l1yp.model.view.modeling.ModelingFieldDefView;
 import com.l1yp.service.modeling.IModelingFieldService;
 import com.l1yp.util.BeanCopierUtil;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -49,6 +50,10 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
     @Resource
     ModelingViewColumnMapper modelingViewColumnMapper;
 
+
+    @Resource
+    CacheManager cacheManager;
+
     @Override
     public List<ModelingFieldDefView> findFields(ModelingFieldFindParam param) {
         LambdaQueryWrapper<ModelingField> wrapper = Wrappers.lambdaQuery();
@@ -59,12 +64,10 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
         }
 
         if (StringUtils.hasText(param.getMkey())) {
-            if (param.getModule() == ModelingModule.ENTITY) {
-                List<ModelingField> modelingFields = getBaseMapper().selectEntityFields(param);
-                return modelingFields.stream().map(ModelingField::toView).toList();
-            } else if (param.getModule() == ModelingModule.WORKFLOW) {
-                List<ModelingField> modelingFields = getBaseMapper().selectWFFields(param);
-                return modelingFields.stream().map(ModelingField::toView).toList();
+            if (param.getModule() == ModelingModule.ENTITY || param.getModule() == ModelingModule.WORKFLOW) {
+                return ((ModelingFieldServiceImpl) AopContext.currentProxy())
+                        .findModelFields(param.getModule(), param.getMkey())
+                        .stream().map(ModelingField::toView).toList();
             }
         }
         return Collections.emptyList();
@@ -165,8 +168,6 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
         return dbType;
     }
 
-    @Resource
-    CacheManager cacheManager;
 
     @Override
     @Transactional

@@ -39,11 +39,16 @@ import com.l1yp.model.param.modeling.entity.ModelingEntityUpdateParam;
 import com.l1yp.model.view.modeling.ModelingEntityView;
 import com.l1yp.model.view.system.UserView;
 import com.l1yp.service.modeling.IModelingEntityService;
+import com.l1yp.service.system.impl.UserServiceImpl;
 import com.l1yp.util.BeanCopierUtil;
 import com.l1yp.util.NumberUtil;
 import com.l1yp.util.RequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,7 +82,7 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
     ModelingOptionValueMapper modelingOptionValueMapper;
 
     @Resource
-    UserMapper userMapper;
+    UserServiceImpl userService;
 
     @Resource
     ModelingFieldServiceImpl modelingFieldService;
@@ -88,7 +93,11 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
     @Resource
     ModelingViewColumnMapper modelingViewColumnMapper;
 
+    @Resource
+    CacheManager cacheManager;
+
     @Override
+    @Cacheable(cacheNames = "entity", key = "#p0")
     public ModelingEntityView findEntity(String id) {
         ModelingEntity entity = getById(id);
         if (entity == null) {
@@ -98,6 +107,7 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
     }
 
     @Override
+    @Cacheable(cacheNames = "entity_search", key = "#p0.offset + ',' + #p0.pageSize", condition = "#p0.key == '' and #p0.name == '' and #p0.remark == '' and #p0.createBy == '' and #p0.updateBy == '' ")
     public PageData<ModelingEntityView> searchEntity(ModelingEntityFindParam param) {
         LambdaQueryWrapper<ModelingEntity> wrapper = Wrappers.lambdaQuery();
         if (StringUtils.isNotBlank(param.getKey())) {
@@ -126,13 +136,12 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
         PageData<ModelingEntityView> pageData = new PageData<>();
 
         if (!userIds.isEmpty()) {
-            List<User> users = userMapper.selectBatchIds(userIds);
-            List<UserView> userList = users.stream().map(User::toView).toList();
+            List<UserView> userList = userService.listUserViewByIdList(userIds);
             Map<String, UserView> userMap = userList.stream().collect(Collectors.toMap(UserView::getId, it -> it));
             pageData.setAdditional(userMap);
         }
 
-        List<ModelingEntityView> modelingEntityViews = list.stream().map(ModelingEntity::toView).toList();
+        List<ModelingEntityView> modelingEntityViews = list.stream().map(ModelingEntity::toView).collect(Collectors.toList());
 
         pageData.initPage(list);
         pageData.setData(modelingEntityViews);
@@ -142,6 +151,7 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "entity_search")
     public void addEntity(ModelingEntityAddParam param) {
         ModelingEntity entity = new ModelingEntity();
         BeanCopierUtil.copy(param, entity);
@@ -183,6 +193,10 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "entity", key = "#p0.id"),
+            @CacheEvict(cacheNames = "entity_search")
+    })
     public void updateEntity(ModelingEntityUpdateParam param) {
         ModelingEntity fromEntity = getById(param.getId());
         if (fromEntity == null) {
@@ -197,6 +211,10 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "entity", key = "#p0"),
+            @CacheEvict(cacheNames = "entity_search")
+    })
     public void deleteEntity(String id) {
         ModelingEntity fromEntity = getById(id);
         if (fromEntity == null) {
@@ -212,7 +230,7 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
                 .eq(ModelingFieldRef::getModule, ModelingModule.ENTITY)
                 .eq(ModelingFieldRef::getMkey, fromEntity.getMkey()));
         if (!CollectionUtils.isEmpty(refFields)) {
-            List<String> fieldIds = refFields.stream().map(ModelingFieldRef::getFieldId).toList();
+            List<String> fieldIds = refFields.stream().map(ModelingFieldRef::getFieldId).collect(Collectors.toList());
 
             // 只删除私有字段
             modelingFieldMapper.delete(Wrappers.<ModelingField>lambdaQuery()
