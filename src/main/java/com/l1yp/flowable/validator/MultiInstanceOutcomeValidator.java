@@ -8,6 +8,7 @@ import org.flowable.validation.ValidationError;
 import org.flowable.validation.validator.ValidatorImpl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MultiInstanceOutcomeValidator extends ValidatorImpl {
     @Override
@@ -15,8 +16,8 @@ public class MultiInstanceOutcomeValidator extends ValidatorImpl {
         Process process = bpmnModel.getMainProcess();
 
         List<UserTask> userTasks = process.getFlowElements().stream()
-                .filter(it -> it instanceof UserTask userTask && userTask.hasMultiInstanceLoopCharacteristics())
-                .map(it -> (UserTask) it).toList();
+                .filter(it -> it instanceof UserTask && ((UserTask) it).hasMultiInstanceLoopCharacteristics())
+                .map(it -> (UserTask) it).collect(Collectors.toList());
 
         for (UserTask userTask : userTasks) {
             List<SequenceFlow> outgoingFlows = userTask.getOutgoingFlows();

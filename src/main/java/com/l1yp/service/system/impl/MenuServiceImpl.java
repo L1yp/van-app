@@ -111,7 +111,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
 
     @Override
     public List<MenuView> findUserMenu(String userId) {
-        var proxy = (MenuServiceImpl) AopContext.currentProxy();
+        MenuServiceImpl proxy = (MenuServiceImpl) AopContext.currentProxy();
         List<String> menuIdList = proxy.findUserMenuIdList(userId);
         List<Menu> menuList = getMenuList(menuIdList);
         return menuList.stream().map(Menu::toView).collect(Collectors.toList());

@@ -10,11 +10,9 @@ import java.util.List;
 public interface UserDeptMapper extends BaseMapper<UserDept> {
 
 
-    @Select("""
-            SELECT dept_id FROM sys_user_dept WHERE uid = #{uid}
-            UNION ALL
-            SELECT dept_id FROM sys_user WHERE id = #{uid}
-            """)
+    @Select("SELECT dept_id FROM sys_user_dept WHERE uid = #{uid}\n" +
+            "UNION ALL\n" +
+            "SELECT dept_id FROM sys_user WHERE id = #{uid}")
     List<String> getDeptIdListByUid(@Param("uid") String uid);
 
 }

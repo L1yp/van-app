@@ -27,8 +27,7 @@ public class CacheRunningAop {
         CacheResultType resultType = methodInvocation.getMethod().getAnnotation(CacheResultType.class);
         try {
             CacheResultTypeContext.setType(resultType.value());
-            var result =  ((MethodInvocationProceedingJoinPoint) joinPoint).proceed(joinPoint.getArgs());
-            return result;
+            return ((MethodInvocationProceedingJoinPoint) joinPoint).proceed(joinPoint.getArgs());
         } catch (Throwable e) {
             e.printStackTrace();
             return null;

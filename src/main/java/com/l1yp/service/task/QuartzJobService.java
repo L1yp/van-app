@@ -25,7 +25,7 @@ public class QuartzJobService {
 
     public List<QuartzTriggerModel> getTriggerList() {
         try {
-            var result = new ArrayList<QuartzTriggerModel>();
+            List<QuartzTriggerModel> result = new ArrayList<QuartzTriggerModel>();
             List<String> jobGroupNames = scheduler.getJobGroupNames();
             for (String jobGroupName : jobGroupNames) {
                 Set<JobKey> jobKeys = scheduler.getJobKeys(GroupMatcher.<JobKey>groupEquals(jobGroupName));

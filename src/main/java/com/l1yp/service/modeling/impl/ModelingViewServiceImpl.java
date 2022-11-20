@@ -387,7 +387,7 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
                 DeptFieldScheme scheme = (DeptFieldScheme) field.getScheme();
                 // 多选部门
                 if (scheme.getMultiple()) {
-                    var builder = new DeptConditionBuilder();
+                    DeptConditionBuilder builder = new DeptConditionBuilder();
                     StringBuilder sb = new StringBuilder();
                     if (DeptFieldConditionModel.SELF_DPT.equals(value) && CollectionUtils.isNotEmpty(selfDeptIdList)) {
                         builder.appendRefBlock(sb, tableName, field.getField(), selfDeptIdList, args);
@@ -413,7 +413,7 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
                 }
                 // 单选部门
                 else {
-                    var startIdx = args.size();
+                    int startIdx = args.size();
                     String conditionSQL = null;
                     if (DeptFieldConditionModel.SELF_DPT.equals(value) && CollectionUtils.isNotEmpty(selfDeptIdList)) {
                         args.addAll(selfDeptIdList);
@@ -568,7 +568,8 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
         } else {
             data.forEach(it -> {
                 Object value = it.get(field.getField());
-                if (value instanceof Number number) {
+                if (value instanceof Number) {
+                    Number number = (Number) value;
                     it.put(field.getField(), String.valueOf(number));
                 }
             });

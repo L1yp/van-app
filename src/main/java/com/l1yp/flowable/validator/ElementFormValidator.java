@@ -39,7 +39,7 @@ public class ElementFormValidator extends ValidatorImpl {
             return;
         }
 
-        var startEvent = startEvents.get(0);
+        StartEvent startEvent = startEvents.get(0);
         if (StringUtils.isBlank(startEvent.getFormKey())) {
             addError(errors, "启动节点未配置表单", startEvent, process, "启动节点必须配置表单");
         } else {

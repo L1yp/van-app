@@ -56,7 +56,7 @@ public class FlowableConfig implements EngineConfigurationConfigurer<SpringProce
         FlowableEventDispatcher eventDispatcher = engineConfiguration.getEventDispatcher();
         eventDispatcher.addEventListener(processCompletedEventListener);
         eventDispatcher.addEventListener(taskCreatedEventListener);
-        var processValidator = createProcessValidator();
+        ProcessValidator processValidator = createProcessValidator();
         engineConfiguration.setProcessValidator(processValidator);
     }
 

@@ -237,16 +237,16 @@ public class BlockExpressionModel {
         ;
 
         public String getSQLOperator() {
-            return switch (this) {
-                case EQ -> "=";
-                case GT -> ">";
-                case GTE -> ">=";
-                case LT -> "<";
-                case LTE -> "<=";
-                case LIKE -> "LIKE";
-                case NOT_LIKE -> "NOT LIKE";
-                default -> "";
-            };
+            switch (this) {
+                case EQ: return "=";
+                case GT: return ">";
+                case GTE: return ">=";
+                case LT: return "<";
+                case LTE: return "<=";
+                case LIKE: return "LIKE";
+                case NOT_LIKE: return "NOT LIKE";
+                default: return "";
+            }
         }
 
     }

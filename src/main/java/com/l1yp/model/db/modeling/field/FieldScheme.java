@@ -33,23 +33,21 @@ public class FieldScheme {
 
     public Boolean getMultiple() {
         switch (type) {
-            case dept -> {
+            case dept: {
                 DeptFieldScheme scheme = (DeptFieldScheme) this;
                 return scheme.getMultiple();
             }
-            case user -> {
+            case user: {
                 UserFieldScheme scheme = (UserFieldScheme) this;
                 return scheme.getMultiple();
             }
-            case option -> {
+            case option: {
                 OptionFieldScheme scheme = (OptionFieldScheme) this;
                 return scheme.getMultiple();
             }
-            case entity, workflow -> {
-                // TODO:
-                return null;
-            }
-            default -> {
+            case entity:
+            case workflow:
+            default: {
                 return null;
             }
         }

@@ -20,9 +20,7 @@ public interface WorkflowTypeDefMapper extends BaseMapper<WorkflowTypeDef> {
                       @Param("date") String date,
                       @Param("joiner") String joiner);
 
-    @Update("""
-            UPDATE workflow_type_def SET active_ver_id = #{activeVerId}, process_definition_id = #{processDefinitionId} WHERE id = #{id}
-            """)
+    @Update("UPDATE workflow_type_def SET active_ver_id = #{activeVerId}, process_definition_id = #{processDefinitionId} WHERE id = #{id}")
     void updateActiveInfo(@Param("activeVerId") String activeVerId,
                           @Param("processDefinitionId") String processDefinitionId,
                           @Param("id") String id);

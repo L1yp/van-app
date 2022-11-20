@@ -95,14 +95,14 @@ public class CompletionStrategy {
             list = list.subList(list.size() - nrOfInstances.intValue(), list.size());
 
             // 任务全部完成
-            var finished = list.stream().allMatch(activityInstance -> activityInstance.getEndTime() != null);
+            boolean finished = list.stream().allMatch(activityInstance -> activityInstance.getEndTime() != null);
             if (finished) {
                 // 查询每个任务的出口
                 List<String> taskIdList = list.stream().map(ActivityInstance::getTaskId).toList();
                 List<TaskComment> taskComments = workflowHiCommentMapper.selectList(
                         Wrappers.<TaskComment>lambdaQuery().eq(TaskComment::getProcessInstanceId, processInstanceId)
                                 .eq(TaskComment::getType, CommentType.complete).in(TaskComment::getTaskId, taskIdList));
-                var matched = taskComments.stream().map(TaskComment::getMessage).map(TaskCommentMessage::getOutcome).allMatch(outcome::equals);
+                boolean matched = taskComments.stream().map(TaskComment::getMessage).map(TaskCommentMessage::getOutcome).allMatch(outcome::equals);
                 if (!matched) {
                     log.error("processInstId: [{}], 会签任务全部完成, 但未匹配成功", processInstanceId);
                 }
@@ -115,8 +115,8 @@ public class CompletionStrategy {
             String expression = sequenceFlow.getAttributeValue(BpmnXMLConstants.FLOWABLE_EXTENSIONS_NAMESPACE, "completionExpression");
             ExpressionManager expressionManager = CommandContextUtil.getProcessEngineConfiguration().getExpressionManager();
             Object value = expressionManager.createExpression(expression).getValue(execution);
-            if (value instanceof Boolean bFlag) {
-                return bFlag;
+            if (value instanceof Boolean) {
+                return (boolean) value;
             } else {
                 throw new FlowableException(String.format("sequenceFlow[completionExpression=%s] result is not a boolean value.", expression));
             }

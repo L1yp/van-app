@@ -15,51 +15,45 @@ import java.util.List;
 
 public interface WorkflowEngineTaskMapper extends BaseMapper<RuntimeTask> {
 
-    @Select("""
-            <script>
-            SELECT COUNT(T.ID_)
-            FROM ACT_RU_TASK T
-            LEFT JOIN ACT_HI_PROCINST I ON T.PROC_INST_ID_ = I.ID_
-            WHERE T.ASSIGNEE_ = #{assignee}
-            <if test="param.name != null and param.name != ''">
-              AND I.NAME_ LIKE CONCAT('%', #{param.name}, '%')
-            </if>
-            </script>
-            """)
+    @Select("<script>\n" +
+            "SELECT COUNT(T.ID_)\n" +
+            "FROM ACT_RU_TASK T\n" +
+            "LEFT JOIN ACT_HI_PROCINST I ON T.PROC_INST_ID_ = I.ID_\n" +
+            "WHERE T.ASSIGNEE_ = #{assignee}\n" +
+            "<if test=\"param.name != null and param.name != ''\">\n" +
+            "  AND I.NAME_ LIKE CONCAT('%', #{param.name}, '%')\n" +
+            "</if>\n" +
+            "</script>")
     int countTodoTasks(@Param("assignee") String assignee,
                        @Param("param") WorkflowTaskFindParam param);
 
-    @Select("""
-            <script>
-            SELECT COUNT(T.ID_)
-            FROM ACT_HI_TASKINST T
-            LEFT JOIN ACT_HI_PROCINST I ON T.PROC_INST_ID_ = I.ID_
-            WHERE T.ASSIGNEE_ = #{assignee}
-            <if test="param.name != null and param.name != ''">
-              AND I.NAME_ LIKE CONCAT('%', #{param.name}, '%')
-            </if>
-            </script>
-            """)
+    @Select("<script>\n" +
+            "SELECT COUNT(T.ID_)\n" +
+            "FROM ACT_HI_TASKINST T\n" +
+            "LEFT JOIN ACT_HI_PROCINST I ON T.PROC_INST_ID_ = I.ID_\n" +
+            "WHERE T.ASSIGNEE_ = #{assignee}\n" +
+            "<if test=\"param.name != null and param.name != ''\">\n" +
+            "  AND I.NAME_ LIKE CONCAT('%', #{param.name}, '%')\n" +
+            "</if>\n" +
+            "</script>")
     int countDoneTasks(@Param("assignee") String assignee,
                        @Param("param") WorkflowTaskFindParam param);
 
-    @Select("""
-            <script>
-            SELECT
-              T.*, 
-              I.NAME_ processInstanceName,
-              I.START_USER_ID_ startUserId,
-              I.START_TIME_ startTime
-            FROM ACT_RU_TASK T
-            LEFT JOIN ACT_HI_PROCINST I ON T.PROC_INST_ID_ = I.ID_
-            WHERE T.ASSIGNEE_ = #{assignee}
-            <if test="param.name != null and param.name != ''">
-                AND I.NAME_ LIKE CONCAT('%', #{param.name}, '%')
-            </if>
-            ORDER BY I.START_TIME_ DESC
-            LIMIT #{param.offset}, #{param.pageSize}
-            </script>
-            """)
+    @Select("<script>\n" +
+            "SELECT\n" +
+            "  T.*, \n" +
+            "  I.NAME_ processInstanceName,\n" +
+            "  I.START_USER_ID_ startUserId,\n" +
+            "  I.START_TIME_ startTime\n" +
+            "FROM ACT_RU_TASK T\n" +
+            "LEFT JOIN ACT_HI_PROCINST I ON T.PROC_INST_ID_ = I.ID_\n" +
+            "WHERE T.ASSIGNEE_ = #{assignee}\n" +
+            "<if test=\"param.name != null and param.name != ''\">\n" +
+            "    AND I.NAME_ LIKE CONCAT('%', #{param.name}, '%')\n" +
+            "</if>\n" +
+            "ORDER BY I.START_TIME_ DESC\n" +
+            "LIMIT #{param.offset}, #{param.pageSize}\n" +
+            "</script>")
     @Results(value = {
             @Result(column = "ID_", property = "id"),
             @Result(column = "REV_", property = "rev"),
@@ -96,23 +90,21 @@ public interface WorkflowEngineTaskMapper extends BaseMapper<RuntimeTask> {
                                      @Param("param") WorkflowTaskFindParam param);
 
 
-    @Select("""
-            <script>
-            SELECT
-              T.*, 
-              I.NAME_ processInstanceName,
-              I.START_USER_ID_ startUserId,
-              I.START_TIME_ startTime
-            FROM ACT_HI_TASKINST T
-            LEFT JOIN ACT_HI_PROCINST I ON T.PROC_INST_ID_ = I.ID_
-            WHERE T.ASSIGNEE_ = #{assignee}
-            <if test="param.name != null and param.name != ''">
-                AND I.NAME_ LIKE CONCAT('%', #{param.name}, '%')
-            </if>
-            ORDER BY T.LAST_UPDATED_TIME_ DESC
-            LIMIT #{param.offset}, #{param.pageSize}
-            </script>
-            """)
+    @Select("<script>\n" +
+            "SELECT\n" +
+            "  T.*, \n" +
+            "  I.NAME_ processInstanceName,\n" +
+            "  I.START_USER_ID_ startUserId,\n" +
+            "  I.START_TIME_ startTime\n" +
+            "FROM ACT_HI_TASKINST T\n" +
+            "LEFT JOIN ACT_HI_PROCINST I ON T.PROC_INST_ID_ = I.ID_\n" +
+            "WHERE T.ASSIGNEE_ = #{assignee}\n" +
+            "<if test=\"param.name != null and param.name != ''\">\n" +
+            "    AND I.NAME_ LIKE CONCAT('%', #{param.name}, '%')\n" +
+            "</if>\n" +
+            "ORDER BY T.LAST_UPDATED_TIME_ DESC\n" +
+            "LIMIT #{param.offset}, #{param.pageSize}\n" +
+            "</script>")
     @Results(value = {
             @Result(column = "ID_", property = "id"),
             @Result(column = "REV_", property = "rev"),

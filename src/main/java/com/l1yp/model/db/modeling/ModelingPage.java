@@ -110,7 +110,7 @@ public class ModelingPage {
     }
 
     public ModelingPageView toView() {
-        var view = new ModelingPageView();
+        ModelingPageView view = new ModelingPageView();
         BeanCopierUtil.copy(this, view);
         return view;
     }
