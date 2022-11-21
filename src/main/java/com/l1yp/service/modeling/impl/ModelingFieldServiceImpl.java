@@ -3,6 +3,8 @@ package com.l1yp.service.modeling.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.l1yp.cache.CacheResultType;
+import com.l1yp.cache.type.ModelingFieldListType;
 import com.l1yp.exception.VanException;
 import com.l1yp.mapper.modeling.ModelingFieldMapper;
 import com.l1yp.mapper.modeling.ModelingFieldRefMapper;
@@ -31,7 +33,6 @@ import org.springframework.aop.framework.AopContext;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,7 +75,8 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
     }
 
     @Override
-    @Cacheable(value = "modeling_field", key = "#p0.toString() + ':' + #p1", condition = "#p0 != null and #p1 != ''", unless = "#result.size() == 0")
+    @Cacheable(value = "modeling_field", key = "#p0.toString() + ':' + #p1", condition = "#p0 != null and #p1 != ''")
+    @CacheResultType(ModelingFieldListType.class)
     public List<ModelingField> findModelFields(ModelingModule module, String mkey) {
         ModelingFieldFindParam param = new ModelingFieldFindParam();
         param.setModule(module);

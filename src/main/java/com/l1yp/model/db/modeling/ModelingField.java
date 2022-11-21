@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.l1yp.model.db.modeling.field.FieldScheme;
+import com.l1yp.model.db.modeling.typehandler.FieldSchemeTypeHandler;
 import com.l1yp.model.view.modeling.ModelingFieldDefView;
 import com.l1yp.util.BeanCopierUtil;
 
@@ -48,7 +49,7 @@ public class ModelingField {
     /**
      * 字段定义
      */
-    @TableField(typeHandler = JacksonTypeHandler.class)
+    @TableField(typeHandler = FieldSchemeTypeHandler.class)
     private FieldScheme scheme;
 
     private FieldScope scope;

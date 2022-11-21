@@ -24,17 +24,12 @@ public class SpringCacheConfig {
 
     @Bean
     public RedisCacheConfiguration redisCacheConfiguration(){
-        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
-        JsonMapper mapper = JsonMapper.builder()
-                .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
-                .activateDefaultTyping(LaissezFaireSubTypeValidator.instance, DefaultTyping.NON_FINAL, As.PROPERTY)
-                .build();
-
-        jackson2JsonRedisSerializer.setObjectMapper(mapper);
-
+        JacksonRedisSerializer<?> serializer = new JacksonRedisSerializer<>();
         RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig();
-        configuration = configuration.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer)).entryTtl(Duration.ofDays(30));
+        configuration = configuration.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer)).entryTtl(Duration.ofDays(30));
         return configuration;
     }
+
+
 
 }

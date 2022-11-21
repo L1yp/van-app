@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.l1yp.cache.CacheResultType;
+import com.l1yp.cache.type.ModelingPageViewListType;
 import com.l1yp.mapper.modeling.ModelingPageMapper;
 import com.l1yp.model.db.modeling.ModelingPage;
 import com.l1yp.model.param.modeling.page.ModelingPageBindParam;
@@ -58,6 +60,7 @@ public class ModelingPageServiceImpl extends ServiceImpl<ModelingPageMapper, Mod
 
     @Override
     @Cacheable(cacheNames = "modeling_page", key = "#p0.module + ':' + #p0.mkey", unless = "#result.size() == 0")
+    @CacheResultType(ModelingPageViewListType.class)
     public List<ModelingPageView> getModulePages(ModelingPageModuleFindParam param) {
         List<ModelingPage> pageList = list(Wrappers.<ModelingPage>lambdaQuery()
                 .eq(ModelingPage::getModule, param.getModule())
@@ -68,6 +71,7 @@ public class ModelingPageServiceImpl extends ServiceImpl<ModelingPageMapper, Mod
 
     @Override
     @Cacheable(cacheNames = "modeling_page", key = "#p0.module + ':' + #p0.mkey + ':' + #p0.name")
+    @CacheResultType(ModelingPageView.class)
     public ModelingPageView getPage(ModelingPageFindParam param) {
         ModelingPage page = getOne(Wrappers.<ModelingPage>lambdaQuery()
                 .eq(ModelingPage::getModule, param.getModule())

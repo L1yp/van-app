@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.l1yp.model.db.modeling.ModelingModule;
+import com.l1yp.model.db.modeling.typehandler.CollationTypeHandler;
 import com.l1yp.model.view.modeling.ModelingViewView;
 import com.l1yp.util.BeanCopierUtil;
 
@@ -35,7 +36,7 @@ public class ModelingView {
 
     private String name;
 
-    @TableField(typeHandler = JacksonTypeHandler.class)
+    @TableField(typeHandler = CollationTypeHandler.class)
     private List<Collation> collation;
 
     private Integer sn;

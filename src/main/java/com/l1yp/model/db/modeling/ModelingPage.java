@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.l1yp.model.db.modeling.page.PageScheme;
+import com.l1yp.model.db.modeling.typehandler.PageSchemeTypeHandler;
 import com.l1yp.model.view.modeling.ModelingPageView;
 import com.l1yp.util.BeanCopierUtil;
 
@@ -24,7 +25,7 @@ public class ModelingPage {
 
     private String name;
 
-    @TableField(typeHandler = JacksonTypeHandler.class)
+    @TableField(typeHandler = PageSchemeTypeHandler.class)
     private PageScheme pageScheme;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)

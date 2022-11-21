@@ -3,6 +3,9 @@ package com.l1yp.service.system.impl;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.l1yp.cache.CacheResultType;
+import com.l1yp.cache.type.MenuViewListType;
+import com.l1yp.cache.type.StringListType;
 import com.l1yp.exception.VanException;
 import com.l1yp.mapper.system.MenuMapper;
 import com.l1yp.mapper.system.RoleMenuMapper;
@@ -33,6 +36,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     RoleMenuMapper roleMenuMapper;
 
     @Cacheable(cacheNames = "menu", key = "#p0")
+    @CacheResultType(Menu.class)
     public Menu getMenu(String menuId) {
         return getById(menuId);
     }
@@ -97,6 +101,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
 
     @Override
     @Cacheable(cacheNames = "menus", key = "'all'")
+    @CacheResultType(MenuViewListType.class)
     public List<MenuView> findAllMenu() {
         List<Menu> menus = getBaseMapper().selectList(null);
         return menus.stream().map(Menu::toView).collect(Collectors.toList());
@@ -104,12 +109,14 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
 
     @Override
     public List<MenuView> findUserMenu(String userId) {
-        List<String> menuIdList = findUserMenuIdList(userId);
+        var proxy = (MenuServiceImpl) AopContext.currentProxy();
+        List<String> menuIdList = proxy.findUserMenuIdList(userId);
         List<Menu> menuList = getMenuList(menuIdList);
         return menuList.stream().map(Menu::toView).collect(Collectors.toList());
     }
 
     @Cacheable(cacheNames = "user_menu", key = "#p0")
+    @CacheResultType(StringListType.class)
     public List<String> findUserMenuIdList(String userId) {
         return getBaseMapper().selectUserRoleMenuList(userId);
     }

@@ -1,6 +1,7 @@
 package com.l1yp.service.workflow.def.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.l1yp.cache.CacheResultType;
 import com.l1yp.exception.VanException;
 import com.l1yp.mapper.workflow.WorkflowTypeVerMapper;
 import com.l1yp.model.db.workflow.model.WorkflowTypeVer;
@@ -73,6 +74,7 @@ public class WorkflowTypeVerServiceImpl extends ServiceImpl<WorkflowTypeVerMappe
 
     @Override
     @Cacheable(cacheNames = "wf_ver", key = "#p0", unless = "#p0 == null")
+    @CacheResultType(WorkflowTypeVerView.class)
     public WorkflowTypeVerView findVer(String verId) {
         WorkflowTypeVer workflowTypeVer = getById(verId);
         if (workflowTypeVer == null) {

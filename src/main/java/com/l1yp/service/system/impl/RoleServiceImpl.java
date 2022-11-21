@@ -3,6 +3,9 @@ package com.l1yp.service.system.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
+import com.l1yp.cache.CacheResultType;
+import com.l1yp.cache.type.RoleViewListType;
+import com.l1yp.cache.type.StringListType;
 import com.l1yp.mapper.system.RoleMapper;
 import com.l1yp.model.common.PageData;
 import com.l1yp.model.db.system.Role;
@@ -28,6 +31,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
 
     @Override
     @Cacheable(cacheNames = "roles")
+    @CacheResultType(RoleViewListType.class)
     public List<RoleView> findRole() {
         List<Role> roles = getBaseMapper().selectList(null);
 
@@ -81,6 +85,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
 
     @Override
     @Cacheable(cacheNames = "role_menu", key = "#p0")
+    @CacheResultType(StringListType.class)
     public List<String> menuBound(String roleId) {
         List<RoleMenu> roleMenus = roleMenuService.getBaseMapper().selectList(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, roleId));
         return roleMenus.stream().map(RoleMenu::getMenuId).collect(Collectors.toList());

@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
+import com.l1yp.cache.CacheResultType;
+import com.l1yp.cache.type.ModelingEntityViewPageType;
 import com.l1yp.exception.VanException;
 import com.l1yp.mapper.modeling.ModelingEntityMapper;
 import com.l1yp.mapper.modeling.ModelingFieldMapper;
@@ -98,6 +100,7 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
 
     @Override
     @Cacheable(cacheNames = "entity", key = "#p0")
+    @CacheResultType(ModelingEntityView.class)
     public ModelingEntityView findEntity(String id) {
         ModelingEntity entity = getById(id);
         if (entity == null) {
@@ -108,6 +111,7 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
 
     @Override
     @Cacheable(cacheNames = "entity_search", key = "#p0.offset + ',' + #p0.pageSize", condition = "#p0.key == '' and #p0.name == '' and #p0.remark == '' and #p0.createBy == '' and #p0.updateBy == '' ")
+    @CacheResultType(ModelingEntityViewPageType.class)
     public PageData<ModelingEntityView> searchEntity(ModelingEntityFindParam param) {
         LambdaQueryWrapper<ModelingEntity> wrapper = Wrappers.lambdaQuery();
         if (StringUtils.isNotBlank(param.getKey())) {

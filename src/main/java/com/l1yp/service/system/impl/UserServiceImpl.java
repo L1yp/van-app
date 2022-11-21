@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
+import com.l1yp.cache.CacheResultType;
+import com.l1yp.cache.type.StringListType;
 import com.l1yp.exception.VanException;
 import com.l1yp.mapper.system.UserMapper;
 import com.l1yp.mapper.system.UserRoleMapper;
@@ -222,6 +224,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     @Cacheable(cacheNames = "user_dept")
+    @CacheResultType(StringListType.class)
     public List<String> findPartTimeDept(String uid) {
         User loginUser = RequestUtils.getLoginUser();
         List<UserDept> userDeptList = userDeptService.getBaseMapper().selectList(Wrappers.<UserDept>lambdaQuery().eq(UserDept::getUid, loginUser.getId()));
@@ -230,6 +233,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     @Cacheable(cacheNames = "user_role", key = "#p0")
+    @CacheResultType(StringListType.class)
     public List<String> findRoles(String uid) {
         List<UserRole> userRoles = userRoleService.getBaseMapper().selectList(Wrappers.<UserRole>lambdaQuery().eq(UserRole::getUid, uid));
         return userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList());
@@ -248,6 +252,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Cacheable(cacheNames = "user", key = "#p0")
+    @CacheResultType(User.class)
     public User findById(String id) {
         return getById(id);
     }

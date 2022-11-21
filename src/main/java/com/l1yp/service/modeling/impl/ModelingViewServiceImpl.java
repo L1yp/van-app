@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.l1yp.cache.CacheResultType;
+import com.l1yp.cache.type.ModelingViewSimpleInfoListType;
 import com.l1yp.exception.VanException;
 import com.l1yp.mapper.modeling.ModelingViewMapper;
 import com.l1yp.model.common.PageData;
@@ -90,6 +92,7 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
 
     @Override
     @Cacheable(cacheNames = "modeling_view", key = "#p0.module + ':' + #p0.mkey")
+    @CacheResultType(ModelingViewSimpleInfoListType.class)
     public List<ModelingViewSimpleInfo> findView(ModelingViewFindParam param) {
         LambdaQueryWrapper<ModelingView> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(ModelingView::getModule, param.getModule());
