@@ -30,4 +30,29 @@ public class FieldScheme {
     public void setType(FieldType type) {
         this.type = type;
     }
+
+    public Boolean getMultiple() {
+        switch (type) {
+            case dept -> {
+                DeptFieldScheme scheme = (DeptFieldScheme) this;
+                return scheme.getMultiple();
+            }
+            case user -> {
+                UserFieldScheme scheme = (UserFieldScheme) this;
+                return scheme.getMultiple();
+            }
+            case option -> {
+                OptionFieldScheme scheme = (OptionFieldScheme) this;
+                return scheme.getMultiple();
+            }
+            case entity, workflow -> {
+                // TODO:
+                return null;
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
+
 }

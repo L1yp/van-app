@@ -34,6 +34,7 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -90,11 +91,14 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
 
     @Override
     @Transactional
-    @CacheEvict(
-            cacheNames = "modeling_field",
-            key = "#p0.scope.toModelingModule().toString() + ':' + #p0.mkey",
-            condition = "#p0.scope.toModelingModule() != null and #p0.mkey != ''"
-    )
+    @Caching(evict = {
+            @CacheEvict(
+                    cacheNames = "modeling_field",
+                    key = "#p0.scope.toModelingModule().toString() + ':' + #p0.mkey",
+                    condition = "#p0.scope.toModelingModule() != null and #p0.mkey != ''"
+            ),
+            @CacheEvict(cacheNames = "modeling_view", allEntries = true)
+    })
     public void addField(ModelingFieldAddParam param) {
         if (param.getScope() == FieldScope.WORKFLOW_PRIVATE || param.getScope() == FieldScope.ENTITY_PRIVATE) {
             if (!StringUtils.hasText(param.getMkey())) {
@@ -173,6 +177,7 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "modeling_view", allEntries = true)
     public void updateField(ModelingFieldUpdateParam param) {
         ModelingField originalField = getById(param.getId());
         if (originalField == null) {
@@ -223,6 +228,7 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "modeling_view", allEntries = true)
     public void deleteField(String fieldId) {
         ModelingField modelingField = getById(fieldId);
         if (modelingField == null) {
@@ -277,6 +283,7 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "modeling_view", allEntries = true)
     public void refGlobalField(ModelingFieldRefParam param) {
         ModelingField modelingField = getById(param.getFieldId());
         if (modelingField == null) {
@@ -305,6 +312,7 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "modeling_view", allEntries = true)
     public void unrefGlobalField(ModelingFieldRefParam param) {
         ModelingField modelingField = getById(param.getFieldId());
         if (modelingField == null) {

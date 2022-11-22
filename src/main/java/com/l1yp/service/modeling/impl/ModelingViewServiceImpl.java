@@ -269,23 +269,27 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
 
     @Override
     public PageData<Map<String, Object>> pageModelingInstance(ModelFindPageParam param) {
-        List<ModelingField> fields = modelingFieldService.findModelFields(param.getModule(), param.getMkey());
-        Map<String, ModelingField> fieldNameMap = fields.stream().collect(Collectors.toMap(ModelingField::getField, it -> it));
-
-        List<String> columnNames = new ArrayList<>(param.getConditionMap().keySet());
-        columnNames.add("id");
-//        columnNames.addAll(fields.stream().filter(it -> it.getScope() == FieldScope.ENTITY_DEFAULT || it.getScope() == FieldScope.WORKFLOW_DEFAULT).map(ModelingFieldDefView::getField).toList());
-
-        String columns = columnNames.stream().map(it -> "`" + it + "`").collect(Collectors.joining(","));
-
-        List<Object> args = new ArrayList<>();
-        // PERMISSION
         String tableName = null;
         if (param.getModule() == ModelingModule.ENTITY) {
             tableName = ModelingEntity.buildEntityTableName(param.getMkey());
         } else {
             tableName = WorkflowTypeDef.buildEntityTableName(param.getMkey());
         }
+        List<ModelingField> fields = modelingFieldService.findModelFields(param.getModule(), param.getMkey());
+        Map<String, ModelingField> fieldNameMap = fields.stream().collect(Collectors.toMap(ModelingField::getField, it -> it));
+
+        List<String> columnNames = new ArrayList<>(param.getConditionMap().keySet());
+        columnNames.add("id");
+//        columnNames.addAll(fields.stream().filter(it -> it.getScope() == FieldScope.ENTITY_DEFAULT || it.getScope() == FieldScope.WORKFLOW_DEFAULT).map(ModelingFieldDefView::getField).toList());
+        if (param.getModule() == ModelingModule.WORKFLOW) {
+            columnNames.add("process_instance_id");
+        }
+
+        String columns = columnNames.stream().map(it -> "`" + it + "`").collect(Collectors.joining(","));
+
+        List<Object> args = new ArrayList<>();
+        // TODO: PERMISSION
+
 
         List<String> filterConditions = new ArrayList<>();
         for (Entry<String, String> entry : param.getConditionMap().entrySet()) {

@@ -135,9 +135,10 @@ public class FormService {
         List<String> columnFields = new ArrayList<>(formData.keySet());
 
         // get ref fields
-        List<String> refFields = columnFields.stream().filter(refFieldTypes::contains).toList();
-
-
+        List<String> refFields = columnFields.stream().map(fieldMap::get)
+                .filter(it -> refFieldTypes.contains(it.getType()) && Boolean.TRUE.equals(it.getScheme().getMultiple()))
+                .map(ModelingField::getField)
+                .toList();
 
         columnFields.add("update_by");
         columnFields.add("update_time");
@@ -160,6 +161,11 @@ public class FormService {
 
     }
 
+    public void updateProcessInstanceId(String mkey, String id, String processInstanceId) {
+        String tableName = WorkflowTypeDef.buildEntityTableName(mkey);
+        modelingEntityMapper.executeSQL(String.format("UPDATE %s SET process_instance_id WHERE id = #{args[1]}", tableName), Arrays.asList(processInstanceId, id));
+    }
+
 
     private void insertRefFields(String instanceId, String refTableName, Map<String, Object> formData, Map<String, ModelingField> fieldMap) {
         List<Pair<String, String>> pairs = new ArrayList<>();
@@ -171,34 +177,13 @@ public class FormService {
             if (!refFieldTypes.contains(type)) {
                 continue;
             }
-            switch (type) {
-                case "user": {
-                    UserFieldScheme fieldScheme = (UserFieldScheme) modelingField.getScheme();
-                    collectRefFields(pairs, field, value, fieldScheme.getMultiple());
-                    break;
-                }
-                case "dept": {
-                    DeptFieldScheme fieldScheme = (DeptFieldScheme) modelingField.getScheme();
-                    collectRefFields(pairs, field, value, fieldScheme.getMultiple());
-                    break;
-                }
-                case "option": {
-                    OptionFieldScheme fieldScheme = (OptionFieldScheme) modelingField.getScheme();
-                    collectRefFields(pairs, field, value, fieldScheme.getMultiple());
-                    break;
-                }
-                case "entity":
-                    // TODO: add entity type
-                    break;
-                case "workflow":
-                    // TODO: add workflow type
-                    break;
-            }
+
+            collectRefFields(pairs, field, value, modelingField.getScheme().getMultiple());
         }
 
         List<Object> args = new ArrayList<>();
         String sql = IntStream.range(0, pairs.size()).boxed()
-                .map(it -> String.format("(#args[%d], #args[%d], #args[%d])", it * 4, it * 4 + 1, it * 4 + 2, it * 4 + 3))
+                .map(it -> String.format("(#{args[%d]}, #{args[%d]}, #{args[%d]}, #{args[%d]})", it * 4, it * 4 + 1, it * 4 + 2, it * 4 + 3))
                 .collect(Collectors.joining(",", String.format("INSERT INTO %s(id, instance_id, field, value) VALUES ", refTableName), ""));
 
         for (Pair<String, String> pair : pairs) {
@@ -240,9 +225,8 @@ public class FormService {
         if (multiple && str.contains(",")) {
             String[] userIds = str.split(",");
             Arrays.stream(userIds).map(it -> Pair.of(field, it)).forEach(pairs::add);
-        } else {
-            pairs.add(Pair.of(field, str));
         }
+        // only save multiple field
     }
 
     @Resource

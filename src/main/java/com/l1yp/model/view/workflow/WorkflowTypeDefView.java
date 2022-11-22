@@ -10,11 +10,15 @@ public class WorkflowTypeDefView {
 
     private String id;
     private String key;
+
+    private String category;
     private String name;
     private String remark;
     private CodeGenRule codeGenRule;
 
     private String processDefinitionId;
+
+    private String activeVerId;
     private Integer status;
     private String updateBy;
     private Date updateTime;
@@ -47,6 +51,14 @@ public class WorkflowTypeDefView {
         this.name = name;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     public String getRemark() {
         return remark;
     }
@@ -69,6 +81,14 @@ public class WorkflowTypeDefView {
 
     public void setProcessDefinitionId(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
+    }
+
+    public String getActiveVerId() {
+        return activeVerId;
+    }
+
+    public void setActiveVerId(String activeVerId) {
+        this.activeVerId = activeVerId;
     }
 
     public Integer getStatus() {

@@ -18,8 +18,10 @@ public interface WorkflowTypeVerMapper extends BaseMapper<WorkflowTypeVer> {
     @Update("UPDATE workflow_type_ver SET status = " + WorkflowTypeVer.PENDING + " WHERE `key` = #{key}")
     void pendingAllByWfKey(@Param("key") String key);
 
-    @Update("UPDATE workflow_type_ver SET status = " + WorkflowTypeVer.ACTIVE + " WHERE id = #{id}")
-    void activeVer(@Param("id") String id);
+    @Update("UPDATE workflow_type_ver SET status = " + WorkflowTypeVer.ACTIVE + ", process_definition_id = #{processDefinitionId}, remark = #{remark} WHERE id = #{id}")
+    void activeVer(@Param("id") String id,
+                   @Param("processDefinitionId") String processDefinitionId,
+                   @Param("remark") String remark);
 
     @Update("UPDATE workflow_type_ver SET status = " + WorkflowTypeVer.PENDING + " WHERE id = #{id}")
     void pendingVer(@Param("id") String id);

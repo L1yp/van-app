@@ -40,6 +40,7 @@ import com.l1yp.model.param.modeling.entity.ModelingEntityInstanceUpdateParam;
 import com.l1yp.model.param.modeling.entity.ModelingEntityUpdateParam;
 import com.l1yp.model.view.modeling.ModelingEntityView;
 import com.l1yp.model.view.system.UserView;
+import com.l1yp.service.FormService;
 import com.l1yp.service.modeling.IModelingEntityService;
 import com.l1yp.service.system.impl.UserServiceImpl;
 import com.l1yp.util.BeanCopierUtil;
@@ -285,6 +286,9 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
 
     private static final Set<String> excludeInputFields = new HashSet<>(Arrays.asList("id", "create_by", "create_time", "update_by", "update_time"));
 
+    @Resource
+    FormService formService;
+
     @Override
     @Transactional
     public void createInstance(ModelingEntityInstanceAddParam param) {
@@ -293,38 +297,42 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
             throw new VanException(404, "实体不存在: " + param.getMkey());
         }
 
-        // TODO: check 实体新增权限
+        formService.createInstance(ModelingModule.ENTITY, param.getMkey(), param.getData());
 
-        User loginUser = RequestUtils.getLoginUser();
-
-        String tableName = ModelingEntity.buildEntityTableName(param.getMkey());
-        Map<String, Object> data = param.getData();
-
-        List<ModelingField> fields = modelingFieldService.findModelFields(ModelingModule.ENTITY, param.getMkey());
-        Map<String, ModelingField> fieldMap = fields.stream().collect(Collectors.toMap(ModelingField::getField, it -> it));
-        List<String> excludeKeys = data.keySet().stream().filter(it -> !fieldMap.containsKey(it) || excludeInputFields.contains(it)).toList();
-
-        Map<String, Object> formData = data.entrySet().stream().filter(it -> !excludeKeys.contains(it.getKey())).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-        List<String> columnFields = new ArrayList<>(formData.keySet());
-        columnFields.add("id");
-        columnFields.add("create_by");
-        columnFields.add("create_time");
-        columnFields.add("update_by");
-        columnFields.add("update_time");
-        String columns = columnFields.stream().map(it -> "`" + it + "`").collect(Collectors.joining(","));
-
-        List<Object> args = new ArrayList<>();
-        columnFields.stream().filter(formData::containsKey).map(formData::get).forEach(args::add);
-        args.add(IdWorker.getIdStr());
-        args.add(loginUser.getId());
-        args.add(new Date());
-        args.add(loginUser.getId());
-        args.add(new Date());
-
-        String values = IntStream.range(0, args.size()).boxed().map(it -> "#{args[" + it + "]}").collect(Collectors.joining(", "));
-
-        String sql = String.format("INSERT INTO %s(%s) VALUES(%s)", tableName, columns, values);
-        getBaseMapper().executeSQL(sql, args);
+//
+//
+//        // TODO: check 实体新增权限
+//
+//        User loginUser = RequestUtils.getLoginUser();
+//
+//        String tableName = ModelingEntity.buildEntityTableName(param.getMkey());
+//        Map<String, Object> data = param.getData();
+//
+//        List<ModelingField> fields = modelingFieldService.findModelFields(ModelingModule.ENTITY, param.getMkey());
+//        Map<String, ModelingField> fieldMap = fields.stream().collect(Collectors.toMap(ModelingField::getField, it -> it));
+//        List<String> excludeKeys = data.keySet().stream().filter(it -> !fieldMap.containsKey(it) || excludeInputFields.contains(it)).toList();
+//
+//        Map<String, Object> formData = data.entrySet().stream().filter(it -> !excludeKeys.contains(it.getKey())).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+//        List<String> columnFields = new ArrayList<>(formData.keySet());
+//        columnFields.add("id");
+//        columnFields.add("create_by");
+//        columnFields.add("create_time");
+//        columnFields.add("update_by");
+//        columnFields.add("update_time");
+//        String columns = columnFields.stream().map(it -> "`" + it + "`").collect(Collectors.joining(","));
+//
+//        List<Object> args = new ArrayList<>();
+//        columnFields.stream().filter(formData::containsKey).map(formData::get).forEach(args::add);
+//        args.add(IdWorker.getIdStr());
+//        args.add(loginUser.getId());
+//        args.add(new Date());
+//        args.add(loginUser.getId());
+//        args.add(new Date());
+//
+//        String values = IntStream.range(0, args.size()).boxed().map(it -> "#{args[" + it + "]}").collect(Collectors.joining(", "));
+//
+//        String sql = String.format("INSERT INTO %s(%s) VALUES(%s)", tableName, columns, values);
+//        getBaseMapper().executeSQL(sql, args);
 
     }
 
@@ -335,33 +343,36 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
         if (modelingEntity == null) {
             throw new VanException(404, "实体不存在: " + param.getMkey());
         }
-        User loginUser = RequestUtils.getLoginUser();
-        // TODO: check 实体更新权限
 
-        String tableName = ModelingEntity.buildEntityTableName(param.getMkey());
-        Map<String, Object> data = param.getData();
-
-        List<ModelingField> fields = modelingFieldService.findModelFields(ModelingModule.ENTITY, param.getMkey());
-        Map<String, ModelingField> fieldMap = fields.stream().collect(Collectors.toMap(ModelingField::getField, it -> it));
-        List<String> excludeKeys = data.keySet().stream().filter(it -> !fieldMap.containsKey(it) || excludeInputFields.contains(it)).toList();
-
-        Map<String, Object> formData = data.entrySet().stream().filter(it -> !excludeKeys.contains(it.getKey())).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-        List<String> columnFields = new ArrayList<>(formData.keySet());
-        columnFields.add("update_by");
-        columnFields.add("update_time");
-
-        List<Object> args = new ArrayList<>();
-        columnFields.stream().filter(formData::containsKey).map(formData::get).forEach(args::add);
-
-        args.add(loginUser.getId());
-        args.add(new Date());
-        args.add(param.getId());
-
-        // exclude
-        String values = IntStream.range(0, columnFields.size()).boxed().map(it -> String.format("`%s` = #{args[%d]}", columnFields.get(it), it)).collect(Collectors.joining(", "));
-
-        String sql = String.format("UPDATE %s SET %s WHERE id = #{args[%d]}", tableName, values, args.size() - 1);
-        getBaseMapper().executeSQL(sql, args);
+        formService.updateInstance(ModelingModule.ENTITY, param.getMkey(), param.getData());
+//
+//        User loginUser = RequestUtils.getLoginUser();
+//        // TODO: check 实体更新权限
+//
+//        String tableName = ModelingEntity.buildEntityTableName(param.getMkey());
+//        Map<String, Object> data = param.getData();
+//
+//        List<ModelingField> fields = modelingFieldService.findModelFields(ModelingModule.ENTITY, param.getMkey());
+//        Map<String, ModelingField> fieldMap = fields.stream().collect(Collectors.toMap(ModelingField::getField, it -> it));
+//        List<String> excludeKeys = data.keySet().stream().filter(it -> !fieldMap.containsKey(it) || excludeInputFields.contains(it)).toList();
+//
+//        Map<String, Object> formData = data.entrySet().stream().filter(it -> !excludeKeys.contains(it.getKey())).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+//        List<String> columnFields = new ArrayList<>(formData.keySet());
+//        columnFields.add("update_by");
+//        columnFields.add("update_time");
+//
+//        List<Object> args = new ArrayList<>();
+//        columnFields.stream().filter(formData::containsKey).map(formData::get).forEach(args::add);
+//
+//        args.add(loginUser.getId());
+//        args.add(new Date());
+//        args.add(param.getId());
+//
+//        // exclude
+//        String values = IntStream.range(0, columnFields.size()).boxed().map(it -> String.format("`%s` = #{args[%d]}", columnFields.get(it), it)).collect(Collectors.joining(", "));
+//
+//        String sql = String.format("UPDATE %s SET %s WHERE id = #{args[%d]}", tableName, values, args.size() - 1);
+//        getBaseMapper().executeSQL(sql, args);
 
     }
 

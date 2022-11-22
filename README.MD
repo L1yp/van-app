@@ -8,7 +8,8 @@
 1. 创建一个数据库：van
 2. 执行db文件夹内的sql脚本
 3. 将application-local.yml.bak复制一份，重命名为：application-local.yml
-4. 启动VanApplication
+4. VM Options添加 `--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.invoke=ALL-UNNAMED`
+5. 启动VanApplication
 
 # 数据库备份
 ```shell

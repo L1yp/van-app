@@ -19,6 +19,7 @@ import com.l1yp.service.system.IRoleService;
 import com.l1yp.util.BeanCopierUtil;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -70,7 +71,10 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     RoleMenuServiceImpl roleMenuService;
 
     @Override
-    @CacheEvict(cacheNames = "role_menu", key = "#p0.roleId")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "role_menu", key = "#p0.roleId"),
+            @CacheEvict(cacheNames = "user_menu", allEntries = true)
+    })
     public void bindMenu(RoleMenuBindParam param) {
         roleMenuService.getBaseMapper().deleteRoleMenu(param.getRoleId());
         List<RoleMenu> roleMenus = new ArrayList<>();

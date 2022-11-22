@@ -24,6 +24,8 @@ public class WorkflowTypeDef {
     @TableField("`key`")
     private String key;
 
+    private String category;
+
     private String name;
 
     @TableField(typeHandler = CodeGenRuleTypeHandler.class)
@@ -34,6 +36,8 @@ public class WorkflowTypeDef {
     private Integer status;
 
     private String processDefinitionId;
+
+    private String activeVerId;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updateBy;
@@ -59,8 +63,18 @@ public class WorkflowTypeDef {
         return key;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     public void setKey(String key) {
         this.key = key;
+
+
     }
 
     public String getName() {
@@ -101,6 +115,14 @@ public class WorkflowTypeDef {
 
     public void setProcessDefinitionId(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
+    }
+
+    public String getActiveVerId() {
+        return activeVerId;
+    }
+
+    public void setActiveVerId(String activeVerId) {
+        this.activeVerId = activeVerId;
     }
 
     public String getUpdateBy() {

@@ -8,4 +8,14 @@ public enum FieldType {
     dept,
     date,
 
+    /**
+     * TODO:
+     */
+    entity,
+    /**
+     * TODO:
+     */
+    workflow
+    ;
+
 }
