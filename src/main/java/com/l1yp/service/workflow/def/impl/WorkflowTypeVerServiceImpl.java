@@ -73,6 +73,7 @@ public class WorkflowTypeVerServiceImpl extends ServiceImpl<WorkflowTypeVerMappe
     @Transactional
     @CacheEvict(cacheNames = "wf_ver", key = "#p0.id")
     public void activeVer(WorkflowTypeVerActiveParam param) {
+        // TODO: 不允许重复发布同一版本
         WorkflowTypeVer workflowTypeVer = getById(param.getId());
         if (workflowTypeVer == null) {
             throw new VanException(400, "找不到源版本");

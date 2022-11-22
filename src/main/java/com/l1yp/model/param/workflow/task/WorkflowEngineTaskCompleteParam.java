@@ -11,7 +11,7 @@ public class WorkflowEngineTaskCompleteParam {
      */
     private String taskId;
 
-    private Map<String, Object> formData;
+    private Map<String, Object> data;
 
     private String outcome;
 
@@ -33,12 +33,12 @@ public class WorkflowEngineTaskCompleteParam {
         this.taskId = taskId;
     }
 
-    public Map<String, Object> getFormData() {
-        return formData;
+    public Map<String, Object> getData() {
+        return data;
     }
 
-    public void setFormData(Map<String, Object> formData) {
-        this.formData = formData;
+    public void setData(Map<String, Object> data) {
+        this.data = data;
     }
 
     public String getOutcome() {

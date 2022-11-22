@@ -9,6 +9,8 @@ import com.l1yp.service.workflow.engine.IWorkflowEngineTaskService;
 import org.flowable.engine.TaskService;
 import org.flowable.task.api.Task;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -22,6 +24,7 @@ public class WorkflowEngineTaskServiceImpl implements IWorkflowEngineTaskService
     FormService formService;
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void completeTask(WorkflowEngineTaskCompleteParam param) {
 
         Task task = taskService.createTaskQuery().taskId(param.getTaskId()).singleResult();
@@ -35,11 +38,11 @@ public class WorkflowEngineTaskServiceImpl implements IWorkflowEngineTaskService
 
         taskService.createTaskCompletionBuilder()
                 .taskId(param.getTaskId())
-                .transientVariables(param.getFormData())
+                .transientVariables(param.getData())
                 .transientVariable("outcome", param.getOutcome())
                 .complete();
 
-        formService.updateInstance(ModelingModule.WORKFLOW, param.getMkey(), param.getFormData());
+        formService.updateInstance(ModelingModule.WORKFLOW, param.getMkey(), param.getData());
 
         // update form instance
     }

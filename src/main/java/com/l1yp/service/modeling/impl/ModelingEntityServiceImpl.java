@@ -53,6 +53,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -290,7 +291,7 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
     FormService formService;
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public void createInstance(ModelingEntityInstanceAddParam param) {
         ModelingEntity modelingEntity = getOne(Wrappers.<ModelingEntity>lambdaQuery().eq(ModelingEntity::getMkey, param.getMkey()));
         if (modelingEntity == null) {
@@ -337,7 +338,7 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public void updateEntityInstance(ModelingEntityInstanceUpdateParam param) {
         ModelingEntity modelingEntity = getOne(Wrappers.<ModelingEntity>lambdaQuery().eq(ModelingEntity::getMkey, param.getMkey()));
         if (modelingEntity == null) {

@@ -9,7 +9,7 @@ public class WorkflowEngineInstanceCreateParam {
 
     private String mkey;
 
-    private Map<String, Object> formData;
+    private Map<String, Object> data;
 
     public String getMkey() {
         return mkey;
@@ -19,11 +19,11 @@ public class WorkflowEngineInstanceCreateParam {
         this.mkey = mkey;
     }
 
-    public Map<String, Object> getFormData() {
-        return formData;
+    public Map<String, Object> getData() {
+        return data;
     }
 
-    public void setFormData(Map<String, Object> formData) {
-        this.formData = formData;
+    public void setData(Map<String, Object> data) {
+        this.data = data;
     }
 }

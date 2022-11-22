@@ -3,7 +3,6 @@ package com.l1yp.service.workflow.engine.impl;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.l1yp.exception.VanException;
 import com.l1yp.model.db.modeling.ModelingModule;
-import com.l1yp.model.db.modeling.page.PageScheme;
 import com.l1yp.model.db.workflow.model.WorkflowTypeDef;
 import com.l1yp.model.param.workflow.instance.WorkflowEngineInstanceCreateParam;
 import com.l1yp.model.view.modeling.ModelingPageView;
@@ -23,6 +22,8 @@ import org.flowable.engine.RepositoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -51,19 +52,20 @@ public class WorkflowInstanceServiceImpl implements IWorkflowInstanceService {
     ModelingPageServiceImpl modelingPageService;
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public WorkflowInstanceCreateResult startWorkflowInstance(WorkflowEngineInstanceCreateParam param) {
         WorkflowTypeDef workflowType = workflowTypeDefService.getWorkflowTypeDefByKey(param.getMkey());
         if (workflowType == null) {
             throw new VanException(400, "标识有误，不存在此流程");
         }
-        formService.createInstance(ModelingModule.WORKFLOW, param.getMkey(), param.getFormData());
-        String id = (String) param.getFormData().get("id");
-        String name = (String) param.getFormData().get("name");
+        formService.createInstance(ModelingModule.WORKFLOW, param.getMkey(), param.getData());
+        String id = (String) param.getData().get("id");
+        String name = (String) param.getData().get("name");
 
         ProcessInstance processInstance = runtimeService.createProcessInstanceBuilder()
                 .processDefinitionId(workflowType.getProcessDefinitionId())
                 .name(name)
-                .transientVariables(param.getFormData())
+                .transientVariables(param.getData())
                 .businessKey(id)
                 .start();
         String processInstanceId = processInstance.getProcessInstanceId();
