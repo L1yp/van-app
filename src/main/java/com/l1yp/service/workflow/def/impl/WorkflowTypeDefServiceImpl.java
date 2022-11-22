@@ -111,7 +111,7 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
 
         List<ModelingField> defaultEntityFields = modelingFieldMapper.selectList(Wrappers.<ModelingField>lambdaQuery().eq(ModelingField::getScope, FieldScope.WORKFLOW_DEFAULT));
         List<String> columnDefs = new ArrayList<>();
-        Set<String> notNullFields = new HashSet<>(Arrays.asList("id", "process_instance_id", "code", "update_by", "update_time", "create_by", "create_time"));
+        Set<String> notNullFields = new HashSet<>(Arrays.asList("id", "code", "update_by", "update_time", "create_by", "create_time"));
         String primaryField = "id";
         for (ModelingField field : defaultEntityFields) {
             FieldScheme scheme = field.getScheme();
