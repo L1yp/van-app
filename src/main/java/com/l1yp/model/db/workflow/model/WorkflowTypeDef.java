@@ -1,7 +1,7 @@
 package com.l1yp.model.db.workflow.model;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.l1yp.model.db.workflow.typehandler.CodeGenRuleTypeHandler;
 import com.l1yp.model.param.workflow.CodeGenRule;
 import com.l1yp.model.view.workflow.WorkflowTypeDefView;
 import com.l1yp.util.BeanCopierUtil;
@@ -26,7 +26,7 @@ public class WorkflowTypeDef {
 
     private String name;
 
-    @TableField(typeHandler = JacksonTypeHandler.class)
+    @TableField(typeHandler = CodeGenRuleTypeHandler.class)
     private CodeGenRule codeGenRule;
 
     private String remark;

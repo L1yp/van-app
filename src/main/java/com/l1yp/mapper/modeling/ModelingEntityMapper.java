@@ -2,6 +2,7 @@ package com.l1yp.mapper.modeling;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.l1yp.model.db.modeling.ModelingEntity;
+import com.l1yp.model.db.modeling.ModelingModule;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
@@ -23,7 +24,21 @@ public interface ModelingEntityMapper extends BaseMapper<ModelingEntity> {
     @Select("${sql}")
     void executeSQL(@Param("sql") String sql, @Param("args") List<Object> args);
 
+    @Insert("""
+            CREATE TABLE `${module}_${mkey}_ref` (
+                id BIGINT UNSIGNED NOT NULL PRIMARY KEY COMMENT '主键ID',
+                field VARCHAR(64) NOT NULL COMMENT '字段名',
+                instance_id BIGINT UNSIGNED NOT NULL COMMENT '实例ID',
+                constraint ref_uidx unique (field, instance_id) comment '唯一标识'
+            ) COMMENT '字段引用表';
+            """)
+    void createRefTable(@Param("module") ModelingModule module,
+                        @Param("mkey") String mkey);
+
     @Select("SELECT * FROM ${tableName} WHERE id = #{id}")
     Map<String, Object> getInstance(@Param("tableName") String tableName, @Param("id") String id);
+
+
+
 
 }

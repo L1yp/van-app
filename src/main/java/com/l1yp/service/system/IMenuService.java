@@ -12,7 +12,7 @@ public interface IMenuService {
 
     void updateMenu(MenuUpdateParam param);
 
-    void deleteMenu(Long id);
+    void deleteMenu(String id);
 
     List<MenuView> findAllMenu();
 

@@ -89,9 +89,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     @Transactional
     @Caching(evict = {
             @CacheEvict(cacheNames = "menus", key = "'all'"),
-            @CacheEvict(cacheNames = "menu", key = "#p0.id")
+            @CacheEvict(cacheNames = "menu", key = "#p0")
     })
-    public void deleteMenu(Long id) {
+    public void deleteMenu(String id) {
         Long count = roleMenuMapper.selectCount(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getMenuId, id));
         if (count > 0) {
             throw new VanException(500, "请先解绑角色菜单的绑定信息");

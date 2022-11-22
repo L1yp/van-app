@@ -107,7 +107,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             wrapper.like(User::getUsername, param.getUsername());
         }
         if (StringUtils.isNotBlank(param.getNickname())) {
-            wrapper.like(User::getNickname, param.getNickname());
+            if (PinyinUtil.isPureLetter(param.getNickname())) {
+                wrapper.and(it -> {
+                    it.like(User::getNickname, param.getNickname());
+                    it.or().like(User::getNicknamePinyin, String.join("%", param.getNickname().toLowerCase(Locale.ROOT).split("")));
+                });
+            } else {
+                wrapper.like(User::getNickname, param.getNickname());
+
+            }
         }
         if (StringUtils.isNotBlank(param.getPhone())) {
             wrapper.like(User::getPhone, param.getPhone());

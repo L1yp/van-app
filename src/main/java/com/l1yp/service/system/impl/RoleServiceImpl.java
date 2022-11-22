@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IRoleService {
 
     @Override
-    @Cacheable(cacheNames = "roles")
+    @Cacheable(cacheNames = "roles", key = "'all'")
     @CacheResultType(RoleViewListType.class)
     public List<RoleView> findRole() {
         List<Role> roles = getBaseMapper().selectList(null);
@@ -39,7 +39,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
-    @CacheEvict(cacheNames = "roles")
+    @CacheEvict(cacheNames = "roles", key = "'all'")
     public void addRole(RoleAddParam param) {
         Role role = new Role();
         BeanCopierUtil.copy(param, role);
@@ -47,7 +47,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
-    @CacheEvict(cacheNames = "roles")
+    @CacheEvict(cacheNames = "roles", key = "'all'")
     public void updateRole(RoleUpdateParam param) {
         Role role = new Role();
         BeanCopierUtil.copy(param, role);
@@ -55,13 +55,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
-    @CacheEvict(cacheNames = "roles")
+    @CacheEvict(cacheNames = "roles", key = "'all'")
     public void deleteRole(String id) {
         removeById(id);
     }
 
     @Override
-    @CacheEvict(cacheNames = "roles")
+    @CacheEvict(cacheNames = "roles", key = "'all'")
     public void batchDeleteRole(List<String> ids) {
         removeBatchByIds(ids);
     }

@@ -47,7 +47,7 @@ public class MenuController {
     }
 
     @DeleteMapping("/{id}")
-    public ResultData<Void> deleteMenu(@PathVariable("id") Long id) {
+    public ResultData<Void> deleteMenu(@PathVariable("id") String id) {
         if ("preview".equals(mode)) {
             return ResultData.err(500, "演示环境禁用此操作");
         }

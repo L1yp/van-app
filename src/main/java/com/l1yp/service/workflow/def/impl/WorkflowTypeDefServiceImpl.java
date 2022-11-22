@@ -4,12 +4,14 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
+import com.l1yp.exception.VanException;
 import com.l1yp.mapper.modeling.ModelingEntityMapper;
 import com.l1yp.mapper.modeling.ModelingFieldMapper;
 import com.l1yp.mapper.workflow.WorkflowTypeDefMapper;
 import com.l1yp.model.common.PageData;
 import com.l1yp.model.db.modeling.ModelingField;
 import com.l1yp.model.db.modeling.ModelingField.FieldScope;
+import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.field.FieldScheme;
 import com.l1yp.model.db.system.User;
 import com.l1yp.model.db.workflow.model.WorkflowTypeDef;
@@ -27,6 +29,11 @@ import com.l1yp.util.BeanCopierUtil;
 import com.l1yp.util.HexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -60,6 +67,9 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
     ModelingFieldServiceImpl modelingFieldService;
 
     private final Logger log = LoggerFactory.getLogger(WorkflowTypeDefServiceImpl.class);
+
+    @Resource
+    CacheManager cacheManager;
 
     @Override
     @Transactional
@@ -136,17 +146,29 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
 
     }
 
-
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "workflow_type", key = "'id:' + #p0")
     public void update(WorkflowTypeDefUpdateParam param) {
+        WorkflowTypeDefServiceImpl service = (WorkflowTypeDefServiceImpl) AopContext.currentProxy();
+        WorkflowTypeDef workflowType = service.getWorkflowTypeDefById(param.getId());
+        if (workflowType == null) {
+            throw new VanException(400, "流程定义不存在");
+        }
 
         WorkflowTypeDef workflowTypeDef = new WorkflowTypeDef();
         BeanCopierUtil.copy(param, workflowTypeDef);
 
         updateById(workflowTypeDef);
 
+        Cache cache = cacheManager.getCache("workflow_type");
+        if (cache != null) {
+            cache.evict("key:" + workflowType.getKey());
+        }
+
     }
+
+
 
     @Override
     public PageData<WorkflowTypeDefView> pageWfTypeDef(WorkflowTypeDefPageParam param) {
@@ -209,5 +231,28 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
         return pageData;
     }
 
+    @Cacheable(cacheNames = "workflow_type", key = "'key:' + #p0", unless = "#result == null")
+    public WorkflowTypeDef getWorkflowTypeDefByKey(String mkey) {
+        WorkflowTypeDef workflowType = getBaseMapper().selectOne(Wrappers.<WorkflowTypeDef>lambdaQuery().eq(WorkflowTypeDef::getKey, mkey));
+        if (workflowType != null) {
+            Cache cache = cacheManager.getCache("workflow_type");
+            if (cache != null) {
+                cache.put("id:" + workflowType.getId(), workflowType);
+            }
+        }
+        return workflowType;
+    }
+
+    @Cacheable(cacheNames = "workflow_type", key = "'id:' + #p0", unless = "#result == null")
+    public WorkflowTypeDef getWorkflowTypeDefById(String id) {
+        WorkflowTypeDef workflowType = getBaseMapper().selectById(id);
+        if (workflowType != null) {
+            Cache cache = cacheManager.getCache("workflow_type");
+            if (cache != null) {
+                cache.put("key:" + workflowType.getKey(), workflowType);
+            }
+        }
+        return workflowType;
+    }
 
 }
