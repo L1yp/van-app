@@ -24,6 +24,8 @@ public class ModelingViewColumn {
 
     private Integer width;
 
+    private Integer minWidth;
+
     private TableAlign align;
 
     private Boolean filterable;
@@ -85,6 +87,14 @@ public class ModelingViewColumn {
 
     public void setWidth(Integer width) {
         this.width = width;
+    }
+
+    public Integer getMinWidth() {
+        return minWidth;
+    }
+
+    public void setMinWidth(Integer minWidth) {
+        this.minWidth = minWidth;
     }
 
     public TableAlign getAlign() {

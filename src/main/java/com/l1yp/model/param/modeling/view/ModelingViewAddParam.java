@@ -1,6 +1,5 @@
 package com.l1yp.model.param.modeling.view;
 
-import com.l1yp.model.db.modeling.ModelingField;
 import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.ModelingView.Collation;
 
