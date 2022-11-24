@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.27, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.29, for Linux (x86_64)
 --
 -- Host: localhost    Database: van
 -- ------------------------------------------------------
--- Server version	8.0.27-0ubuntu0.20.04.1
+-- Server version	8.0.29-0ubuntu0.20.04.3
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -32,15 +32,15 @@ DROP TABLE IF EXISTS `ACT_EVT_LOG`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_EVT_LOG` (
   `LOG_NR_` bigint NOT NULL AUTO_INCREMENT,
-  `TYPE_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   `TIME_STAMP_` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `USER_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `DATA_` longblob,
-  `LOCK_OWNER_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `LOCK_TIME_` timestamp(3) NULL DEFAULT NULL,
   `IS_PROCESSED_` tinyint DEFAULT '0',
   PRIMARY KEY (`LOG_NR_`)
@@ -64,10 +64,10 @@ DROP TABLE IF EXISTS `ACT_GE_BYTEARRAY`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_GE_BYTEARRAY` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
-  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `DEPLOYMENT_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `DEPLOYMENT_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   `BYTES_` longblob,
   `GENERATED_` tinyint DEFAULT NULL,
   PRIMARY KEY (`ID_`),
@@ -82,7 +82,7 @@ CREATE TABLE `ACT_GE_BYTEARRAY` (
 
 LOCK TABLES `ACT_GE_BYTEARRAY` WRITE;
 /*!40000 ALTER TABLE `ACT_GE_BYTEARRAY` DISABLE KEYS */;
-INSERT INTO `ACT_GE_BYTEARRAY` VALUES ('39c90b81-6a78-11ed-8eec-50ebf6b3961b',1,'holiday.bpmn20.xml','39c90b80-6a78-11ed-8eec-50ebf6b3961b',_binary '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:omgdc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:omgdi=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:flowable=\"http://flowable.org/bpmn\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" targetNamespace=\"http://www.flowable.org/processdef\"><process id=\"holiday\" name=\"请假流程\"><startEvent id=\"startEvent_39f7426\" name=\"开始\" flowable:formKey=\"1595071632762552322\" flowable:initiator=\"creator\"><outgoing>Flow_002ih2x</outgoing></startEvent><userTask id=\"Activity_1ro616j\" name=\"发起人\" flowable:formKey=\"1595071632762552322\"><incoming>Flow_002ih2x</incoming><incoming>Flow_1t3xfdq</incoming><incoming>Flow_0xmo5tz</incoming><incoming>Flow_09eiiut</incoming><outgoing>Flow_1is270g</outgoing></userTask><sequenceFlow id=\"Flow_002ih2x\" sourceRef=\"startEvent_39f7426\" targetRef=\"Activity_1ro616j\" /><exclusiveGateway id=\"Gateway_0qjovut\"><incoming>Flow_1is270g</incoming><outgoing>Flow_0185z70</outgoing><outgoing>Flow_0xoo0rv</outgoing></exclusiveGateway><sequenceFlow id=\"Flow_1is270g\" name=\"提交\" sourceRef=\"Activity_1ro616j\" targetRef=\"Gateway_0qjovut\" flowable:order=\"1\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"提交\"}</conditionExpression></sequenceFlow><userTask id=\"Activity_1a0z8wz\" name=\"主管审核\" flowable:formKey=\"1595071632762552322\"><incoming>Flow_0185z70</incoming><outgoing>Flow_06nakbb</outgoing><outgoing>Flow_09eiiut</outgoing></userTask><sequenceFlow id=\"Flow_0185z70\" name=\"请假天数&#62;10\" sourceRef=\"Gateway_0qjovut\" targetRef=\"Activity_1a0z8wz\"><conditionExpression xsi:type=\"tFormalExpression\">${days &gt; 10}</conditionExpression></sequenceFlow><userTask id=\"Activity_0lwiy64\" name=\"HR审核\" flowable:formKey=\"1595071632762552322\"><incoming>Flow_0xoo0rv</incoming><outgoing>Flow_0e8qrct</outgoing><outgoing>Flow_0xmo5tz</outgoing></userTask><sequenceFlow id=\"Flow_0xoo0rv\" name=\"请假天数&#60;=10\" sourceRef=\"Gateway_0qjovut\" targetRef=\"Activity_0lwiy64\"><conditionExpression xsi:type=\"tFormalExpression\">${days &lt;= 10}</conditionExpression></sequenceFlow><userTask id=\"Activity_0t23scb\" name=\"总部审核\" flowable:formKey=\"1595071632762552322\" flowable:assignee=\"${assigneeItem}\" flowable:assigneeType=\"user\" flowable:assigneeFields=\"create_by\"><incoming>Flow_06nakbb</incoming><incoming>Flow_0e8qrct</incoming><outgoing>Flow_15fc7du</outgoing><outgoing>Flow_1t3xfdq</outgoing><multiInstanceLoopCharacteristics isSequential=\"true\" flowable:collection=\"${psr.read(execution, &#34;holiday&#34;, &#34;create_by&#34;)}\" flowable:elementVariable=\"assigneeItem\" /></userTask><sequenceFlow id=\"Flow_06nakbb\" name=\"同意\" sourceRef=\"Activity_1a0z8wz\" targetRef=\"Activity_0t23scb\" flowable:order=\"1\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"同意\"}</conditionExpression></sequenceFlow><sequenceFlow id=\"Flow_0e8qrct\" name=\"同意\" sourceRef=\"Activity_0lwiy64\" targetRef=\"Activity_0t23scb\" flowable:order=\"1\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"同意\"}</conditionExpression></sequenceFlow><endEvent id=\"Event_0hqfd5v\" flowable:formKey=\"1593079191750696961\"><incoming>Flow_15fc7du</incoming></endEvent><sequenceFlow id=\"Flow_15fc7du\" name=\"同意\" sourceRef=\"Activity_0t23scb\" targetRef=\"Event_0hqfd5v\" flowable:order=\"1\" flowable:completionRule=\"dynamic\" flowable:completionExpression=\"11111\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"同意\"}</conditionExpression></sequenceFlow><sequenceFlow id=\"Flow_1t3xfdq\" name=\"拒绝\" sourceRef=\"Activity_0t23scb\" targetRef=\"Activity_1ro616j\" flowable:formKey=\"1593094587354505217\" flowable:order=\"2\" flowable:completionRule=\"any\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"拒绝\"}</conditionExpression></sequenceFlow><sequenceFlow id=\"Flow_0xmo5tz\" name=\"驳回\" sourceRef=\"Activity_0lwiy64\" targetRef=\"Activity_1ro616j\" flowable:formKey=\"1593094587354505217\" flowable:order=\"2\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"驳回\"}</conditionExpression></sequenceFlow><sequenceFlow id=\"Flow_09eiiut\" name=\"驳回\" sourceRef=\"Activity_1a0z8wz\" targetRef=\"Activity_1ro616j\" flowable:formKey=\"1593094587354505217\" flowable:order=\"1\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"驳回\"}</conditionExpression></sequenceFlow></process><bpmndi:BPMNDiagram id=\"BPMNDiagram_1\"><bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"holiday\"><bpmndi:BPMNEdge id=\"Flow_09eiiut_di\" bpmnElement=\"Flow_09eiiut\"><omgdi:waypoint x=\"-450\" y=\"-180\" /><omgdi:waypoint x=\"-450\" y=\"-220\" /><omgdi:waypoint x=\"-790\" y=\"-220\" /><omgdi:waypoint x=\"-790\" y=\"-50\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-631\" y=\"-238\" width=\"22\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_0xmo5tz_di\" bpmnElement=\"Flow_0xmo5tz\"><omgdi:waypoint x=\"-450\" y=\"140\" /><omgdi:waypoint x=\"-450\" y=\"170\" /><omgdi:waypoint x=\"-760\" y=\"170\" /><omgdi:waypoint x=\"-760\" y=\"30\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-616\" y=\"183\" width=\"22\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_1t3xfdq_di\" bpmnElement=\"Flow_1t3xfdq\"><omgdi:waypoint x=\"-220\" y=\"20\" /><omgdi:waypoint x=\"-220\" y=\"250\" /><omgdi:waypoint x=\"-790\" y=\"250\" /><omgdi:waypoint x=\"-790\" y=\"30\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-516\" y=\"263\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_15fc7du_di\" bpmnElement=\"Flow_15fc7du\"><omgdi:waypoint x=\"-170\" y=\"-20\" /><omgdi:waypoint x=\"-38\" y=\"-20\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-115\" y=\"-38\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_0e8qrct_di\" bpmnElement=\"Flow_0e8qrct\"><omgdi:waypoint x=\"-400\" y=\"100\" /><omgdi:waypoint x=\"-240\" y=\"100\" /><omgdi:waypoint x=\"-240\" y=\"20\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-331\" y=\"82\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_06nakbb_di\" bpmnElement=\"Flow_06nakbb\"><omgdi:waypoint x=\"-400\" y=\"-140\" /><omgdi:waypoint x=\"-220\" y=\"-140\" /><omgdi:waypoint x=\"-220\" y=\"-60\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-321\" y=\"-158\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_0xoo0rv_di\" bpmnElement=\"Flow_0xoo0rv\"><omgdi:waypoint x=\"-630\" y=\"15\" /><omgdi:waypoint x=\"-630\" y=\"100\" /><omgdi:waypoint x=\"-500\" y=\"100\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-665\" y=\"113\" width=\"70\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_0185z70_di\" bpmnElement=\"Flow_0185z70\"><omgdi:waypoint x=\"-630\" y=\"-35\" /><omgdi:waypoint x=\"-630\" y=\"-140\" /><omgdi:waypoint x=\"-500\" y=\"-140\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-662\" y=\"-157\" width=\"63\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_1is270g_di\" bpmnElement=\"Flow_1is270g\"><omgdi:waypoint x=\"-740\" y=\"-10\" /><omgdi:waypoint x=\"-655\" y=\"-10\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-708\" y=\"-28\" width=\"22\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_002ih2x_di\" bpmnElement=\"Flow_002ih2x\"><omgdi:waypoint x=\"-912\" y=\"-10\" /><omgdi:waypoint x=\"-840\" y=\"-10\" /></bpmndi:BPMNEdge><bpmndi:BPMNShape id=\"_BPMNShape_StartEvent_2\" bpmnElement=\"startEvent_39f7426\"><omgdc:Bounds x=\"-948\" y=\"-28\" width=\"36\" height=\"36\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-941\" y=\"8\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_1ro616j_di\" bpmnElement=\"Activity_1ro616j\"><omgdc:Bounds x=\"-840\" y=\"-50\" width=\"100\" height=\"80\" /><bpmndi:BPMNLabel /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Gateway_0qjovut_di\" bpmnElement=\"Gateway_0qjovut\" isMarkerVisible=\"true\"><omgdc:Bounds x=\"-655\" y=\"-35\" width=\"50\" height=\"50\" /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_1a0z8wz_di\" bpmnElement=\"Activity_1a0z8wz\"><omgdc:Bounds x=\"-500\" y=\"-180\" width=\"100\" height=\"80\" /><bpmndi:BPMNLabel /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_0lwiy64_di\" bpmnElement=\"Activity_0lwiy64\"><omgdc:Bounds x=\"-500\" y=\"60\" width=\"100\" height=\"80\" /><bpmndi:BPMNLabel /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_0t23scb_di\" bpmnElement=\"Activity_0t23scb\"><omgdc:Bounds x=\"-270\" y=\"-60\" width=\"100\" height=\"80\" /><bpmndi:BPMNLabel /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Event_0hqfd5v_di\" bpmnElement=\"Event_0hqfd5v\"><omgdc:Bounds x=\"-38\" y=\"-38\" width=\"36\" height=\"36\" /></bpmndi:BPMNShape></bpmndi:BPMNPlane></bpmndi:BPMNDiagram></definitions>',0);
+INSERT INTO `ACT_GE_BYTEARRAY` VALUES ('471c6b42-6c0e-11ed-bcdf-50ebf6b3961b',1,'holiday.bpmn20.xml','471c6b41-6c0e-11ed-bcdf-50ebf6b3961b',_binary '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:omgdc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:omgdi=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:flowable=\"http://flowable.org/bpmn\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" targetNamespace=\"http://www.flowable.org/processdef\"><process id=\"holiday\" name=\"请假流程\"><startEvent id=\"startEvent_39f7426\" name=\"开始\" flowable:formKey=\"1595071632762552322\" flowable:initiator=\"creator\"><outgoing>Flow_002ih2x</outgoing></startEvent><userTask id=\"Activity_1ro616j\" name=\"发起人\" flowable:formKey=\"1595071870168547329\"><incoming>Flow_002ih2x</incoming><incoming>Flow_1t3xfdq</incoming><incoming>Flow_0xmo5tz</incoming><incoming>Flow_09eiiut</incoming><outgoing>Flow_1is270g</outgoing></userTask><sequenceFlow id=\"Flow_002ih2x\" sourceRef=\"startEvent_39f7426\" targetRef=\"Activity_1ro616j\" /><exclusiveGateway id=\"Gateway_0qjovut\"><incoming>Flow_1is270g</incoming><outgoing>Flow_0185z70</outgoing><outgoing>Flow_0xoo0rv</outgoing></exclusiveGateway><sequenceFlow id=\"Flow_1is270g\" name=\"提交\" sourceRef=\"Activity_1ro616j\" targetRef=\"Gateway_0qjovut\" flowable:order=\"1\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"提交\"}</conditionExpression></sequenceFlow><userTask id=\"Activity_1a0z8wz\" name=\"主管审核\" flowable:formKey=\"1595071870168547329\"><incoming>Flow_0185z70</incoming><outgoing>Flow_06nakbb</outgoing><outgoing>Flow_09eiiut</outgoing></userTask><sequenceFlow id=\"Flow_0185z70\" name=\"请假天数&#62;10\" sourceRef=\"Gateway_0qjovut\" targetRef=\"Activity_1a0z8wz\"><conditionExpression xsi:type=\"tFormalExpression\">${days &gt; 10}</conditionExpression></sequenceFlow><userTask id=\"Activity_0lwiy64\" name=\"HR审核\" flowable:formKey=\"1595071870168547329\"><incoming>Flow_0xoo0rv</incoming><outgoing>Flow_0e8qrct</outgoing><outgoing>Flow_0xmo5tz</outgoing></userTask><sequenceFlow id=\"Flow_0xoo0rv\" name=\"请假天数&#60;=10\" sourceRef=\"Gateway_0qjovut\" targetRef=\"Activity_0lwiy64\"><conditionExpression xsi:type=\"tFormalExpression\">${days &lt;= 10}</conditionExpression></sequenceFlow><userTask id=\"Activity_0t23scb\" name=\"总部审核\" flowable:formKey=\"1595071870168547329\" flowable:assignee=\"${assigneeItem}\" flowable:assigneeType=\"user\" flowable:assigneeFields=\"create_by\"><incoming>Flow_06nakbb</incoming><incoming>Flow_0e8qrct</incoming><outgoing>Flow_15fc7du</outgoing><outgoing>Flow_1t3xfdq</outgoing><multiInstanceLoopCharacteristics isSequential=\"true\" flowable:collection=\"${psr.read(execution, &#34;holiday&#34;, &#34;create_by&#34;)}\" flowable:elementVariable=\"assigneeItem\" /></userTask><sequenceFlow id=\"Flow_06nakbb\" name=\"同意\" sourceRef=\"Activity_1a0z8wz\" targetRef=\"Activity_0t23scb\" flowable:order=\"1\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"同意\"}</conditionExpression></sequenceFlow><sequenceFlow id=\"Flow_0e8qrct\" name=\"同意\" sourceRef=\"Activity_0lwiy64\" targetRef=\"Activity_0t23scb\" flowable:order=\"1\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"同意\"}</conditionExpression></sequenceFlow><endEvent id=\"Event_0hqfd5v\" flowable:formKey=\"1595071870168547329\"><incoming>Flow_15fc7du</incoming></endEvent><sequenceFlow id=\"Flow_15fc7du\" name=\"同意\" sourceRef=\"Activity_0t23scb\" targetRef=\"Event_0hqfd5v\" flowable:order=\"1\" flowable:completionRule=\"dynamic\" flowable:completionExpression=\"11111\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"同意\"}</conditionExpression></sequenceFlow><sequenceFlow id=\"Flow_1t3xfdq\" name=\"拒绝\" sourceRef=\"Activity_0t23scb\" targetRef=\"Activity_1ro616j\" flowable:formKey=\"1593094587354505217\" flowable:order=\"2\" flowable:completionRule=\"any\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"拒绝\"}</conditionExpression></sequenceFlow><sequenceFlow id=\"Flow_0xmo5tz\" name=\"驳回\" sourceRef=\"Activity_0lwiy64\" targetRef=\"Activity_1ro616j\" flowable:formKey=\"1593094587354505217\" flowable:order=\"2\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"驳回\"}</conditionExpression></sequenceFlow><sequenceFlow id=\"Flow_09eiiut\" name=\"驳回\" sourceRef=\"Activity_1a0z8wz\" targetRef=\"Activity_1ro616j\" flowable:formKey=\"1593094587354505217\" flowable:order=\"1\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"驳回\"}</conditionExpression></sequenceFlow></process><bpmndi:BPMNDiagram id=\"BPMNDiagram_1\"><bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"holiday\"><bpmndi:BPMNEdge id=\"Flow_09eiiut_di\" bpmnElement=\"Flow_09eiiut\"><omgdi:waypoint x=\"-450\" y=\"-180\" /><omgdi:waypoint x=\"-450\" y=\"-220\" /><omgdi:waypoint x=\"-790\" y=\"-220\" /><omgdi:waypoint x=\"-790\" y=\"-50\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-631\" y=\"-238\" width=\"22\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_0xmo5tz_di\" bpmnElement=\"Flow_0xmo5tz\"><omgdi:waypoint x=\"-450\" y=\"140\" /><omgdi:waypoint x=\"-450\" y=\"170\" /><omgdi:waypoint x=\"-760\" y=\"170\" /><omgdi:waypoint x=\"-760\" y=\"30\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-616\" y=\"183\" width=\"22\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_1t3xfdq_di\" bpmnElement=\"Flow_1t3xfdq\"><omgdi:waypoint x=\"-220\" y=\"20\" /><omgdi:waypoint x=\"-220\" y=\"250\" /><omgdi:waypoint x=\"-790\" y=\"250\" /><omgdi:waypoint x=\"-790\" y=\"30\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-516\" y=\"263\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_15fc7du_di\" bpmnElement=\"Flow_15fc7du\"><omgdi:waypoint x=\"-170\" y=\"-20\" /><omgdi:waypoint x=\"-38\" y=\"-20\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-115\" y=\"-38\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_0e8qrct_di\" bpmnElement=\"Flow_0e8qrct\"><omgdi:waypoint x=\"-400\" y=\"100\" /><omgdi:waypoint x=\"-240\" y=\"100\" /><omgdi:waypoint x=\"-240\" y=\"20\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-331\" y=\"82\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_06nakbb_di\" bpmnElement=\"Flow_06nakbb\"><omgdi:waypoint x=\"-400\" y=\"-140\" /><omgdi:waypoint x=\"-220\" y=\"-140\" /><omgdi:waypoint x=\"-220\" y=\"-60\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-321\" y=\"-158\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_0xoo0rv_di\" bpmnElement=\"Flow_0xoo0rv\"><omgdi:waypoint x=\"-630\" y=\"15\" /><omgdi:waypoint x=\"-630\" y=\"100\" /><omgdi:waypoint x=\"-500\" y=\"100\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-665\" y=\"113\" width=\"70\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_0185z70_di\" bpmnElement=\"Flow_0185z70\"><omgdi:waypoint x=\"-630\" y=\"-35\" /><omgdi:waypoint x=\"-630\" y=\"-140\" /><omgdi:waypoint x=\"-500\" y=\"-140\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-662\" y=\"-157\" width=\"63\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_1is270g_di\" bpmnElement=\"Flow_1is270g\"><omgdi:waypoint x=\"-740\" y=\"-10\" /><omgdi:waypoint x=\"-655\" y=\"-10\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-708\" y=\"-28\" width=\"22\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_002ih2x_di\" bpmnElement=\"Flow_002ih2x\"><omgdi:waypoint x=\"-912\" y=\"-10\" /><omgdi:waypoint x=\"-840\" y=\"-10\" /></bpmndi:BPMNEdge><bpmndi:BPMNShape id=\"_BPMNShape_StartEvent_2\" bpmnElement=\"startEvent_39f7426\"><omgdc:Bounds x=\"-948\" y=\"-28\" width=\"36\" height=\"36\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-941\" y=\"8\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_1ro616j_di\" bpmnElement=\"Activity_1ro616j\"><omgdc:Bounds x=\"-840\" y=\"-50\" width=\"100\" height=\"80\" /><bpmndi:BPMNLabel /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Gateway_0qjovut_di\" bpmnElement=\"Gateway_0qjovut\" isMarkerVisible=\"true\"><omgdc:Bounds x=\"-655\" y=\"-35\" width=\"50\" height=\"50\" /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_1a0z8wz_di\" bpmnElement=\"Activity_1a0z8wz\"><omgdc:Bounds x=\"-500\" y=\"-180\" width=\"100\" height=\"80\" /><bpmndi:BPMNLabel /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_0lwiy64_di\" bpmnElement=\"Activity_0lwiy64\"><omgdc:Bounds x=\"-500\" y=\"60\" width=\"100\" height=\"80\" /><bpmndi:BPMNLabel /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_0t23scb_di\" bpmnElement=\"Activity_0t23scb\"><omgdc:Bounds x=\"-270\" y=\"-60\" width=\"100\" height=\"80\" /><bpmndi:BPMNLabel /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Event_0hqfd5v_di\" bpmnElement=\"Event_0hqfd5v\"><omgdc:Bounds x=\"-38\" y=\"-38\" width=\"36\" height=\"36\" /></bpmndi:BPMNShape></bpmndi:BPMNPlane></bpmndi:BPMNDiagram></definitions>',0);
 /*!40000 ALTER TABLE `ACT_GE_BYTEARRAY` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -94,8 +94,8 @@ DROP TABLE IF EXISTS `ACT_GE_PROPERTY`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_GE_PROPERTY` (
-  `NAME_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `VALUE_` varchar(300) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `VALUE_` varchar(300) COLLATE utf8_bin DEFAULT NULL,
   `REV_` int DEFAULT NULL,
   PRIMARY KEY (`NAME_`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
@@ -119,23 +119,23 @@ DROP TABLE IF EXISTS `ACT_HI_ACTINST`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_HI_ACTINST` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT '1',
-  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `ACT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CALL_PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ACT_NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ACT_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `ASSIGNEE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `ACT_ID_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CALL_PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ACT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ACT_TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `ASSIGNEE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `START_TIME_` datetime(3) NOT NULL,
   `END_TIME_` datetime(3) DEFAULT NULL,
   `TRANSACTION_ORDER_` int DEFAULT NULL,
   `DURATION_` bigint DEFAULT NULL,
-  `DELETE_REASON_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
+  `DELETE_REASON_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
   PRIMARY KEY (`ID_`),
   KEY `ACT_IDX_HI_ACT_INST_START` (`START_TIME_`),
   KEY `ACT_IDX_HI_ACT_INST_END` (`END_TIME_`),
@@ -150,7 +150,7 @@ CREATE TABLE `ACT_HI_ACTINST` (
 
 LOCK TABLES `ACT_HI_ACTINST` WRITE;
 /*!40000 ALTER TABLE `ACT_HI_ACTINST` DISABLE KEYS */;
-INSERT INTO `ACT_HI_ACTINST` VALUES ('9e5e54f3-6a7a-11ed-b587-50ebf6b3961b',1,'holiday:1:39d3e0f2-6a78-11ed-8eec-50ebf6b3961b','9e5e06cf-6a7a-11ed-b587-50ebf6b3961b','9e5e54f2-6a7a-11ed-b587-50ebf6b3961b','startEvent_39f7426',NULL,NULL,'开始','startEvent',NULL,'2022-11-22 23:30:39.389','2022-11-22 23:30:39.391',1,2,NULL,''),('9e5ea314-6a7a-11ed-b587-50ebf6b3961b',1,'holiday:1:39d3e0f2-6a78-11ed-8eec-50ebf6b3961b','9e5e06cf-6a7a-11ed-b587-50ebf6b3961b','9e5e54f2-6a7a-11ed-b587-50ebf6b3961b','Flow_002ih2x',NULL,NULL,NULL,'sequenceFlow',NULL,'2022-11-22 23:30:39.391','2022-11-22 23:30:39.391',2,0,NULL,''),('9e5ea315-6a7a-11ed-b587-50ebf6b3961b',1,'holiday:1:39d3e0f2-6a78-11ed-8eec-50ebf6b3961b','9e5e06cf-6a7a-11ed-b587-50ebf6b3961b','9e5e54f2-6a7a-11ed-b587-50ebf6b3961b','Activity_1ro616j','9e5f1846-6a7a-11ed-b587-50ebf6b3961b',NULL,'发起人','userTask',NULL,'2022-11-22 23:30:39.391',NULL,3,NULL,NULL,'');
+INSERT INTO `ACT_HI_ACTINST` VALUES ('59893748-6c0e-11ed-bcdf-50ebf6b3961b',1,'holiday:1:472d3423-6c0e-11ed-bcdf-50ebf6b3961b','5988e924-6c0e-11ed-bcdf-50ebf6b3961b','59893747-6c0e-11ed-bcdf-50ebf6b3961b','startEvent_39f7426',NULL,NULL,'开始','startEvent',NULL,'2022-11-24 23:40:40.586','2022-11-24 23:40:40.587',1,1,NULL,''),('59898569-6c0e-11ed-bcdf-50ebf6b3961b',1,'holiday:1:472d3423-6c0e-11ed-bcdf-50ebf6b3961b','5988e924-6c0e-11ed-bcdf-50ebf6b3961b','59893747-6c0e-11ed-bcdf-50ebf6b3961b','Flow_002ih2x',NULL,NULL,NULL,'sequenceFlow',NULL,'2022-11-24 23:40:40.588','2022-11-24 23:40:40.588',2,0,NULL,''),('5989856a-6c0e-11ed-bcdf-50ebf6b3961b',1,'holiday:1:472d3423-6c0e-11ed-bcdf-50ebf6b3961b','5988e924-6c0e-11ed-bcdf-50ebf6b3961b','59893747-6c0e-11ed-bcdf-50ebf6b3961b','Activity_1ro616j','598a48bb-6c0e-11ed-bcdf-50ebf6b3961b',NULL,'发起人','userTask',NULL,'2022-11-24 23:40:40.588',NULL,3,NULL,NULL,'');
 /*!40000 ALTER TABLE `ACT_HI_ACTINST` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -162,16 +162,16 @@ DROP TABLE IF EXISTS `ACT_HI_ATTACHMENT`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_HI_ATTACHMENT` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
-  `USER_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `DESCRIPTION_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `URL_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CONTENT_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `DESCRIPTION_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `URL_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CONTENT_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   `TIME_` datetime(3) DEFAULT NULL,
   PRIMARY KEY (`ID_`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
@@ -194,14 +194,14 @@ DROP TABLE IF EXISTS `ACT_HI_COMMENT`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_HI_COMMENT` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `TIME_` datetime(3) NOT NULL,
-  `USER_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ACTION_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `MESSAGE_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ACTION_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `MESSAGE_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
   `FULL_MSG_` longblob,
   PRIMARY KEY (`ID_`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
@@ -224,21 +224,21 @@ DROP TABLE IF EXISTS `ACT_HI_DETAIL`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_HI_DETAIL` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ACT_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `VAR_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ACT_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `VAR_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `REV_` int DEFAULT NULL,
   `TIME_` datetime(3) NOT NULL,
-  `BYTEARRAY_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `BYTEARRAY_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   `DOUBLE_` double DEFAULT NULL,
   `LONG_` bigint DEFAULT NULL,
-  `TEXT_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TEXT2_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `TEXT_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TEXT2_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`ID_`),
   KEY `ACT_IDX_HI_DETAIL_PROC_INST` (`PROC_INST_ID_`),
   KEY `ACT_IDX_HI_DETAIL_ACT_INST` (`ACT_INST_ID_`),
@@ -254,7 +254,7 @@ CREATE TABLE `ACT_HI_DETAIL` (
 
 LOCK TABLES `ACT_HI_DETAIL` WRITE;
 /*!40000 ALTER TABLE `ACT_HI_DETAIL` DISABLE KEYS */;
-INSERT INTO `ACT_HI_DETAIL` VALUES ('9e5e2de1-6a7a-11ed-b587-50ebf6b3961b','VariableUpdate','9e5e06cf-6a7a-11ed-b587-50ebf6b3961b','9e5e06cf-6a7a-11ed-b587-50ebf6b3961b',NULL,NULL,'creator','null',0,'2022-11-22 23:30:39.388',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `ACT_HI_DETAIL` VALUES ('59891036-6c0e-11ed-bcdf-50ebf6b3961b','VariableUpdate','5988e924-6c0e-11ed-bcdf-50ebf6b3961b','5988e924-6c0e-11ed-bcdf-50ebf6b3961b',NULL,NULL,'creator','null',0,'2022-11-24 23:40:40.585',NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `ACT_HI_DETAIL` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -266,20 +266,20 @@ DROP TABLE IF EXISTS `ACT_HI_ENTITYLINK`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_HI_ENTITYLINK` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `LINK_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `LINK_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `CREATE_TIME_` datetime(3) DEFAULT NULL,
-  `SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SUB_SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_DEFINITION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PARENT_ELEMENT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `REF_SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `REF_SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `REF_SCOPE_DEFINITION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ROOT_SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ROOT_SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `HIERARCHY_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PARENT_ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REF_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REF_SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REF_SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ROOT_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ROOT_SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HIERARCHY_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`ID_`),
   KEY `ACT_IDX_HI_ENT_LNK_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`,`LINK_TYPE_`),
   KEY `ACT_IDX_HI_ENT_LNK_REF_SCOPE` (`REF_SCOPE_ID_`,`REF_SCOPE_TYPE_`,`LINK_TYPE_`),
@@ -305,17 +305,17 @@ DROP TABLE IF EXISTS `ACT_HI_IDENTITYLINK`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_HI_IDENTITYLINK` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `GROUP_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `USER_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `GROUP_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   `CREATE_TIME_` datetime(3) DEFAULT NULL,
-  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SUB_SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_DEFINITION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`ID_`),
   KEY `ACT_IDX_HI_IDENT_LNK_USER` (`USER_ID_`),
   KEY `ACT_IDX_HI_IDENT_LNK_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`),
@@ -343,27 +343,27 @@ DROP TABLE IF EXISTS `ACT_HI_PROCINST`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_HI_PROCINST` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT '1',
-  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `BUSINESS_KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `BUSINESS_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `START_TIME_` datetime(3) NOT NULL,
   `END_TIME_` datetime(3) DEFAULT NULL,
   `DURATION_` bigint DEFAULT NULL,
-  `START_USER_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `START_ACT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `END_ACT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SUPER_PROCESS_INSTANCE_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `DELETE_REASON_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
-  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CALLBACK_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CALLBACK_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `REFERENCE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `REFERENCE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROPAGATED_STAGE_INST_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `BUSINESS_STATUS_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `START_USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `START_ACT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `END_ACT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUPER_PROCESS_INSTANCE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DELETE_REASON_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CALLBACK_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CALLBACK_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REFERENCE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REFERENCE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PROPAGATED_STAGE_INST_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `BUSINESS_STATUS_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`ID_`),
   UNIQUE KEY `PROC_INST_ID_` (`PROC_INST_ID_`),
   KEY `ACT_IDX_HI_PRO_INST_END` (`END_TIME_`),
@@ -377,7 +377,7 @@ CREATE TABLE `ACT_HI_PROCINST` (
 
 LOCK TABLES `ACT_HI_PROCINST` WRITE;
 /*!40000 ALTER TABLE `ACT_HI_PROCINST` DISABLE KEYS */;
-INSERT INTO `ACT_HI_PROCINST` VALUES ('9e5e06cf-6a7a-11ed-b587-50ebf6b3961b',1,'9e5e06cf-6a7a-11ed-b587-50ebf6b3961b','1595077305026027521','holiday:1:39d3e0f2-6a78-11ed-8eec-50ebf6b3961b','2022-11-22 23:30:39.387',NULL,NULL,NULL,'startEvent_39f7426',NULL,NULL,NULL,'','111',NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `ACT_HI_PROCINST` VALUES ('5988e924-6c0e-11ed-bcdf-50ebf6b3961b',1,'5988e924-6c0e-11ed-bcdf-50ebf6b3961b','1595804602699915266','holiday:1:472d3423-6c0e-11ed-bcdf-50ebf6b3961b','2022-11-24 23:40:40.584',NULL,NULL,NULL,'startEvent_39f7426',NULL,NULL,NULL,'','测试1',NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `ACT_HI_PROCINST` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -389,33 +389,33 @@ DROP TABLE IF EXISTS `ACT_HI_TASKINST`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_HI_TASKINST` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT '1',
-  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TASK_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TASK_DEF_KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SUB_SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_DEFINITION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROPAGATED_STAGE_INST_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PARENT_TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `DESCRIPTION_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `OWNER_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ASSIGNEE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_DEF_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PROPAGATED_STAGE_INST_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PARENT_TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DESCRIPTION_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ASSIGNEE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `START_TIME_` datetime(3) NOT NULL,
   `CLAIM_TIME_` datetime(3) DEFAULT NULL,
   `END_TIME_` datetime(3) DEFAULT NULL,
   `DURATION_` bigint DEFAULT NULL,
-  `DELETE_REASON_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `DELETE_REASON_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
   `PRIORITY_` int DEFAULT NULL,
   `DUE_DATE_` datetime(3) DEFAULT NULL,
-  `FORM_KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CATEGORY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
+  `FORM_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
   `LAST_UPDATED_TIME_` datetime(3) DEFAULT NULL,
   PRIMARY KEY (`ID_`),
   KEY `ACT_IDX_HI_TASK_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`),
@@ -431,7 +431,7 @@ CREATE TABLE `ACT_HI_TASKINST` (
 
 LOCK TABLES `ACT_HI_TASKINST` WRITE;
 /*!40000 ALTER TABLE `ACT_HI_TASKINST` DISABLE KEYS */;
-INSERT INTO `ACT_HI_TASKINST` VALUES ('9e5f1846-6a7a-11ed-b587-50ebf6b3961b',1,'holiday:1:39d3e0f2-6a78-11ed-8eec-50ebf6b3961b',NULL,'Activity_1ro616j','9e5e06cf-6a7a-11ed-b587-50ebf6b3961b','9e5e54f2-6a7a-11ed-b587-50ebf6b3961b',NULL,NULL,NULL,NULL,NULL,'发起人',NULL,NULL,NULL,NULL,'2022-11-22 23:30:39.391',NULL,NULL,NULL,NULL,50,NULL,'1595071632762552322',NULL,'','2022-11-22 23:30:39.394');
+INSERT INTO `ACT_HI_TASKINST` VALUES ('598a48bb-6c0e-11ed-bcdf-50ebf6b3961b',1,'holiday:1:472d3423-6c0e-11ed-bcdf-50ebf6b3961b',NULL,'Activity_1ro616j','5988e924-6c0e-11ed-bcdf-50ebf6b3961b','59893747-6c0e-11ed-bcdf-50ebf6b3961b',NULL,NULL,NULL,NULL,NULL,'发起人',NULL,NULL,NULL,NULL,'2022-11-24 23:40:40.588',NULL,NULL,NULL,NULL,50,NULL,'1595071870168547329',NULL,'','2022-11-24 23:40:40.593');
 /*!40000 ALTER TABLE `ACT_HI_TASKINST` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -444,19 +444,19 @@ DROP TABLE IF EXISTS `ACT_HI_TSK_LOG`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_HI_TSK_LOG` (
   `ID_` bigint NOT NULL AUTO_INCREMENT,
-  `TYPE_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `TYPE_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `TIME_STAMP_` timestamp(3) NOT NULL,
-  `USER_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `DATA_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_DEFINITION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SUB_SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
+  `USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `DATA_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
   PRIMARY KEY (`ID_`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -478,21 +478,21 @@ DROP TABLE IF EXISTS `ACT_HI_VARINST`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_HI_VARINST` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT '1',
-  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `VAR_TYPE_` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SUB_SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `BYTEARRAY_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `VAR_TYPE_` varchar(100) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `BYTEARRAY_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   `DOUBLE_` double DEFAULT NULL,
   `LONG_` bigint DEFAULT NULL,
-  `TEXT_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TEXT2_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `TEXT_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TEXT2_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
   `CREATE_TIME_` datetime(3) DEFAULT NULL,
   `LAST_UPDATED_TIME_` datetime(3) DEFAULT NULL,
   PRIMARY KEY (`ID_`),
@@ -511,7 +511,7 @@ CREATE TABLE `ACT_HI_VARINST` (
 
 LOCK TABLES `ACT_HI_VARINST` WRITE;
 /*!40000 ALTER TABLE `ACT_HI_VARINST` DISABLE KEYS */;
-INSERT INTO `ACT_HI_VARINST` VALUES ('9e5e06d0-6a7a-11ed-b587-50ebf6b3961b',0,'9e5e06cf-6a7a-11ed-b587-50ebf6b3961b','9e5e06cf-6a7a-11ed-b587-50ebf6b3961b',NULL,'creator','null',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2022-11-22 23:30:39.388','2022-11-22 23:30:39.388');
+INSERT INTO `ACT_HI_VARINST` VALUES ('5988e925-6c0e-11ed-bcdf-50ebf6b3961b',0,'5988e924-6c0e-11ed-bcdf-50ebf6b3961b','5988e924-6c0e-11ed-bcdf-50ebf6b3961b',NULL,'creator','null',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2022-11-24 23:40:40.585','2022-11-24 23:40:40.585');
 /*!40000 ALTER TABLE `ACT_HI_VARINST` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -523,10 +523,10 @@ DROP TABLE IF EXISTS `ACT_PROCDEF_INFO`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_PROCDEF_INFO` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
-  `INFO_JSON_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `INFO_JSON_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`ID_`),
   UNIQUE KEY `ACT_UNIQ_INFO_PROCDEF` (`PROC_DEF_ID_`),
   KEY `ACT_IDX_INFO_PROCDEF` (`PROC_DEF_ID_`),
@@ -553,16 +553,16 @@ DROP TABLE IF EXISTS `ACT_RE_DEPLOYMENT`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_RE_DEPLOYMENT` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CATEGORY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
   `DEPLOY_TIME_` timestamp(3) NULL DEFAULT NULL,
-  `DERIVED_FROM_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `DERIVED_FROM_ROOT_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PARENT_DEPLOYMENT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ENGINE_VERSION_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `DERIVED_FROM_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DERIVED_FROM_ROOT_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PARENT_DEPLOYMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ENGINE_VERSION_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`ID_`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -573,7 +573,7 @@ CREATE TABLE `ACT_RE_DEPLOYMENT` (
 
 LOCK TABLES `ACT_RE_DEPLOYMENT` WRITE;
 /*!40000 ALTER TABLE `ACT_RE_DEPLOYMENT` DISABLE KEYS */;
-INSERT INTO `ACT_RE_DEPLOYMENT` VALUES ('39c90b80-6a78-11ed-8eec-50ebf6b3961b','请假流程',NULL,'holiday','','2022-11-22 15:13:31.645',NULL,NULL,'39c90b80-6a78-11ed-8eec-50ebf6b3961b',NULL);
+INSERT INTO `ACT_RE_DEPLOYMENT` VALUES ('471c6b41-6c0e-11ed-bcdf-50ebf6b3961b','请假流程',NULL,'holiday','','2022-11-24 15:40:09.674',NULL,NULL,'471c6b41-6c0e-11ed-bcdf-50ebf6b3961b',NULL);
 /*!40000 ALTER TABLE `ACT_RE_DEPLOYMENT` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -585,19 +585,19 @@ DROP TABLE IF EXISTS `ACT_RE_MODEL`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_RE_MODEL` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
-  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CATEGORY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
   `LAST_UPDATE_TIME_` timestamp(3) NULL DEFAULT NULL,
   `VERSION_` int DEFAULT NULL,
-  `META_INFO_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `DEPLOYMENT_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `EDITOR_SOURCE_VALUE_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `EDITOR_SOURCE_EXTRA_VALUE_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
+  `META_INFO_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DEPLOYMENT_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EDITOR_SOURCE_VALUE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EDITOR_SOURCE_EXTRA_VALUE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
   PRIMARY KEY (`ID_`),
   KEY `ACT_FK_MODEL_SOURCE` (`EDITOR_SOURCE_VALUE_ID_`),
   KEY `ACT_FK_MODEL_SOURCE_EXTRA` (`EDITOR_SOURCE_EXTRA_VALUE_ID_`),
@@ -625,23 +625,23 @@ DROP TABLE IF EXISTS `ACT_RE_PROCDEF`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_RE_PROCDEF` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
-  `CATEGORY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `KEY_` varchar(255) COLLATE utf8_bin NOT NULL,
   `VERSION_` int NOT NULL,
-  `DEPLOYMENT_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `RESOURCE_NAME_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `DGRM_RESOURCE_NAME_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `DESCRIPTION_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `DEPLOYMENT_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `RESOURCE_NAME_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DGRM_RESOURCE_NAME_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `DESCRIPTION_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
   `HAS_START_FORM_KEY_` tinyint DEFAULT NULL,
   `HAS_GRAPHICAL_NOTATION_` tinyint DEFAULT NULL,
   `SUSPENSION_STATE_` int DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
-  `ENGINE_VERSION_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `DERIVED_FROM_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `DERIVED_FROM_ROOT_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  `ENGINE_VERSION_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `DERIVED_FROM_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DERIVED_FROM_ROOT_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   `DERIVED_VERSION_` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID_`),
   UNIQUE KEY `ACT_UNIQ_PROCDEF` (`KEY_`,`VERSION_`,`DERIVED_VERSION_`,`TENANT_ID_`)
@@ -654,7 +654,7 @@ CREATE TABLE `ACT_RE_PROCDEF` (
 
 LOCK TABLES `ACT_RE_PROCDEF` WRITE;
 /*!40000 ALTER TABLE `ACT_RE_PROCDEF` DISABLE KEYS */;
-INSERT INTO `ACT_RE_PROCDEF` VALUES ('holiday:1:39d3e0f2-6a78-11ed-8eec-50ebf6b3961b',1,'http://www.flowable.org/processdef','请假流程','holiday',1,'39c90b80-6a78-11ed-8eec-50ebf6b3961b','holiday.bpmn20.xml',NULL,NULL,1,1,1,'',NULL,NULL,NULL,0);
+INSERT INTO `ACT_RE_PROCDEF` VALUES ('holiday:1:472d3423-6c0e-11ed-bcdf-50ebf6b3961b',1,'http://www.flowable.org/processdef','请假流程','holiday',1,'471c6b41-6c0e-11ed-bcdf-50ebf6b3961b','holiday.bpmn20.xml',NULL,NULL,1,1,1,'',NULL,NULL,NULL,0);
 /*!40000 ALTER TABLE `ACT_RE_PROCDEF` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -666,23 +666,23 @@ DROP TABLE IF EXISTS `ACT_RU_ACTINST`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_RU_ACTINST` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT '1',
-  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `ACT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CALL_PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ACT_NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ACT_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `ASSIGNEE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `ACT_ID_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CALL_PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ACT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ACT_TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `ASSIGNEE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `START_TIME_` datetime(3) NOT NULL,
   `END_TIME_` datetime(3) DEFAULT NULL,
   `DURATION_` bigint DEFAULT NULL,
   `TRANSACTION_ORDER_` int DEFAULT NULL,
-  `DELETE_REASON_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
+  `DELETE_REASON_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
   PRIMARY KEY (`ID_`),
   KEY `ACT_IDX_RU_ACTI_START` (`START_TIME_`),
   KEY `ACT_IDX_RU_ACTI_END` (`END_TIME_`),
@@ -700,7 +700,7 @@ CREATE TABLE `ACT_RU_ACTINST` (
 
 LOCK TABLES `ACT_RU_ACTINST` WRITE;
 /*!40000 ALTER TABLE `ACT_RU_ACTINST` DISABLE KEYS */;
-INSERT INTO `ACT_RU_ACTINST` VALUES ('9e5e54f3-6a7a-11ed-b587-50ebf6b3961b',1,'holiday:1:39d3e0f2-6a78-11ed-8eec-50ebf6b3961b','9e5e06cf-6a7a-11ed-b587-50ebf6b3961b','9e5e54f2-6a7a-11ed-b587-50ebf6b3961b','startEvent_39f7426',NULL,NULL,'开始','startEvent',NULL,'2022-11-22 23:30:39.389','2022-11-22 23:30:39.391',2,1,NULL,''),('9e5ea314-6a7a-11ed-b587-50ebf6b3961b',1,'holiday:1:39d3e0f2-6a78-11ed-8eec-50ebf6b3961b','9e5e06cf-6a7a-11ed-b587-50ebf6b3961b','9e5e54f2-6a7a-11ed-b587-50ebf6b3961b','Flow_002ih2x',NULL,NULL,NULL,'sequenceFlow',NULL,'2022-11-22 23:30:39.391','2022-11-22 23:30:39.391',0,2,NULL,''),('9e5ea315-6a7a-11ed-b587-50ebf6b3961b',1,'holiday:1:39d3e0f2-6a78-11ed-8eec-50ebf6b3961b','9e5e06cf-6a7a-11ed-b587-50ebf6b3961b','9e5e54f2-6a7a-11ed-b587-50ebf6b3961b','Activity_1ro616j','9e5f1846-6a7a-11ed-b587-50ebf6b3961b',NULL,'发起人','userTask',NULL,'2022-11-22 23:30:39.391',NULL,NULL,3,NULL,'');
+INSERT INTO `ACT_RU_ACTINST` VALUES ('59893748-6c0e-11ed-bcdf-50ebf6b3961b',1,'holiday:1:472d3423-6c0e-11ed-bcdf-50ebf6b3961b','5988e924-6c0e-11ed-bcdf-50ebf6b3961b','59893747-6c0e-11ed-bcdf-50ebf6b3961b','startEvent_39f7426',NULL,NULL,'开始','startEvent',NULL,'2022-11-24 23:40:40.586','2022-11-24 23:40:40.587',1,1,NULL,''),('59898569-6c0e-11ed-bcdf-50ebf6b3961b',1,'holiday:1:472d3423-6c0e-11ed-bcdf-50ebf6b3961b','5988e924-6c0e-11ed-bcdf-50ebf6b3961b','59893747-6c0e-11ed-bcdf-50ebf6b3961b','Flow_002ih2x',NULL,NULL,NULL,'sequenceFlow',NULL,'2022-11-24 23:40:40.588','2022-11-24 23:40:40.588',0,2,NULL,''),('5989856a-6c0e-11ed-bcdf-50ebf6b3961b',1,'holiday:1:472d3423-6c0e-11ed-bcdf-50ebf6b3961b','5988e924-6c0e-11ed-bcdf-50ebf6b3961b','59893747-6c0e-11ed-bcdf-50ebf6b3961b','Activity_1ro616j','598a48bb-6c0e-11ed-bcdf-50ebf6b3961b',NULL,'发起人','userTask',NULL,'2022-11-24 23:40:40.588',NULL,NULL,3,NULL,'');
 /*!40000 ALTER TABLE `ACT_RU_ACTINST` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -712,30 +712,30 @@ DROP TABLE IF EXISTS `ACT_RU_DEADLETTER_JOB`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_RU_DEADLETTER_JOB` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
-  `CATEGORY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
   `EXCLUSIVE_` tinyint(1) DEFAULT NULL,
-  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROCESS_INSTANCE_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ELEMENT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ELEMENT_NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SUB_SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_DEFINITION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CORRELATION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `EXCEPTION_STACK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `EXCEPTION_MSG_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROCESS_INSTANCE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CORRELATION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
   `DUEDATE_` timestamp(3) NULL DEFAULT NULL,
-  `REPEAT_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `HANDLER_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `HANDLER_CFG_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CUSTOM_VALUES_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `REPEAT_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CUSTOM_VALUES_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
   PRIMARY KEY (`ID_`),
   KEY `ACT_IDX_DEADLETTER_JOB_EXCEPTION_STACK_ID` (`EXCEPTION_STACK_ID_`),
   KEY `ACT_IDX_DEADLETTER_JOB_CUSTOM_VALUES_ID` (`CUSTOM_VALUES_ID_`),
@@ -771,21 +771,21 @@ DROP TABLE IF EXISTS `ACT_RU_ENTITYLINK`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_RU_ENTITYLINK` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
   `CREATE_TIME_` datetime(3) DEFAULT NULL,
-  `LINK_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SUB_SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_DEFINITION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PARENT_ELEMENT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `REF_SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `REF_SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `REF_SCOPE_DEFINITION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ROOT_SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ROOT_SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `HIERARCHY_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `LINK_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PARENT_ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REF_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REF_SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REF_SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ROOT_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ROOT_SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HIERARCHY_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`ID_`),
   KEY `ACT_IDX_ENT_LNK_SCOPE` (`SCOPE_ID_`,`SCOPE_TYPE_`,`LINK_TYPE_`),
   KEY `ACT_IDX_ENT_LNK_REF_SCOPE` (`REF_SCOPE_ID_`,`REF_SCOPE_TYPE_`,`LINK_TYPE_`),
@@ -811,21 +811,21 @@ DROP TABLE IF EXISTS `ACT_RU_EVENT_SUBSCR`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_RU_EVENT_SUBSCR` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
-  `EVENT_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `EVENT_NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ACTIVITY_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CONFIGURATION_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `EVENT_TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `EVENT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ACTIVITY_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `CONFIGURATION_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `CREATED_` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SUB_SCOPE_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_DEFINITION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_TYPE_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
   PRIMARY KEY (`ID_`),
   KEY `ACT_IDX_EVENT_SUBSCR_CONFIG_` (`CONFIGURATION_`),
   KEY `ACT_FK_EVENT_EXEC` (`EXECUTION_ID_`),
@@ -850,15 +850,15 @@ DROP TABLE IF EXISTS `ACT_RU_EXECUTION`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_RU_EXECUTION` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
-  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `BUSINESS_KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PARENT_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SUPER_EXEC_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ROOT_PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ACT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `BUSINESS_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PARENT_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SUPER_EXEC_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ROOT_PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ACT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `IS_ACTIVE_` tinyint DEFAULT NULL,
   `IS_CONCURRENT_` tinyint DEFAULT NULL,
   `IS_SCOPE_` tinyint DEFAULT NULL,
@@ -866,13 +866,13 @@ CREATE TABLE `ACT_RU_EXECUTION` (
   `IS_MI_ROOT_` tinyint DEFAULT NULL,
   `SUSPENSION_STATE_` int DEFAULT NULL,
   `CACHED_ENT_STATE_` int DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
-  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `START_ACT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `START_ACT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `START_TIME_` datetime(3) DEFAULT NULL,
-  `START_USER_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `START_USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `LOCK_TIME_` timestamp(3) NULL DEFAULT NULL,
-  `LOCK_OWNER_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `IS_COUNT_ENABLED_` tinyint DEFAULT NULL,
   `EVT_SUBSCR_COUNT_` int DEFAULT NULL,
   `TASK_COUNT_` int DEFAULT NULL,
@@ -883,12 +883,12 @@ CREATE TABLE `ACT_RU_EXECUTION` (
   `EXTERNAL_WORKER_JOB_COUNT_` int DEFAULT NULL,
   `VAR_COUNT_` int DEFAULT NULL,
   `ID_LINK_COUNT_` int DEFAULT NULL,
-  `CALLBACK_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CALLBACK_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `REFERENCE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `REFERENCE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROPAGATED_STAGE_INST_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `BUSINESS_STATUS_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `CALLBACK_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CALLBACK_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REFERENCE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `REFERENCE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PROPAGATED_STAGE_INST_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `BUSINESS_STATUS_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`ID_`),
   KEY `ACT_IDX_EXEC_BUSKEY` (`BUSINESS_KEY_`),
   KEY `ACT_IDC_EXEC_ROOT` (`ROOT_PROC_INST_ID_`),
@@ -910,7 +910,7 @@ CREATE TABLE `ACT_RU_EXECUTION` (
 
 LOCK TABLES `ACT_RU_EXECUTION` WRITE;
 /*!40000 ALTER TABLE `ACT_RU_EXECUTION` DISABLE KEYS */;
-INSERT INTO `ACT_RU_EXECUTION` VALUES ('9e5e06cf-6a7a-11ed-b587-50ebf6b3961b',1,'9e5e06cf-6a7a-11ed-b587-50ebf6b3961b','1595077305026027521',NULL,'holiday:1:39d3e0f2-6a78-11ed-8eec-50ebf6b3961b',NULL,'9e5e06cf-6a7a-11ed-b587-50ebf6b3961b',NULL,1,0,1,0,0,1,NULL,'','111','startEvent_39f7426','2022-11-22 23:30:39.387',NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL),('9e5e54f2-6a7a-11ed-b587-50ebf6b3961b',1,'9e5e06cf-6a7a-11ed-b587-50ebf6b3961b',NULL,'9e5e06cf-6a7a-11ed-b587-50ebf6b3961b','holiday:1:39d3e0f2-6a78-11ed-8eec-50ebf6b3961b',NULL,'9e5e06cf-6a7a-11ed-b587-50ebf6b3961b','Activity_1ro616j',1,0,0,0,0,1,NULL,'',NULL,NULL,'2022-11-22 23:30:39.389',NULL,NULL,NULL,1,0,1,0,0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `ACT_RU_EXECUTION` VALUES ('5988e924-6c0e-11ed-bcdf-50ebf6b3961b',1,'5988e924-6c0e-11ed-bcdf-50ebf6b3961b','1595804602699915266',NULL,'holiday:1:472d3423-6c0e-11ed-bcdf-50ebf6b3961b',NULL,'5988e924-6c0e-11ed-bcdf-50ebf6b3961b',NULL,1,0,1,0,0,1,NULL,'','测试1','startEvent_39f7426','2022-11-24 23:40:40.584',NULL,NULL,NULL,1,0,0,0,0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL),('59893747-6c0e-11ed-bcdf-50ebf6b3961b',1,'5988e924-6c0e-11ed-bcdf-50ebf6b3961b',NULL,'5988e924-6c0e-11ed-bcdf-50ebf6b3961b','holiday:1:472d3423-6c0e-11ed-bcdf-50ebf6b3961b',NULL,'5988e924-6c0e-11ed-bcdf-50ebf6b3961b','Activity_1ro616j',1,0,0,0,0,1,NULL,'',NULL,NULL,'2022-11-24 23:40:40.586',NULL,NULL,NULL,1,0,1,0,0,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `ACT_RU_EXECUTION` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -922,33 +922,33 @@ DROP TABLE IF EXISTS `ACT_RU_EXTERNAL_JOB`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_RU_EXTERNAL_JOB` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
-  `CATEGORY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
   `LOCK_EXP_TIME_` timestamp(3) NULL DEFAULT NULL,
-  `LOCK_OWNER_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `EXCLUSIVE_` tinyint(1) DEFAULT NULL,
-  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROCESS_INSTANCE_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ELEMENT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ELEMENT_NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SUB_SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_DEFINITION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CORRELATION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROCESS_INSTANCE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CORRELATION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `RETRIES_` int DEFAULT NULL,
-  `EXCEPTION_STACK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `EXCEPTION_MSG_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
   `DUEDATE_` timestamp(3) NULL DEFAULT NULL,
-  `REPEAT_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `HANDLER_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `HANDLER_CFG_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CUSTOM_VALUES_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `REPEAT_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CUSTOM_VALUES_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
   PRIMARY KEY (`ID_`),
   KEY `ACT_IDX_EXTERNAL_JOB_EXCEPTION_STACK_ID` (`EXCEPTION_STACK_ID_`),
   KEY `ACT_IDX_EXTERNAL_JOB_CUSTOM_VALUES_ID` (`CUSTOM_VALUES_ID_`),
@@ -978,20 +978,20 @@ DROP TABLE IF EXISTS `ACT_RU_HISTORY_JOB`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_RU_HISTORY_JOB` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
   `LOCK_EXP_TIME_` timestamp(3) NULL DEFAULT NULL,
-  `LOCK_OWNER_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `RETRIES_` int DEFAULT NULL,
-  `EXCEPTION_STACK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `EXCEPTION_MSG_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `HANDLER_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `HANDLER_CFG_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CUSTOM_VALUES_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ADV_HANDLER_CFG_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CUSTOM_VALUES_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ADV_HANDLER_CFG_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
-  `SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
   PRIMARY KEY (`ID_`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1013,18 +1013,18 @@ DROP TABLE IF EXISTS `ACT_RU_IDENTITYLINK`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_RU_IDENTITYLINK` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
-  `GROUP_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `USER_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SUB_SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_DEFINITION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `GROUP_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `USER_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`ID_`),
   KEY `ACT_IDX_IDENT_LNK_USER` (`USER_ID_`),
   KEY `ACT_IDX_IDENT_LNK_GROUP` (`GROUP_ID_`),
@@ -1057,33 +1057,33 @@ DROP TABLE IF EXISTS `ACT_RU_JOB`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_RU_JOB` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
-  `CATEGORY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
   `LOCK_EXP_TIME_` timestamp(3) NULL DEFAULT NULL,
-  `LOCK_OWNER_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `EXCLUSIVE_` tinyint(1) DEFAULT NULL,
-  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROCESS_INSTANCE_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ELEMENT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ELEMENT_NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SUB_SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_DEFINITION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CORRELATION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROCESS_INSTANCE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CORRELATION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `RETRIES_` int DEFAULT NULL,
-  `EXCEPTION_STACK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `EXCEPTION_MSG_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
   `DUEDATE_` timestamp(3) NULL DEFAULT NULL,
-  `REPEAT_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `HANDLER_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `HANDLER_CFG_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CUSTOM_VALUES_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `REPEAT_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CUSTOM_VALUES_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
   PRIMARY KEY (`ID_`),
   KEY `ACT_IDX_JOB_EXCEPTION_STACK_ID` (`EXCEPTION_STACK_ID_`),
   KEY `ACT_IDX_JOB_CUSTOM_VALUES_ID` (`CUSTOM_VALUES_ID_`),
@@ -1119,31 +1119,31 @@ DROP TABLE IF EXISTS `ACT_RU_SUSPENDED_JOB`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_RU_SUSPENDED_JOB` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
-  `CATEGORY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
   `EXCLUSIVE_` tinyint(1) DEFAULT NULL,
-  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROCESS_INSTANCE_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ELEMENT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ELEMENT_NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SUB_SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_DEFINITION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CORRELATION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROCESS_INSTANCE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CORRELATION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `RETRIES_` int DEFAULT NULL,
-  `EXCEPTION_STACK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `EXCEPTION_MSG_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
   `DUEDATE_` timestamp(3) NULL DEFAULT NULL,
-  `REPEAT_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `HANDLER_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `HANDLER_CFG_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CUSTOM_VALUES_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `REPEAT_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CUSTOM_VALUES_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
   PRIMARY KEY (`ID_`),
   KEY `ACT_IDX_SUSPENDED_JOB_EXCEPTION_STACK_ID` (`EXCEPTION_STACK_ID_`),
   KEY `ACT_IDX_SUSPENDED_JOB_CUSTOM_VALUES_ID` (`CUSTOM_VALUES_ID_`),
@@ -1179,31 +1179,31 @@ DROP TABLE IF EXISTS `ACT_RU_TASK`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_RU_TASK` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
-  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TASK_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SUB_SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_DEFINITION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROPAGATED_STAGE_INST_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PARENT_TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `DESCRIPTION_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TASK_DEF_KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `OWNER_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ASSIGNEE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `DELEGATION_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PROPAGATED_STAGE_INST_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `PARENT_TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `DESCRIPTION_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_DEF_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ASSIGNEE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `DELEGATION_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   `PRIORITY_` int DEFAULT NULL,
   `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
   `DUE_DATE_` datetime(3) DEFAULT NULL,
-  `CATEGORY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `SUSPENSION_STATE_` int DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
-  `FORM_KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
+  `FORM_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `CLAIM_TIME_` datetime(3) DEFAULT NULL,
   `IS_COUNT_ENABLED_` tinyint DEFAULT NULL,
   `VAR_COUNT_` int DEFAULT NULL,
@@ -1229,7 +1229,7 @@ CREATE TABLE `ACT_RU_TASK` (
 
 LOCK TABLES `ACT_RU_TASK` WRITE;
 /*!40000 ALTER TABLE `ACT_RU_TASK` DISABLE KEYS */;
-INSERT INTO `ACT_RU_TASK` VALUES ('9e5f1846-6a7a-11ed-b587-50ebf6b3961b',1,'9e5e54f2-6a7a-11ed-b587-50ebf6b3961b','9e5e06cf-6a7a-11ed-b587-50ebf6b3961b','holiday:1:39d3e0f2-6a78-11ed-8eec-50ebf6b3961b',NULL,NULL,NULL,NULL,NULL,NULL,'发起人',NULL,NULL,'Activity_1ro616j',NULL,NULL,NULL,50,'2022-11-22 15:30:39.391',NULL,NULL,1,'','1595071632762552322',NULL,1,0,0,0);
+INSERT INTO `ACT_RU_TASK` VALUES ('598a48bb-6c0e-11ed-bcdf-50ebf6b3961b',1,'59893747-6c0e-11ed-bcdf-50ebf6b3961b','5988e924-6c0e-11ed-bcdf-50ebf6b3961b','holiday:1:472d3423-6c0e-11ed-bcdf-50ebf6b3961b',NULL,NULL,NULL,NULL,NULL,NULL,'发起人',NULL,NULL,'Activity_1ro616j',NULL,NULL,NULL,50,'2022-11-24 15:40:40.588',NULL,NULL,1,'','1595071870168547329',NULL,1,0,0,0);
 /*!40000 ALTER TABLE `ACT_RU_TASK` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1241,33 +1241,33 @@ DROP TABLE IF EXISTS `ACT_RU_TIMER_JOB`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_RU_TIMER_JOB` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
-  `CATEGORY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
   `LOCK_EXP_TIME_` timestamp(3) NULL DEFAULT NULL,
-  `LOCK_OWNER_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `LOCK_OWNER_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `EXCLUSIVE_` tinyint(1) DEFAULT NULL,
-  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROCESS_INSTANCE_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ELEMENT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `ELEMENT_NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SUB_SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_DEFINITION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CORRELATION_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROCESS_INSTANCE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `ELEMENT_NAME_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_DEFINITION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `CORRELATION_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `RETRIES_` int DEFAULT NULL,
-  `EXCEPTION_STACK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `EXCEPTION_MSG_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
   `DUEDATE_` timestamp(3) NULL DEFAULT NULL,
-  `REPEAT_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `HANDLER_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `HANDLER_CFG_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `CUSTOM_VALUES_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `REPEAT_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `CUSTOM_VALUES_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
   PRIMARY KEY (`ID_`),
   KEY `ACT_IDX_TIMER_JOB_EXCEPTION_STACK_ID` (`EXCEPTION_STACK_ID_`),
   KEY `ACT_IDX_TIMER_JOB_CUSTOM_VALUES_ID` (`CUSTOM_VALUES_ID_`),
@@ -1304,21 +1304,21 @@ DROP TABLE IF EXISTS `ACT_RU_VARIABLE`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ACT_RU_VARIABLE` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
-  `TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SUB_SCOPE_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `BYTEARRAY_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `NAME_` varchar(255) COLLATE utf8_bin NOT NULL,
+  `EXECUTION_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TASK_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `BYTEARRAY_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
   `DOUBLE_` double DEFAULT NULL,
   `LONG_` bigint DEFAULT NULL,
-  `TEXT_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TEXT2_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `TEXT_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
+  `TEXT2_` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`ID_`),
   KEY `ACT_IDX_RU_VAR_SCOPE_ID_TYPE` (`SCOPE_ID_`,`SCOPE_TYPE_`),
   KEY `ACT_IDX_RU_VAR_SUB_ID_TYPE` (`SUB_SCOPE_ID_`,`SCOPE_TYPE_`),
@@ -1338,7 +1338,7 @@ CREATE TABLE `ACT_RU_VARIABLE` (
 
 LOCK TABLES `ACT_RU_VARIABLE` WRITE;
 /*!40000 ALTER TABLE `ACT_RU_VARIABLE` DISABLE KEYS */;
-INSERT INTO `ACT_RU_VARIABLE` VALUES ('9e5e06d0-6a7a-11ed-b587-50ebf6b3961b',1,'null','creator','9e5e06cf-6a7a-11ed-b587-50ebf6b3961b','9e5e06cf-6a7a-11ed-b587-50ebf6b3961b',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `ACT_RU_VARIABLE` VALUES ('5988e925-6c0e-11ed-bcdf-50ebf6b3961b',1,'null','creator','5988e924-6c0e-11ed-bcdf-50ebf6b3961b','5988e924-6c0e-11ed-bcdf-50ebf6b3961b',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `ACT_RU_VARIABLE` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1350,18 +1350,18 @@ DROP TABLE IF EXISTS `FLW_CHANNEL_DEFINITION`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `FLW_CHANNEL_DEFINITION` (
-  `ID_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `NAME_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `ID_` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `NAME_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   `VERSION_` int DEFAULT NULL,
-  `KEY_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `CATEGORY_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `DEPLOYMENT_ID_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `KEY_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `DEPLOYMENT_ID_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   `CREATE_TIME_` datetime(3) DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `RESOURCE_NAME_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `DESCRIPTION_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `TYPE_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `IMPLEMENTATION_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `RESOURCE_NAME_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `DESCRIPTION_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `TYPE_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `IMPLEMENTATION_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   PRIMARY KEY (`ID_`),
   UNIQUE KEY `ACT_IDX_CHANNEL_DEF_UNIQ` (`KEY_`,`VERSION_`,`TENANT_ID_`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
@@ -1384,15 +1384,15 @@ DROP TABLE IF EXISTS `FLW_EVENT_DEFINITION`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `FLW_EVENT_DEFINITION` (
-  `ID_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `NAME_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `ID_` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `NAME_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   `VERSION_` int DEFAULT NULL,
-  `KEY_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `CATEGORY_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `DEPLOYMENT_ID_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `RESOURCE_NAME_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `DESCRIPTION_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `KEY_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `DEPLOYMENT_ID_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `RESOURCE_NAME_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `DESCRIPTION_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   PRIMARY KEY (`ID_`),
   UNIQUE KEY `ACT_IDX_EVENT_DEF_UNIQ` (`KEY_`,`VERSION_`,`TENANT_ID_`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
@@ -1415,12 +1415,12 @@ DROP TABLE IF EXISTS `FLW_EVENT_DEPLOYMENT`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `FLW_EVENT_DEPLOYMENT` (
-  `ID_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `NAME_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `CATEGORY_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `ID_` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `NAME_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `CATEGORY_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   `DEPLOY_TIME_` datetime(3) DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `PARENT_DEPLOYMENT_ID_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `PARENT_DEPLOYMENT_ID_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   PRIMARY KEY (`ID_`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1442,9 +1442,9 @@ DROP TABLE IF EXISTS `FLW_EVENT_RESOURCE`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `FLW_EVENT_RESOURCE` (
-  `ID_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `NAME_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `DEPLOYMENT_ID_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `ID_` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `NAME_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `DEPLOYMENT_ID_` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   `RESOURCE_BYTES_` longblob,
   PRIMARY KEY (`ID_`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
@@ -1467,20 +1467,20 @@ DROP TABLE IF EXISTS `FLW_EV_DATABASECHANGELOG`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `FLW_EV_DATABASECHANGELOG` (
-  `ID` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `AUTHOR` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `FILENAME` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `ID` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `AUTHOR` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `FILENAME` varchar(255) COLLATE utf8mb4_bin NOT NULL,
   `DATEEXECUTED` datetime NOT NULL,
   `ORDEREXECUTED` int NOT NULL,
-  `EXECTYPE` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `MD5SUM` varchar(35) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `DESCRIPTION` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `COMMENTS` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `TAG` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `LIQUIBASE` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `CONTEXTS` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `LABELS` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `DEPLOYMENT_ID` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL
+  `EXECTYPE` varchar(10) COLLATE utf8mb4_bin NOT NULL,
+  `MD5SUM` varchar(35) COLLATE utf8mb4_bin DEFAULT NULL,
+  `DESCRIPTION` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `COMMENTS` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `TAG` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `LIQUIBASE` varchar(20) COLLATE utf8mb4_bin DEFAULT NULL,
+  `CONTEXTS` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `LABELS` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `DEPLOYMENT_ID` varchar(10) COLLATE utf8mb4_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1490,7 +1490,7 @@ CREATE TABLE `FLW_EV_DATABASECHANGELOG` (
 
 LOCK TABLES `FLW_EV_DATABASECHANGELOG` WRITE;
 /*!40000 ALTER TABLE `FLW_EV_DATABASECHANGELOG` DISABLE KEYS */;
-INSERT INTO `FLW_EV_DATABASECHANGELOG` VALUES ('1','flowable','org/flowable/eventregistry/db/liquibase/flowable-eventregistry-db-changelog.xml','2022-11-22 23:13:15',1,'EXECUTED','8:1b0c48c9cf7945be799d868a2626d687','createTable tableName=FLW_EVENT_DEPLOYMENT; createTable tableName=FLW_EVENT_RESOURCE; createTable tableName=FLW_EVENT_DEFINITION; createIndex indexName=ACT_IDX_EVENT_DEF_UNIQ, tableName=FLW_EVENT_DEFINITION; createTable tableName=FLW_CHANNEL_DEFIN...','',NULL,'4.9.1',NULL,NULL,'9129994988'),('2','flowable','org/flowable/eventregistry/db/liquibase/flowable-eventregistry-db-changelog.xml','2022-11-22 23:13:15',2,'EXECUTED','8:0ea825feb8e470558f0b5754352b9cda','addColumn tableName=FLW_CHANNEL_DEFINITION; addColumn tableName=FLW_CHANNEL_DEFINITION','',NULL,'4.9.1',NULL,NULL,'9129994988'),('3','flowable','org/flowable/eventregistry/db/liquibase/flowable-eventregistry-db-changelog.xml','2022-11-22 23:13:15',3,'EXECUTED','8:3c2bb293350b5cbe6504331980c9dcee','customChange','',NULL,'4.9.1',NULL,NULL,'9129994988');
+INSERT INTO `FLW_EV_DATABASECHANGELOG` VALUES ('1','flowable','org/flowable/eventregistry/db/liquibase/flowable-eventregistry-db-changelog.xml','2022-11-24 23:37:43',1,'EXECUTED','8:1b0c48c9cf7945be799d868a2626d687','createTable tableName=FLW_EVENT_DEPLOYMENT; createTable tableName=FLW_EVENT_RESOURCE; createTable tableName=FLW_EVENT_DEFINITION; createIndex indexName=ACT_IDX_EVENT_DEF_UNIQ, tableName=FLW_EVENT_DEFINITION; createTable tableName=FLW_CHANNEL_DEFIN...','',NULL,'4.9.1',NULL,NULL,'9304263023'),('2','flowable','org/flowable/eventregistry/db/liquibase/flowable-eventregistry-db-changelog.xml','2022-11-24 23:37:43',2,'EXECUTED','8:0ea825feb8e470558f0b5754352b9cda','addColumn tableName=FLW_CHANNEL_DEFINITION; addColumn tableName=FLW_CHANNEL_DEFINITION','',NULL,'4.9.1',NULL,NULL,'9304263023'),('3','flowable','org/flowable/eventregistry/db/liquibase/flowable-eventregistry-db-changelog.xml','2022-11-24 23:37:43',3,'EXECUTED','8:3c2bb293350b5cbe6504331980c9dcee','customChange','',NULL,'4.9.1',NULL,NULL,'9304263023');
 /*!40000 ALTER TABLE `FLW_EV_DATABASECHANGELOG` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1505,7 +1505,7 @@ CREATE TABLE `FLW_EV_DATABASECHANGELOGLOCK` (
   `ID` int NOT NULL,
   `LOCKED` bit(1) NOT NULL,
   `LOCKGRANTED` datetime DEFAULT NULL,
-  `LOCKEDBY` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `LOCKEDBY` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1528,16 +1528,16 @@ DROP TABLE IF EXISTS `FLW_RU_BATCH`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `FLW_RU_BATCH` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
-  `TYPE_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `SEARCH_KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SEARCH_KEY2_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `SEARCH_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SEARCH_KEY2_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `CREATE_TIME_` datetime(3) NOT NULL,
   `COMPLETE_TIME_` datetime(3) DEFAULT NULL,
-  `STATUS_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `BATCH_DOC_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
+  `STATUS_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `BATCH_DOC_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
   PRIMARY KEY (`ID_`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1559,20 +1559,20 @@ DROP TABLE IF EXISTS `FLW_RU_BATCH_PART`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `FLW_RU_BATCH_PART` (
-  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ID_` varchar(64) COLLATE utf8_bin NOT NULL,
   `REV_` int DEFAULT NULL,
-  `BATCH_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TYPE_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `SCOPE_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SUB_SCOPE_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SCOPE_TYPE_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SEARCH_KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `SEARCH_KEY2_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `BATCH_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TYPE_` varchar(64) COLLATE utf8_bin NOT NULL,
+  `SCOPE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SUB_SCOPE_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SCOPE_TYPE_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `SEARCH_KEY_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `SEARCH_KEY2_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `CREATE_TIME_` datetime(3) NOT NULL,
   `COMPLETE_TIME_` datetime(3) DEFAULT NULL,
-  `STATUS_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `RESULT_DOC_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT '',
+  `STATUS_` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `RESULT_DOC_ID_` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `TENANT_ID_` varchar(255) COLLATE utf8_bin DEFAULT '',
   PRIMARY KEY (`ID_`),
   KEY `FLW_IDX_BATCH_PART` (`BATCH_ID_`),
   CONSTRAINT `FLW_FK_BATCH_PART_PARENT` FOREIGN KEY (`BATCH_ID_`) REFERENCES `FLW_RU_BATCH` (`ID_`)
@@ -1863,7 +1863,7 @@ CREATE TABLE `modeling_page` (
 
 LOCK TABLES `modeling_page` WRITE;
 /*!40000 ALTER TABLE `modeling_page` DISABLE KEYS */;
-INSERT INTO `modeling_page` VALUES (1594501486041550849,'ENTITY','product_line','VIEW','{\"mode\": \"read\", \"size\": \"default\", \"style\": \"\", \"children\": [{\"id\": \"id\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"number-input\", \"formItemAttrs\": {\"label\": \"主键ID\"}}, {\"id\": \"name\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"名称\"}}, {\"id\": \"from_type\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"来源类型\"}}, {\"id\": \"from_id\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"number-input\", \"formItemAttrs\": {\"label\": \"来源ID\"}}, {\"id\": \"update_by\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"更新人\"}}, {\"id\": \"update_time\", \"attrs\": {\"style\": \"width: 100%\", \"format\": \"YYYY-MM-DD HH:mm:ss\", \"dateType\": \"datetime\", \"valueFormat\": \"YYYY-MM-DD HH:mm:ss\"}, \"category\": \"form-item\", \"component\": \"date-picker\", \"formItemAttrs\": {\"label\": \"更新时间\"}}, {\"id\": \"create_by\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"创建人\"}}, {\"id\": \"create_time\", \"attrs\": {\"style\": \"width: 100%\", \"format\": \"YYYY-MM-DD HH:mm:ss\", \"dateType\": \"datetime\", \"valueFormat\": \"YYYY-MM-DD HH:mm:ss\"}, \"category\": \"form-item\", \"component\": \"date-picker\", \"formItemAttrs\": {\"label\": \"创建时间\"}}, {\"id\": \"cost_center\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": \"1583824814787584001\", \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"single-select\", \"formItemAttrs\": {\"label\": \"成本中心\"}}, {\"id\": \"cost_center_multiple\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": [\"1584347991602769921\", \"1584348027585703938\"], \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"multi-select\", \"formItemAttrs\": {\"label\": \"多选成本中心\"}}], \"labelWidth\": \"120px\", \"labelPosition\": \"auto\"}',1,'2022-11-24 09:51:57',1,'2022-11-21 09:22:33'),(1594501534712254465,'ENTITY','product_line','ADD','{\"mode\": \"edit\", \"size\": \"default\", \"style\": \"\", \"children\": [{\"id\": \"name\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"名称\", \"required\": true}}, {\"id\": \"cost_center\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": \"1583824814787584001\", \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"single-select\", \"formItemAttrs\": {\"label\": \"成本中心\", \"required\": true}}, {\"id\": \"cost_center_multiple\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": [\"1584347991602769921\", \"1584348027585703938\"], \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"multi-select\", \"formItemAttrs\": {\"label\": \"多选成本中心\", \"required\": true}}, {\"id\": \"from_type\", \"attrs\": {\"mode\": \"read\", \"style\": \"width: 100%\", \"defaultValue\": \"USER\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"来源类型\"}}], \"labelWidth\": \"120px\", \"labelPosition\": \"auto\"}',1,'2022-11-24 09:52:04',1,'2022-11-21 09:22:45'),(1594501608162906113,'ENTITY','product_line','UPDATE','{\"mode\": \"edit\", \"size\": \"default\", \"style\": \"\", \"children\": [{\"id\": \"name\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"名称\", \"required\": true}}, {\"id\": \"cost_center\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": \"1583824814787584001\", \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"single-select\", \"formItemAttrs\": {\"label\": \"成本中心\", \"required\": true}}, {\"id\": \"cost_center_multiple\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": [\"1584347991602769921\", \"1584348027585703938\"], \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"multi-select\", \"formItemAttrs\": {\"label\": \"多选成本中心\", \"required\": true}}], \"labelWidth\": \"120px\", \"labelPosition\": \"auto\"}',1,'2022-11-24 09:52:09',1,'2022-11-21 09:23:02'),(1595071632762552322,'WORKFLOW','holiday','启动界面','{\"mode\": \"edit\", \"size\": \"default\", \"style\": \"\", \"children\": [{\"id\": \"name\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"标题\"}}, {\"id\": \"dept_id\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"dept-select\", \"formItemAttrs\": {\"label\": \"所属部门\"}}, {\"id\": \"days\", \"attrs\": {\"style\": \"width: 100%\", \"defaultValue\": 1}, \"category\": \"form-item\", \"component\": \"number-input\", \"formItemAttrs\": {\"label\": \"天数\"}}, {\"id\": \"leader\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"主管\"}}, {\"id\": \"hr\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"HR专员\"}}, {\"id\": \"headquarters\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": true}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"总部领导\"}}, {\"id\": \"cost_center\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": \"1583824814787584001\", \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"single-select\", \"formItemAttrs\": {\"label\": \"成本中心\"}}], \"labelWidth\": \"120px\", \"labelPosition\": \"auto\"}',1,'2022-11-24 09:52:22',1,'2022-11-22 23:08:07'),(1595071870168547329,'WORKFLOW','holiday','基本查看界面','{\"mode\": \"read\", \"size\": \"default\", \"style\": \"\", \"children\": [{\"id\": \"code\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"流水号\"}}, {\"id\": \"name\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"标题\"}}, {\"id\": \"dept_id\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"dept-select\", \"formItemAttrs\": {\"label\": \"所属部门\"}}, {\"id\": \"days\", \"attrs\": {\"style\": \"width: 100%\", \"defaultValue\": 1}, \"category\": \"form-item\", \"component\": \"number-input\", \"formItemAttrs\": {\"label\": \"天数\"}}, {\"id\": \"leader\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"主管\"}}, {\"id\": \"headquarters\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": true}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"总部领导\"}}, {\"id\": \"hr\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"HR专员\"}}, {\"id\": \"cost_center\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": \"1583824814787584001\", \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"single-select\", \"formItemAttrs\": {\"label\": \"成本中心\"}}, {\"id\": \"create_by\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"创建人\"}}, {\"id\": \"create_time\", \"attrs\": {\"style\": \"width: 100%\", \"format\": \"YYYY-MM-DD HH:mm:ss\", \"dateType\": \"datetime\", \"valueFormat\": \"YYYY-MM-DD HH:mm:ss\"}, \"category\": \"form-item\", \"component\": \"date-picker\", \"formItemAttrs\": {\"label\": \"创建时间\"}}, {\"id\": \"update_by\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"更新人\"}}, {\"id\": \"update_time\", \"attrs\": {\"style\": \"width: 100%\", \"format\": \"YYYY-MM-DD HH:mm:ss\", \"dateType\": \"datetime\", \"valueFormat\": \"YYYY-MM-DD HH:mm:ss\"}, \"category\": \"form-item\", \"component\": \"date-picker\", \"formItemAttrs\": {\"label\": \"更新时间\"}}], \"labelWidth\": \"120px\", \"labelPosition\": \"right\"}',1,'2022-11-22 23:09:12',1,'2022-11-22 23:09:04');
+INSERT INTO `modeling_page` VALUES (1594501486041550849,'ENTITY','product_line','VIEW','{\"mode\": \"read\", \"size\": \"default\", \"style\": \"\", \"children\": [{\"id\": \"id\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"number-input\", \"formItemAttrs\": {\"label\": \"主键ID\"}}, {\"id\": \"name\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"名称\"}}, {\"id\": \"from_type\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"来源类型\"}}, {\"id\": \"from_id\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"number-input\", \"formItemAttrs\": {\"label\": \"来源ID\"}}, {\"id\": \"update_by\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"更新人\"}}, {\"id\": \"update_time\", \"attrs\": {\"style\": \"width: 100%\", \"format\": \"YYYY-MM-DD HH:mm:ss\", \"dateType\": \"datetime\", \"valueFormat\": \"YYYY-MM-DD HH:mm:ss\"}, \"category\": \"form-item\", \"component\": \"date-picker\", \"formItemAttrs\": {\"label\": \"更新时间\"}}, {\"id\": \"create_by\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"创建人\"}}, {\"id\": \"create_time\", \"attrs\": {\"style\": \"width: 100%\", \"format\": \"YYYY-MM-DD HH:mm:ss\", \"dateType\": \"datetime\", \"valueFormat\": \"YYYY-MM-DD HH:mm:ss\"}, \"category\": \"form-item\", \"component\": \"date-picker\", \"formItemAttrs\": {\"label\": \"创建时间\"}}, {\"id\": \"cost_center\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": \"1583824814787584001\", \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"single-select\", \"formItemAttrs\": {\"label\": \"成本中心\"}}, {\"id\": \"cost_center_multiple\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": [\"1584347991602769921\", \"1584348027585703938\"], \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"multi-select\", \"formItemAttrs\": {\"label\": \"多选成本中心\"}}], \"labelWidth\": \"120px\", \"labelPosition\": \"auto\"}',1,'2022-11-24 09:51:57',1,'2022-11-21 09:22:33'),(1594501534712254465,'ENTITY','product_line','ADD','{\"mode\": \"edit\", \"size\": \"default\", \"style\": \"\", \"children\": [{\"id\": \"name\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"名称\", \"required\": true}}, {\"id\": \"cost_center\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": \"1583824814787584001\", \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"single-select\", \"formItemAttrs\": {\"label\": \"成本中心\", \"required\": true}}, {\"id\": \"cost_center_multiple\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": [\"1584347991602769921\", \"1584348027585703938\"], \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"multi-select\", \"formItemAttrs\": {\"label\": \"多选成本中心\", \"required\": true}}, {\"id\": \"from_type\", \"attrs\": {\"mode\": \"read\", \"style\": \"width: 100%\", \"defaultValue\": \"USER\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"来源类型\"}}], \"labelWidth\": \"120px\", \"labelPosition\": \"auto\"}',1,'2022-11-24 09:52:04',1,'2022-11-21 09:22:45'),(1594501608162906113,'ENTITY','product_line','UPDATE','{\"mode\": \"edit\", \"size\": \"default\", \"style\": \"\", \"children\": [{\"id\": \"name\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"名称\", \"required\": true}}, {\"id\": \"cost_center\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": \"1583824814787584001\", \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"single-select\", \"formItemAttrs\": {\"label\": \"成本中心\", \"required\": true}}, {\"id\": \"cost_center_multiple\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": [\"1584347991602769921\", \"1584348027585703938\"], \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"multi-select\", \"formItemAttrs\": {\"label\": \"多选成本中心\", \"required\": true}}], \"labelWidth\": \"120px\", \"labelPosition\": \"auto\"}',1,'2022-11-24 09:52:09',1,'2022-11-21 09:23:02'),(1595071632762552322,'WORKFLOW','holiday','启动界面','{\"mode\": \"edit\", \"size\": \"default\", \"style\": \"\", \"children\": [{\"id\": \"name\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"标题\"}}, {\"id\": \"dept_id\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"dept-select\", \"formItemAttrs\": {\"label\": \"所属部门\"}}, {\"id\": \"days\", \"attrs\": {\"style\": \"width: 100%\", \"defaultValue\": 1}, \"category\": \"form-item\", \"component\": \"number-input\", \"formItemAttrs\": {\"label\": \"天数\"}}, {\"id\": \"leader\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"主管\"}}, {\"id\": \"hr\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"HR专员\"}}, {\"id\": \"headquarters\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": true}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"总部领导\"}}, {\"id\": \"cost_center\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": \"1583824814787584001\", \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"single-select\", \"formItemAttrs\": {\"label\": \"成本中心\"}}], \"labelWidth\": \"120px\", \"labelPosition\": \"auto\"}',1,'2022-11-24 23:39:51',1,'2022-11-22 23:08:07'),(1595071870168547329,'WORKFLOW','holiday','基本查看界面','{\"mode\": \"read\", \"size\": \"default\", \"style\": \"\", \"children\": [{\"id\": \"code\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"流水号\"}}, {\"id\": \"name\", \"attrs\": {\"style\": \"width: 100%\"}, \"category\": \"form-item\", \"component\": \"text-input\", \"formItemAttrs\": {\"label\": \"标题\"}}, {\"id\": \"dept_id\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"dept-select\", \"formItemAttrs\": {\"label\": \"所属部门\"}}, {\"id\": \"days\", \"attrs\": {\"style\": \"width: 100%\", \"defaultValue\": 1}, \"category\": \"form-item\", \"component\": \"number-input\", \"formItemAttrs\": {\"label\": \"天数\"}}, {\"id\": \"leader\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"主管\"}}, {\"id\": \"headquarters\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": true}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"总部领导\"}}, {\"id\": \"hr\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"HR专员\"}}, {\"id\": \"cost_center\", \"attrs\": {\"style\": \"width: 100%\", \"expand\": false, \"options\": [], \"clearable\": true, \"filterable\": true, \"buttonOption\": false, \"defaultValue\": \"1583824814787584001\", \"optionTypeId\": \"1583739849538342914\", \"fitInputWidth\": true, \"renderAfterExpand\": false}, \"category\": \"form-item\", \"component\": \"single-select\", \"formItemAttrs\": {\"label\": \"成本中心\"}}, {\"id\": \"create_by\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"创建人\"}}, {\"id\": \"create_time\", \"attrs\": {\"style\": \"width: 100%\", \"format\": \"YYYY-MM-DD HH:mm:ss\", \"dateType\": \"datetime\", \"valueFormat\": \"YYYY-MM-DD HH:mm:ss\"}, \"category\": \"form-item\", \"component\": \"date-picker\", \"formItemAttrs\": {\"label\": \"创建时间\"}}, {\"id\": \"update_by\", \"attrs\": {\"style\": \"width: 100%\", \"multiple\": false}, \"category\": \"form-item\", \"component\": \"user-select\", \"formItemAttrs\": {\"label\": \"更新人\"}}, {\"id\": \"update_time\", \"attrs\": {\"style\": \"width: 100%\", \"format\": \"YYYY-MM-DD HH:mm:ss\", \"dateType\": \"datetime\", \"valueFormat\": \"YYYY-MM-DD HH:mm:ss\"}, \"category\": \"form-item\", \"component\": \"date-picker\", \"formItemAttrs\": {\"label\": \"更新时间\"}}], \"labelWidth\": \"120px\", \"labelPosition\": \"auto\"}',1,'2022-11-24 23:36:23',1,'2022-11-22 23:09:04');
 /*!40000 ALTER TABLE `modeling_page` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1969,7 +1969,7 @@ CREATE TABLE `modeling_view_column` (
 
 LOCK TABLES `modeling_view_column` WRITE;
 /*!40000 ALTER TABLE `modeling_view_column` DISABLE KEYS */;
-INSERT INTO `modeling_view_column` VALUES (1595218947665793025,1595044605841932289,1584161060399378434,1,0,180,'left',1,0,1,'',1,'2022-11-23 08:53:30',1,'2022-11-23 08:53:30'),(1595218947665793026,1595044605841932289,1584161141097787394,2,0,-1,'left',1,0,1,'',1,'2022-11-23 08:53:30',1,'2022-11-23 08:53:30'),(1595218947665793027,1595044605841932289,1584161976175300609,3,0,200,'left',1,0,1,'',1,'2022-11-23 08:53:30',1,'2022-11-23 08:53:30'),(1595218947665793028,1595044605841932289,1593973328016416770,4,0,100,'right',0,1,1,'',1,'2022-11-23 08:53:30',1,'2022-11-23 08:53:30'),(1595218947690958849,1595044605841932289,1584339977915265025,5,0,200,'left',1,0,1,'',1,'2022-11-23 08:53:30',1,'2022-11-23 08:53:30'),(1595218947690958850,1595044605841932289,1593973507327107074,6,0,200,'left',1,0,1,'',1,'2022-11-23 08:53:30',1,'2022-11-23 08:53:30'),(1595218947690958851,1595044605841932289,1593973643990114305,7,0,200,'left',1,0,1,'',1,'2022-11-23 08:53:30',1,'2022-11-23 08:53:30'),(1595218947690958852,1595044605841932289,1593974114628771842,8,0,200,'left',1,0,1,'',1,'2022-11-23 08:53:30',1,'2022-11-23 08:53:30'),(1595218947690958853,1595044605841932289,1584181666134118402,9,0,200,'left',1,0,1,'SELF',1,'2022-11-23 08:53:30',1,'2022-11-23 08:53:30'),(1595218947690958854,1595044605841932289,1584181794765033473,10,0,150,'left',0,1,1,'',1,'2022-11-23 08:53:30',1,'2022-11-23 08:53:30'),(1595218947690958855,1595044605841932289,1584182223049609217,11,0,200,'left',1,0,1,'',1,'2022-11-23 08:53:30',1,'2022-11-23 08:53:30'),(1595218947690958856,1595044605841932289,1584182320063860737,12,0,150,'left',0,1,1,'',1,'2022-11-23 08:53:30',1,'2022-11-23 08:53:30'),(1595609580905652226,1594323506409889794,1585589346233024513,1,100,-1,'left',1,0,1,'',1,'2022-11-24 10:45:44',1,'2022-11-24 10:45:44'),(1595609580905652227,1594323506409889794,1585589426855936002,2,100,200,'left',1,0,1,'',1,'2022-11-24 10:45:44',1,'2022-11-24 10:45:44'),(1595609580905652228,1594323506409889794,1585590278232539138,3,150,200,'left',1,0,1,'SELF',1,'2022-11-24 10:45:44',1,'2022-11-24 10:45:44'),(1595609580905652229,1594323506409889794,1585590372281417730,4,200,300,'left',1,1,1,'',1,'2022-11-24 10:45:44',1,'2022-11-24 10:45:44'),(1595609580905652230,1594323506409889794,1585867406723325954,5,150,200,'left',1,0,1,'',1,'2022-11-24 10:45:44',1,'2022-11-24 10:45:44'),(1595609580905652231,1594323506409889794,1585868195659325441,6,200,300,'left',1,1,1,'',1,'2022-11-24 10:45:44',1,'2022-11-24 10:45:44'),(1595609580905652232,1594323506409889794,1589631844999802881,7,151,200,'left',1,0,1,'',1,'2022-11-24 10:45:44',1,'2022-11-24 10:45:44');
+INSERT INTO `modeling_view_column` VALUES (1595751066591096834,1594323506409889794,1585589346233024513,1,100,-1,'left',1,0,1,'',1,'2022-11-24 20:07:57',1,'2022-11-24 20:07:57'),(1595751066591096835,1594323506409889794,1585589426855936002,2,0,200,'left',1,0,1,'',1,'2022-11-24 20:07:57',1,'2022-11-24 20:07:57'),(1595751066645622785,1594323506409889794,1585590278232539138,3,150,200,'left',1,0,1,'SELF',1,'2022-11-24 20:07:57',1,'2022-11-24 20:07:57'),(1595751066645622786,1594323506409889794,1585590372281417730,4,150,300,'left',0,1,1,'',1,'2022-11-24 20:07:57',1,'2022-11-24 20:07:57'),(1595751066645622787,1594323506409889794,1585867406723325954,5,150,200,'left',1,0,1,'',1,'2022-11-24 20:07:57',1,'2022-11-24 20:07:57'),(1595751066712731650,1594323506409889794,1585868195659325441,6,150,300,'left',0,1,1,'',1,'2022-11-24 20:07:57',1,'2022-11-24 20:07:57'),(1595751066712731651,1594323506409889794,1589631844999802881,7,150,200,'left',1,0,1,'',1,'2022-11-24 20:07:57',1,'2022-11-24 20:07:57'),(1595751638178263041,1595044605841932289,1583622160878735361,1,100,100,'right',0,1,1,'',1,'2022-11-24 20:10:13',1,'2022-11-24 20:10:13'),(1595751638178263042,1595044605841932289,1584161060399378434,2,150,200,'left',1,0,1,'',1,'2022-11-24 20:10:13',1,'2022-11-24 20:10:13'),(1595751638241177601,1595044605841932289,1584161141097787394,3,150,200,'left',1,0,1,'',1,'2022-11-24 20:10:13',1,'2022-11-24 20:10:13'),(1595751638241177602,1595044605841932289,1584161976175300609,4,200,200,'left',1,0,1,'',1,'2022-11-24 20:10:13',1,'2022-11-24 20:10:13'),(1595751638312480770,1595044605841932289,1593973328016416770,5,80,100,'right',0,1,1,'',1,'2022-11-24 20:10:13',1,'2022-11-24 20:10:13'),(1595751638312480771,1595044605841932289,1584339977915265025,6,150,200,'left',1,0,1,'',1,'2022-11-24 20:10:13',1,'2022-11-24 20:10:13'),(1595751638312480772,1595044605841932289,1593973507327107074,7,150,200,'left',1,0,1,'',1,'2022-11-24 20:10:13',1,'2022-11-24 20:10:13'),(1595751638379589634,1595044605841932289,1593973643990114305,8,150,200,'left',1,0,1,'',1,'2022-11-24 20:10:13',1,'2022-11-24 20:10:13'),(1595751638379589635,1595044605841932289,1593974114628771842,9,150,200,'left',1,0,1,'',1,'2022-11-24 20:10:13',1,'2022-11-24 20:10:13'),(1595751638379589636,1595044605841932289,1584181666134118402,10,150,200,'left',1,0,1,'SELF',1,'2022-11-24 20:10:13',1,'2022-11-24 20:10:13'),(1595751638434115585,1595044605841932289,1584181794765033473,11,200,300,'left',0,1,1,'',1,'2022-11-24 20:10:13',1,'2022-11-24 20:10:13'),(1595751638434115586,1595044605841932289,1584182223049609217,12,150,200,'left',1,0,1,'',1,'2022-11-24 20:10:13',1,'2022-11-24 20:10:13'),(1595751638497030146,1595044605841932289,1584182320063860737,13,200,300,'left',0,1,1,'',1,'2022-11-24 20:10:13',1,'2022-11-24 20:10:13');
 /*!40000 ALTER TABLE `modeling_view_column` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2239,7 +2239,7 @@ CREATE TABLE `wf_holiday` (
 
 LOCK TABLES `wf_holiday` WRITE;
 /*!40000 ALTER TABLE `wf_holiday` DISABLE KEYS */;
-INSERT INTO `wf_holiday` VALUES (1595077305026027521,'9e5e06cf-6a7a-11ed-b587-50ebf6b3961b','HL2022112200001','111',2,1,'2022-11-22 23:30:39',1,'2022-11-22 23:30:39',1583824814787584001,1,1,1,'1');
+INSERT INTO `wf_holiday` VALUES (1595804602699915266,'5988e924-6c0e-11ed-bcdf-50ebf6b3961b','HL2022112400001','测试1',7,1,'2022-11-24 23:40:40',1,'2022-11-24 23:40:41',1583826162119663617,1111,1,1,'2,3,4');
 /*!40000 ALTER TABLE `wf_holiday` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2266,7 +2266,7 @@ CREATE TABLE `wf_holiday_ref` (
 
 LOCK TABLES `wf_holiday_ref` WRITE;
 /*!40000 ALTER TABLE `wf_holiday_ref` DISABLE KEYS */;
-INSERT INTO `wf_holiday_ref` VALUES (1595077305126690817,'headquarters',1595077305026027521,1);
+INSERT INTO `wf_holiday_ref` VALUES (1595804602737664001,'headquarters',1595804602699915266,2),(1595804602737664002,'headquarters',1595804602699915266,3),(1595804602737664003,'headquarters',1595804602699915266,4);
 /*!40000 ALTER TABLE `wf_holiday_ref` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2342,12 +2342,12 @@ DROP TABLE IF EXISTS `workflow_type_def`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `workflow_type_def` (
   `id` bigint unsigned NOT NULL COMMENT '主键ID',
-  `key` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '流程标识',
-  `category` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL COMMENT '分类',
-  `name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '流程名称',
-  `remark` varchar(256) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL COMMENT '流程说明',
+  `key` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8_bin NOT NULL COMMENT '流程标识',
+  `category` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8_bin DEFAULT NULL COMMENT '分类',
+  `name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8_bin NOT NULL COMMENT '流程名称',
+  `remark` varchar(256) CHARACTER SET utf8mb3 COLLATE utf8_bin DEFAULT NULL COMMENT '流程说明',
   `code_gen_rule` json NOT NULL COMMENT '编码生成规则',
-  `process_definition_id` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL COMMENT '流程定义ID',
+  `process_definition_id` varchar(128) CHARACTER SET utf8mb3 COLLATE utf8_bin DEFAULT NULL COMMENT '流程定义ID',
   `active_ver_id` bigint unsigned DEFAULT NULL COMMENT '激活的版本ID',
   `status` int DEFAULT NULL COMMENT '状态',
   `update_by` bigint unsigned NOT NULL COMMENT '更新人',
@@ -2365,7 +2365,7 @@ CREATE TABLE `workflow_type_def` (
 
 LOCK TABLES `workflow_type_def` WRITE;
 /*!40000 ALTER TABLE `workflow_type_def` DISABLE KEYS */;
-INSERT INTO `workflow_type_def` VALUES (1589241285277700097,'holiday',NULL,'请假流程','员工通用的请假流程','{\"type\": \"fixed\", \"joiner\": null, \"prefix\": \"HL\", \"delimiter\": null, \"numFormat\": 5, \"dateFormat\": \"yyyyMMdd\"}','holiday:1:39d3e0f2-6a78-11ed-8eec-50ebf6b3961b',1589241285311254529,0,1,'2022-11-22 23:13:31',1,'2022-11-06 21:00:24');
+INSERT INTO `workflow_type_def` VALUES (1589241285277700097,'holiday',NULL,'请假流程','员工通用的请假流程','{\"type\": \"fixed\", \"joiner\": null, \"prefix\": \"HL\", \"delimiter\": null, \"numFormat\": 5, \"dateFormat\": \"yyyyMMdd\"}','holiday:1:472d3423-6c0e-11ed-bcdf-50ebf6b3961b',1589241285311254529,0,1,'2022-11-24 23:40:09',1,'2022-11-06 21:00:24');
 /*!40000 ALTER TABLE `workflow_type_def` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2399,7 +2399,7 @@ CREATE TABLE `workflow_type_ver` (
 
 LOCK TABLES `workflow_type_ver` WRITE;
 /*!40000 ALTER TABLE `workflow_type_ver` DISABLE KEYS */;
-INSERT INTO `workflow_type_ver` VALUES (1589241285311254529,'holiday',1,'测试部署',1,1,'2022-11-24 09:53:05',1,'2022-11-06 21:00:24','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:omgdc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:omgdi=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:flowable=\"http://flowable.org/bpmn\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" targetNamespace=\"http://www.flowable.org/processdef\"><process id=\"holiday\" name=\"请假流程\"><startEvent id=\"startEvent_39f7426\" name=\"开始\" flowable:formKey=\"1595071632762552322\" flowable:initiator=\"creator\"><outgoing>Flow_002ih2x</outgoing></startEvent><userTask id=\"Activity_1ro616j\" name=\"发起人\" flowable:formKey=\"1595071870168547329\"><incoming>Flow_002ih2x</incoming><incoming>Flow_1t3xfdq</incoming><incoming>Flow_0xmo5tz</incoming><incoming>Flow_09eiiut</incoming><outgoing>Flow_1is270g</outgoing></userTask><sequenceFlow id=\"Flow_002ih2x\" sourceRef=\"startEvent_39f7426\" targetRef=\"Activity_1ro616j\" /><exclusiveGateway id=\"Gateway_0qjovut\"><incoming>Flow_1is270g</incoming><outgoing>Flow_0185z70</outgoing><outgoing>Flow_0xoo0rv</outgoing></exclusiveGateway><sequenceFlow id=\"Flow_1is270g\" name=\"提交\" sourceRef=\"Activity_1ro616j\" targetRef=\"Gateway_0qjovut\" flowable:order=\"1\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"提交\"}</conditionExpression></sequenceFlow><userTask id=\"Activity_1a0z8wz\" name=\"主管审核\" flowable:formKey=\"1595071870168547329\"><incoming>Flow_0185z70</incoming><outgoing>Flow_06nakbb</outgoing><outgoing>Flow_09eiiut</outgoing></userTask><sequenceFlow id=\"Flow_0185z70\" name=\"请假天数&#62;10\" sourceRef=\"Gateway_0qjovut\" targetRef=\"Activity_1a0z8wz\"><conditionExpression xsi:type=\"tFormalExpression\">${days &gt; 10}</conditionExpression></sequenceFlow><userTask id=\"Activity_0lwiy64\" name=\"HR审核\" flowable:formKey=\"1595071870168547329\"><incoming>Flow_0xoo0rv</incoming><outgoing>Flow_0e8qrct</outgoing><outgoing>Flow_0xmo5tz</outgoing></userTask><sequenceFlow id=\"Flow_0xoo0rv\" name=\"请假天数&#60;=10\" sourceRef=\"Gateway_0qjovut\" targetRef=\"Activity_0lwiy64\"><conditionExpression xsi:type=\"tFormalExpression\">${days &lt;= 10}</conditionExpression></sequenceFlow><userTask id=\"Activity_0t23scb\" name=\"总部审核\" flowable:formKey=\"1595071870168547329\" flowable:assignee=\"${assigneeItem}\" flowable:assigneeType=\"user\" flowable:assigneeFields=\"create_by\"><incoming>Flow_06nakbb</incoming><incoming>Flow_0e8qrct</incoming><outgoing>Flow_15fc7du</outgoing><outgoing>Flow_1t3xfdq</outgoing><multiInstanceLoopCharacteristics isSequential=\"true\" flowable:collection=\"${psr.read(execution, &#34;holiday&#34;, &#34;create_by&#34;)}\" flowable:elementVariable=\"assigneeItem\" /></userTask><sequenceFlow id=\"Flow_06nakbb\" name=\"同意\" sourceRef=\"Activity_1a0z8wz\" targetRef=\"Activity_0t23scb\" flowable:order=\"1\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"同意\"}</conditionExpression></sequenceFlow><sequenceFlow id=\"Flow_0e8qrct\" name=\"同意\" sourceRef=\"Activity_0lwiy64\" targetRef=\"Activity_0t23scb\" flowable:order=\"1\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"同意\"}</conditionExpression></sequenceFlow><endEvent id=\"Event_0hqfd5v\" flowable:formKey=\"1593079191750696961\"><incoming>Flow_15fc7du</incoming></endEvent><sequenceFlow id=\"Flow_15fc7du\" name=\"同意\" sourceRef=\"Activity_0t23scb\" targetRef=\"Event_0hqfd5v\" flowable:order=\"1\" flowable:completionRule=\"dynamic\" flowable:completionExpression=\"11111\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"同意\"}</conditionExpression></sequenceFlow><sequenceFlow id=\"Flow_1t3xfdq\" name=\"拒绝\" sourceRef=\"Activity_0t23scb\" targetRef=\"Activity_1ro616j\" flowable:formKey=\"\" flowable:order=\"2\" flowable:completionRule=\"any\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"拒绝\"}</conditionExpression></sequenceFlow><sequenceFlow id=\"Flow_0xmo5tz\" name=\"驳回\" sourceRef=\"Activity_0lwiy64\" targetRef=\"Activity_1ro616j\" flowable:formKey=\"\" flowable:order=\"2\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"驳回\"}</conditionExpression></sequenceFlow><sequenceFlow id=\"Flow_09eiiut\" name=\"驳回\" sourceRef=\"Activity_1a0z8wz\" targetRef=\"Activity_1ro616j\" flowable:formKey=\"\" flowable:order=\"1\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"驳回\"}</conditionExpression></sequenceFlow></process><bpmndi:BPMNDiagram id=\"BPMNDiagram_1\"><bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"holiday\"><bpmndi:BPMNEdge id=\"Flow_09eiiut_di\" bpmnElement=\"Flow_09eiiut\"><omgdi:waypoint x=\"-450\" y=\"-180\" /><omgdi:waypoint x=\"-450\" y=\"-220\" /><omgdi:waypoint x=\"-790\" y=\"-220\" /><omgdi:waypoint x=\"-790\" y=\"-50\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-631\" y=\"-238\" width=\"22\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_0xmo5tz_di\" bpmnElement=\"Flow_0xmo5tz\"><omgdi:waypoint x=\"-450\" y=\"140\" /><omgdi:waypoint x=\"-450\" y=\"170\" /><omgdi:waypoint x=\"-760\" y=\"170\" /><omgdi:waypoint x=\"-760\" y=\"30\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-616\" y=\"183\" width=\"22\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_1t3xfdq_di\" bpmnElement=\"Flow_1t3xfdq\"><omgdi:waypoint x=\"-220\" y=\"20\" /><omgdi:waypoint x=\"-220\" y=\"250\" /><omgdi:waypoint x=\"-790\" y=\"250\" /><omgdi:waypoint x=\"-790\" y=\"30\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-516\" y=\"263\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_15fc7du_di\" bpmnElement=\"Flow_15fc7du\"><omgdi:waypoint x=\"-170\" y=\"-20\" /><omgdi:waypoint x=\"-38\" y=\"-20\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-115\" y=\"-38\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_0e8qrct_di\" bpmnElement=\"Flow_0e8qrct\"><omgdi:waypoint x=\"-400\" y=\"100\" /><omgdi:waypoint x=\"-240\" y=\"100\" /><omgdi:waypoint x=\"-240\" y=\"20\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-331\" y=\"82\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_06nakbb_di\" bpmnElement=\"Flow_06nakbb\"><omgdi:waypoint x=\"-400\" y=\"-140\" /><omgdi:waypoint x=\"-220\" y=\"-140\" /><omgdi:waypoint x=\"-220\" y=\"-60\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-321\" y=\"-158\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_0xoo0rv_di\" bpmnElement=\"Flow_0xoo0rv\"><omgdi:waypoint x=\"-630\" y=\"15\" /><omgdi:waypoint x=\"-630\" y=\"100\" /><omgdi:waypoint x=\"-500\" y=\"100\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-665\" y=\"113\" width=\"70\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_0185z70_di\" bpmnElement=\"Flow_0185z70\"><omgdi:waypoint x=\"-630\" y=\"-35\" /><omgdi:waypoint x=\"-630\" y=\"-140\" /><omgdi:waypoint x=\"-500\" y=\"-140\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-662\" y=\"-157\" width=\"63\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_1is270g_di\" bpmnElement=\"Flow_1is270g\"><omgdi:waypoint x=\"-740\" y=\"-10\" /><omgdi:waypoint x=\"-655\" y=\"-10\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-708\" y=\"-28\" width=\"22\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_002ih2x_di\" bpmnElement=\"Flow_002ih2x\"><omgdi:waypoint x=\"-912\" y=\"-10\" /><omgdi:waypoint x=\"-840\" y=\"-10\" /></bpmndi:BPMNEdge><bpmndi:BPMNShape id=\"_BPMNShape_StartEvent_2\" bpmnElement=\"startEvent_39f7426\"><omgdc:Bounds x=\"-948\" y=\"-28\" width=\"36\" height=\"36\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-941\" y=\"8\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_1ro616j_di\" bpmnElement=\"Activity_1ro616j\"><omgdc:Bounds x=\"-840\" y=\"-50\" width=\"100\" height=\"80\" /><bpmndi:BPMNLabel /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Gateway_0qjovut_di\" bpmnElement=\"Gateway_0qjovut\" isMarkerVisible=\"true\"><omgdc:Bounds x=\"-655\" y=\"-35\" width=\"50\" height=\"50\" /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_1a0z8wz_di\" bpmnElement=\"Activity_1a0z8wz\"><omgdc:Bounds x=\"-500\" y=\"-180\" width=\"100\" height=\"80\" /><bpmndi:BPMNLabel /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_0lwiy64_di\" bpmnElement=\"Activity_0lwiy64\"><omgdc:Bounds x=\"-500\" y=\"60\" width=\"100\" height=\"80\" /><bpmndi:BPMNLabel /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_0t23scb_di\" bpmnElement=\"Activity_0t23scb\"><omgdc:Bounds x=\"-270\" y=\"-60\" width=\"100\" height=\"80\" /><bpmndi:BPMNLabel /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Event_0hqfd5v_di\" bpmnElement=\"Event_0hqfd5v\"><omgdc:Bounds x=\"-38\" y=\"-38\" width=\"36\" height=\"36\" /></bpmndi:BPMNShape></bpmndi:BPMNPlane></bpmndi:BPMNDiagram></definitions>','holiday:1:39d3e0f2-6a78-11ed-8eec-50ebf6b3961b');
+INSERT INTO `workflow_type_ver` VALUES (1589241285311254529,'holiday',1,'测试部署',1,1,'2022-11-24 23:40:09',1,'2022-11-06 21:00:24','<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:omgdc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:omgdi=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:flowable=\"http://flowable.org/bpmn\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" targetNamespace=\"http://www.flowable.org/processdef\"><process id=\"holiday\" name=\"请假流程\"><startEvent id=\"startEvent_39f7426\" name=\"开始\" flowable:formKey=\"1595071632762552322\" flowable:initiator=\"creator\"><outgoing>Flow_002ih2x</outgoing></startEvent><userTask id=\"Activity_1ro616j\" name=\"发起人\" flowable:formKey=\"1595071870168547329\"><incoming>Flow_002ih2x</incoming><incoming>Flow_1t3xfdq</incoming><incoming>Flow_0xmo5tz</incoming><incoming>Flow_09eiiut</incoming><outgoing>Flow_1is270g</outgoing></userTask><sequenceFlow id=\"Flow_002ih2x\" sourceRef=\"startEvent_39f7426\" targetRef=\"Activity_1ro616j\" /><exclusiveGateway id=\"Gateway_0qjovut\"><incoming>Flow_1is270g</incoming><outgoing>Flow_0185z70</outgoing><outgoing>Flow_0xoo0rv</outgoing></exclusiveGateway><sequenceFlow id=\"Flow_1is270g\" name=\"提交\" sourceRef=\"Activity_1ro616j\" targetRef=\"Gateway_0qjovut\" flowable:order=\"1\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"提交\"}</conditionExpression></sequenceFlow><userTask id=\"Activity_1a0z8wz\" name=\"主管审核\" flowable:formKey=\"1595071870168547329\"><incoming>Flow_0185z70</incoming><outgoing>Flow_06nakbb</outgoing><outgoing>Flow_09eiiut</outgoing></userTask><sequenceFlow id=\"Flow_0185z70\" name=\"请假天数&#62;10\" sourceRef=\"Gateway_0qjovut\" targetRef=\"Activity_1a0z8wz\"><conditionExpression xsi:type=\"tFormalExpression\">${days &gt; 10}</conditionExpression></sequenceFlow><userTask id=\"Activity_0lwiy64\" name=\"HR审核\" flowable:formKey=\"1595071870168547329\"><incoming>Flow_0xoo0rv</incoming><outgoing>Flow_0e8qrct</outgoing><outgoing>Flow_0xmo5tz</outgoing></userTask><sequenceFlow id=\"Flow_0xoo0rv\" name=\"请假天数&#60;=10\" sourceRef=\"Gateway_0qjovut\" targetRef=\"Activity_0lwiy64\"><conditionExpression xsi:type=\"tFormalExpression\">${days &lt;= 10}</conditionExpression></sequenceFlow><userTask id=\"Activity_0t23scb\" name=\"总部审核\" flowable:formKey=\"1595071870168547329\" flowable:assignee=\"${assigneeItem}\" flowable:assigneeType=\"user\" flowable:assigneeFields=\"create_by\"><incoming>Flow_06nakbb</incoming><incoming>Flow_0e8qrct</incoming><outgoing>Flow_15fc7du</outgoing><outgoing>Flow_1t3xfdq</outgoing><multiInstanceLoopCharacteristics isSequential=\"true\" flowable:collection=\"${psr.read(execution, &#34;holiday&#34;, &#34;create_by&#34;)}\" flowable:elementVariable=\"assigneeItem\" /></userTask><sequenceFlow id=\"Flow_06nakbb\" name=\"同意\" sourceRef=\"Activity_1a0z8wz\" targetRef=\"Activity_0t23scb\" flowable:order=\"1\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"同意\"}</conditionExpression></sequenceFlow><sequenceFlow id=\"Flow_0e8qrct\" name=\"同意\" sourceRef=\"Activity_0lwiy64\" targetRef=\"Activity_0t23scb\" flowable:order=\"1\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"同意\"}</conditionExpression></sequenceFlow><endEvent id=\"Event_0hqfd5v\" flowable:formKey=\"1595071870168547329\"><incoming>Flow_15fc7du</incoming></endEvent><sequenceFlow id=\"Flow_15fc7du\" name=\"同意\" sourceRef=\"Activity_0t23scb\" targetRef=\"Event_0hqfd5v\" flowable:order=\"1\" flowable:completionRule=\"dynamic\" flowable:completionExpression=\"11111\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"同意\"}</conditionExpression></sequenceFlow><sequenceFlow id=\"Flow_1t3xfdq\" name=\"拒绝\" sourceRef=\"Activity_0t23scb\" targetRef=\"Activity_1ro616j\" flowable:formKey=\"1593094587354505217\" flowable:order=\"2\" flowable:completionRule=\"any\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"拒绝\"}</conditionExpression></sequenceFlow><sequenceFlow id=\"Flow_0xmo5tz\" name=\"驳回\" sourceRef=\"Activity_0lwiy64\" targetRef=\"Activity_1ro616j\" flowable:formKey=\"1593094587354505217\" flowable:order=\"2\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"驳回\"}</conditionExpression></sequenceFlow><sequenceFlow id=\"Flow_09eiiut\" name=\"驳回\" sourceRef=\"Activity_1a0z8wz\" targetRef=\"Activity_1ro616j\" flowable:formKey=\"1593094587354505217\" flowable:order=\"1\"><conditionExpression xsi:type=\"tFormalExpression\">${outcome == \"驳回\"}</conditionExpression></sequenceFlow></process><bpmndi:BPMNDiagram id=\"BPMNDiagram_1\"><bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"holiday\"><bpmndi:BPMNEdge id=\"Flow_09eiiut_di\" bpmnElement=\"Flow_09eiiut\"><omgdi:waypoint x=\"-450\" y=\"-180\" /><omgdi:waypoint x=\"-450\" y=\"-220\" /><omgdi:waypoint x=\"-790\" y=\"-220\" /><omgdi:waypoint x=\"-790\" y=\"-50\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-631\" y=\"-238\" width=\"22\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_0xmo5tz_di\" bpmnElement=\"Flow_0xmo5tz\"><omgdi:waypoint x=\"-450\" y=\"140\" /><omgdi:waypoint x=\"-450\" y=\"170\" /><omgdi:waypoint x=\"-760\" y=\"170\" /><omgdi:waypoint x=\"-760\" y=\"30\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-616\" y=\"183\" width=\"22\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_1t3xfdq_di\" bpmnElement=\"Flow_1t3xfdq\"><omgdi:waypoint x=\"-220\" y=\"20\" /><omgdi:waypoint x=\"-220\" y=\"250\" /><omgdi:waypoint x=\"-790\" y=\"250\" /><omgdi:waypoint x=\"-790\" y=\"30\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-516\" y=\"263\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_15fc7du_di\" bpmnElement=\"Flow_15fc7du\"><omgdi:waypoint x=\"-170\" y=\"-20\" /><omgdi:waypoint x=\"-38\" y=\"-20\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-115\" y=\"-38\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_0e8qrct_di\" bpmnElement=\"Flow_0e8qrct\"><omgdi:waypoint x=\"-400\" y=\"100\" /><omgdi:waypoint x=\"-240\" y=\"100\" /><omgdi:waypoint x=\"-240\" y=\"20\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-331\" y=\"82\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_06nakbb_di\" bpmnElement=\"Flow_06nakbb\"><omgdi:waypoint x=\"-400\" y=\"-140\" /><omgdi:waypoint x=\"-220\" y=\"-140\" /><omgdi:waypoint x=\"-220\" y=\"-60\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-321\" y=\"-158\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_0xoo0rv_di\" bpmnElement=\"Flow_0xoo0rv\"><omgdi:waypoint x=\"-630\" y=\"15\" /><omgdi:waypoint x=\"-630\" y=\"100\" /><omgdi:waypoint x=\"-500\" y=\"100\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-665\" y=\"113\" width=\"70\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_0185z70_di\" bpmnElement=\"Flow_0185z70\"><omgdi:waypoint x=\"-630\" y=\"-35\" /><omgdi:waypoint x=\"-630\" y=\"-140\" /><omgdi:waypoint x=\"-500\" y=\"-140\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-662\" y=\"-157\" width=\"63\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_1is270g_di\" bpmnElement=\"Flow_1is270g\"><omgdi:waypoint x=\"-740\" y=\"-10\" /><omgdi:waypoint x=\"-655\" y=\"-10\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-708\" y=\"-28\" width=\"22\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge><bpmndi:BPMNEdge id=\"Flow_002ih2x_di\" bpmnElement=\"Flow_002ih2x\"><omgdi:waypoint x=\"-912\" y=\"-10\" /><omgdi:waypoint x=\"-840\" y=\"-10\" /></bpmndi:BPMNEdge><bpmndi:BPMNShape id=\"_BPMNShape_StartEvent_2\" bpmnElement=\"startEvent_39f7426\"><omgdc:Bounds x=\"-948\" y=\"-28\" width=\"36\" height=\"36\" /><bpmndi:BPMNLabel><omgdc:Bounds x=\"-941\" y=\"8\" width=\"23\" height=\"14\" /></bpmndi:BPMNLabel></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_1ro616j_di\" bpmnElement=\"Activity_1ro616j\"><omgdc:Bounds x=\"-840\" y=\"-50\" width=\"100\" height=\"80\" /><bpmndi:BPMNLabel /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Gateway_0qjovut_di\" bpmnElement=\"Gateway_0qjovut\" isMarkerVisible=\"true\"><omgdc:Bounds x=\"-655\" y=\"-35\" width=\"50\" height=\"50\" /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_1a0z8wz_di\" bpmnElement=\"Activity_1a0z8wz\"><omgdc:Bounds x=\"-500\" y=\"-180\" width=\"100\" height=\"80\" /><bpmndi:BPMNLabel /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_0lwiy64_di\" bpmnElement=\"Activity_0lwiy64\"><omgdc:Bounds x=\"-500\" y=\"60\" width=\"100\" height=\"80\" /><bpmndi:BPMNLabel /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Activity_0t23scb_di\" bpmnElement=\"Activity_0t23scb\"><omgdc:Bounds x=\"-270\" y=\"-60\" width=\"100\" height=\"80\" /><bpmndi:BPMNLabel /></bpmndi:BPMNShape><bpmndi:BPMNShape id=\"Event_0hqfd5v_di\" bpmnElement=\"Event_0hqfd5v\"><omgdc:Bounds x=\"-38\" y=\"-38\" width=\"36\" height=\"36\" /></bpmndi:BPMNShape></bpmndi:BPMNPlane></bpmndi:BPMNDiagram></definitions>','holiday:1:472d3423-6c0e-11ed-bcdf-50ebf6b3961b');
 /*!40000 ALTER TABLE `workflow_type_ver` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -2412,4 +2412,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-11-24 10:48:57
+-- Dump completed on 2022-11-24 23:40:56
