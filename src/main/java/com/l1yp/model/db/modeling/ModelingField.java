@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.l1yp.model.db.modeling.field.FieldScheme;
+import com.l1yp.model.db.modeling.field.FieldType;
 import com.l1yp.model.db.modeling.typehandler.FieldSchemeTypeHandler;
 import com.l1yp.model.view.modeling.ModelingFieldDefView;
 import com.l1yp.util.BeanCopierUtil;
@@ -44,7 +45,7 @@ public class ModelingField {
      * 字符串
      * 数字
      */
-    private String type;
+    private FieldType type;
 
     /**
      * 字段定义
@@ -142,11 +143,11 @@ public class ModelingField {
         this.width = width;
     }
 
-    public String getType() {
+    public FieldType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(FieldType type) {
         this.type = type;
     }
 

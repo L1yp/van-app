@@ -7,6 +7,7 @@ import com.l1yp.mapper.modeling.ModelingEntityMapper;
 import com.l1yp.model.db.modeling.ModelingField;
 import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.field.DeptFieldScheme;
+import com.l1yp.model.db.modeling.field.FieldType;
 import com.l1yp.model.db.modeling.field.OptionFieldScheme;
 import com.l1yp.model.db.modeling.field.UserFieldScheme;
 import com.l1yp.model.db.workflow.model.WorkflowTypeDef;
@@ -54,7 +55,7 @@ public class FormService {
     private static final List<String> excludeInputFieldList = Arrays.asList("create_by", "create_time", "update_by", "update_time");
     private static final Set<String> excludeInputFields = new HashSet<>(excludeInputFieldList);
 
-    private static final Set<String> refFieldTypes = new HashSet<>(Arrays.asList("user", "option", "dept", "entity", "workflow"));
+    private static final Set<FieldType> refFieldTypes = new HashSet<>(Arrays.asList(FieldType.user, FieldType.option, FieldType.dept, FieldType.entity, FieldType.workflow));
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void createInstance(@NotNull ModelingModule module, String mkey, Map<String, Object> data) {
@@ -177,7 +178,7 @@ public class FormService {
         for (String field : columnFields) {
             Object value = formData.get(field);
             ModelingField modelingField = fieldMap.get(field);
-            String type = modelingField.getType();
+            FieldType type = modelingField.getType();
             if (!refFieldTypes.contains(type)) {
                 continue;
             }

@@ -2,6 +2,7 @@ package com.l1yp.model.view.modeling;
 
 import com.l1yp.model.db.modeling.ModelingField.FieldScope;
 import com.l1yp.model.db.modeling.field.FieldScheme;
+import com.l1yp.model.db.modeling.field.FieldType;
 
 import java.util.Date;
 
@@ -35,7 +36,7 @@ public class ModelingFieldDefView {
      * 字符串
      * 数字
      */
-    private String type;
+    private FieldType type;
 
     /**
      * 字段定义
@@ -92,11 +93,11 @@ public class ModelingFieldDefView {
         this.width = width;
     }
 
-    public String getType() {
+    public FieldType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(FieldType type) {
         this.type = type;
     }
 

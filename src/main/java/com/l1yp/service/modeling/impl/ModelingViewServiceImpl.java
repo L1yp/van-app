@@ -299,8 +299,8 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
                 continue;
             }
             ModelingField field = fieldNameMap.get(key);
-            String type = field.getType();
-            if (type.equals("user")) {
+            FieldType type = field.getType();
+            if (type == FieldType.user) {
                 if (value.equals("SELF")) {
                     value = RequestUtils.getLoginUser().getId();
                 }
@@ -312,11 +312,11 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
                 }
                 args.add(value);
             }
-            else if (type.equals("text")) {
+            else if (type == FieldType.text) {
                 filterConditions.add(String.format("`%s` LIKE CONCAT('%%', #{args[%d]}, '%%')", key, args.size()));
                 args.add(value);
             }
-            else if (type.equals("date")) {
+            else if (type == FieldType.date) {
                 if (!value.contains(",")) {
                     continue;
                 }
@@ -328,7 +328,7 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
                 filterConditions.add(String.format("`%s` <= FROM_UNIXTIME(%d)", key, args.size()));
                 args.add(endTime);
             }
-            else if (type.equals("option")) {
+            else if (type == FieldType.option) {
                 OptionFieldScheme scheme = (OptionFieldScheme) field.getScheme();
                 if (scheme.getMultiple()) {
                     filterConditions.add(String.format("`%s` LIKE CONCAT('%%', #{args[%d]}, '%%')", key, args.size()));
