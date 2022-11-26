@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.permission.ExpressionModel;
+import com.l1yp.model.db.modeling.typehandler.ExpressionModelListTypeHandler;
 
 import java.util.Date;
 import java.util.List;
@@ -26,7 +27,7 @@ public class ModelingPermission {
 
     private Integer flags;
 
-    @TableField(typeHandler = JacksonTypeHandler.class)
+    @TableField(typeHandler = ExpressionModelListTypeHandler.class)
     private List<ExpressionModel> content;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
