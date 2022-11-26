@@ -1,14 +1,21 @@
 package com.l1yp.flowable.multi.instance;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.l1yp.conf.constants.process.WorkflowConstant;
+import org.flowable.bpmn.model.FlowElement;
+import org.flowable.bpmn.model.SequenceFlow;
+import org.flowable.bpmn.model.UserTask;
+import org.flowable.common.engine.api.FlowableException;
+import org.flowable.common.engine.impl.el.ExpressionManager;
 import org.flowable.engine.delegate.DelegateExecution;
+import org.flowable.engine.impl.util.CommandContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component("completionStrategy")
@@ -16,69 +23,51 @@ public class CompletionStrategy {
 
     static final Logger log = LoggerFactory.getLogger(CompletionStrategy.class);
 
+    enum CompletionRule {
+        dynamic, any, all,
+        ;
+    }
+
     public boolean isCompletion(DelegateExecution execution) {
 
-        int nrOfInstances = (int) execution.getVariable("nrOfInstances");
-        int nrOfCompletedInstances = (int) execution.getVariable("nrOfCompletedInstances");
-
-        if (nrOfInstances == nrOfCompletedInstances) {
-            Set<String> variableNames = execution.getVariableNames();
-            // 取出口流线名称
-            List<String> outgoings = variableNames.stream().filter(it -> it.startsWith("$$$$")).toList();
-
-            // 取出口流程 次数
-            Map<String, Integer> map = outgoings.stream().collect(Collectors.toMap(it -> it, it -> (Integer) execution.getVariable(it)));
-            log.info("statistics choose outgoings: {}", map);
-
-            // 找到投票次数最多的出口
-            int max = 0;
-            Set<Entry<String, Integer>> entries = map.entrySet();
-            Entry<String, Integer> maxEntry = null;
-            for (Entry<String, Integer> entry : entries) {
-                if (entry.getValue() > max) {
-                    max = entry.getValue();
-                    maxEntry = entry;
-                }
+        UserTask userTask = (UserTask) execution.getCurrentFlowElement();
+        List<SequenceFlow> outgoingFlows = userTask.getOutgoingFlows();
+        Map<String, SequenceFlow> flowMap = outgoingFlows.stream().collect(Collectors.toMap(FlowElement::getName, it -> it));
+        Map<String, CompletionRule> ruleMap = new HashMap<>();
+        for (SequenceFlow outgoingFlow : outgoingFlows) {
+            String completionRule = outgoingFlow.getAttributeValue("http://flowable.org/bpmn", "completionRule");
+            if (StringUtils.isBlank(completionRule)) {
+                continue;
             }
-
-            outgoings.forEach(execution::removeVariable);
-
-            // 设置出口
-            execution.setTransientVariable("outcome", maxEntry.getKey().replace("$$$$", ""));
-
-            return true;
+            CompletionRule rule = CompletionRule.valueOf(completionRule);
+            ruleMap.put(outgoingFlow.getName(), rule);
         }
 
-        return false;
-
-    }
-
-
-    public boolean isCompletion2(DelegateExecution execution) {
-
-        int nrOfInstances = (int) execution.getVariable("nrOfInstances");
-        int nrOfCompletedInstances = (int) execution.getVariable("nrOfCompletedInstances");
-
-        if (nrOfInstances == nrOfCompletedInstances) {
-            int c1 = (int) execution.getVariable("$$$$通过");
-            int c2 = (int) execution.getVariable("$$$$不通过");
-            log.info("通过：{}, 不通过: {}", c1, c2);
-
-            execution.removeVariable("$$$$通过");
-            execution.removeVariable("$$$$不通过");
-            // 通过 个数大于等于 2 / 3 则 通过 否则 不通过
-            if (c1 >= nrOfInstances * 2 / 3) {
-                execution.setTransientVariable("outcome", "通过");
+        String outcome = (String) execution.getTransientVariable(WorkflowConstant.OUTCOME);
+        if (StringUtils.isBlank(outcome)) {
+            log.warn("isCompletion: outcome is blank");
+            return false;
+        }
+        CompletionRule rule = ruleMap.get(outcome);
+        if (rule == CompletionRule.any) {
+            return true;
+        } else if (rule == CompletionRule.all) {
+            int nrOfInstances = (int) execution.getVariable("nrOfInstances");
+            int nrOfCompletedInstances = (int) execution.getVariable("nrOfCompletedInstances");
+            return nrOfInstances == nrOfCompletedInstances;
+        } else if (rule == CompletionRule.dynamic) {
+            SequenceFlow sequenceFlow = flowMap.get(outcome);
+            String expression = sequenceFlow.getAttributeValue("http://flowable.org/bpmn", "completionExpression");
+            ExpressionManager expressionManager = CommandContextUtil.getProcessEngineConfiguration().getExpressionManager();
+            Object value = expressionManager.createExpression(expression).getValue(execution);
+            if (value instanceof Boolean bFlag) {
+                return bFlag;
             } else {
-                execution.setTransientVariable("outcome", "不通过");
+                throw new FlowableException(String.format("sequenceFlow[completionExpression=%s] result is not a boolean value.", expression));
             }
-
-            return true;
+        } else {
+            throw new FlowableException("sequenceFlow[completionRule] mismatch.");
         }
-
-        return false;
-
     }
-
 
 }

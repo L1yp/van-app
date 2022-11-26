@@ -1,5 +1,6 @@
 package com.l1yp.controller.workflow;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.l1yp.model.common.PageData;
 import com.l1yp.model.common.ResultData;
 import com.l1yp.model.db.workflow.model.WorkflowTypeDef;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 @Validated
+@SaCheckLogin
 @RestController
 @RequestMapping("/workflow/type/def")
 public class WorkflowTypeDefController {

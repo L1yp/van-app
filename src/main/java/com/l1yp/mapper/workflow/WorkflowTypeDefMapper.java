@@ -36,4 +36,9 @@ public interface WorkflowTypeDefMapper extends BaseMapper<WorkflowTypeDef> {
     Map<String, Object> getInstanceById(@Param("tableName") String tableName,
                                          @Param("id") String id);
 
+    @Select("SELECT ${fields} FROM ${tableName} WHERE process_instance_id = #{instanceId}")
+    Map<String, Object> getInstanceFieldsByInstanceId(@Param("tableName") String tableName,
+                                                      @Param("instanceId") String instanceId,
+                                                      @Param("fields") String fields);
+
 }

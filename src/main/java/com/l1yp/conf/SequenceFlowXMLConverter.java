@@ -9,7 +9,9 @@ import org.flowable.bpmn.converter.util.BpmnXMLUtil;
 import org.flowable.bpmn.model.BaseElement;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.bpmn.model.ExtensionAttribute;
+import org.flowable.bpmn.model.Process;
 import org.flowable.bpmn.model.SequenceFlow;
+import org.flowable.bpmn.model.SubProcess;
 
 import java.util.Arrays;
 import java.util.List;
@@ -75,5 +77,10 @@ public class SequenceFlowXMLConverter extends BaseBpmnXMLConverter {
             xtw.writeCData(sequenceFlow.getConditionExpression());
             xtw.writeEndElement();
         }
+    }
+
+    @Override
+    public void convertToBpmnModel(XMLStreamReader xtr, BpmnModel model, Process activeProcess, List<SubProcess> activeSubProcessList) throws Exception {
+        super.convertToBpmnModel(xtr, model, activeProcess, activeSubProcessList);
     }
 }

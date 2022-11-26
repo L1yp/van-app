@@ -1,9 +1,9 @@
 package com.l1yp.model.view.workflow.instance;
 
+import com.l1yp.model.db.workflow.engine.TaskComment;
 import com.l1yp.model.view.modeling.ModelingPageView;
 import com.l1yp.model.view.system.UserView;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +11,7 @@ public class WorkflowInstanceDetailsResult {
 
     private ModelingPageView pageInfo;
 
-    private LinkedHashMap<String, ModelingPageView> outcomes;
+    private List<WorkflowOutcomeInfo> outcomes;
 
     private Map<String, Object> instanceInfo;
 
@@ -19,9 +19,19 @@ public class WorkflowInstanceDetailsResult {
 
     private Map<String, UserView> userMap;
 
-    private List<?> historyActivities;
+    private List<WorkflowActivityInfo> activityList;
 
-    private List<?> commentList;
+    private List<TaskComment> commentList;
+
+    private String taskId;
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
 
     public ModelingPageView getPageInfo() {
         return pageInfo;
@@ -31,11 +41,11 @@ public class WorkflowInstanceDetailsResult {
         this.pageInfo = pageInfo;
     }
 
-    public LinkedHashMap<String, ModelingPageView> getOutcomes() {
+    public List<WorkflowOutcomeInfo> getOutcomes() {
         return outcomes;
     }
 
-    public void setOutcomes(LinkedHashMap<String, ModelingPageView> outcomes) {
+    public void setOutcomes(List<WorkflowOutcomeInfo> outcomes) {
         this.outcomes = outcomes;
     }
 
@@ -61,5 +71,21 @@ public class WorkflowInstanceDetailsResult {
 
     public void setUserMap(Map<String, UserView> userMap) {
         this.userMap = userMap;
+    }
+
+    public List<TaskComment> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(List<TaskComment> commentList) {
+        this.commentList = commentList;
+    }
+
+    public List<WorkflowActivityInfo> getActivityList() {
+        return activityList;
+    }
+
+    public void setActivityList(List<WorkflowActivityInfo> activityList) {
+        this.activityList = activityList;
     }
 }
