@@ -32,6 +32,7 @@ import com.l1yp.service.workflow.engine.IWorkflowInstanceService;
 import com.l1yp.util.BeanCopierUtil;
 import com.l1yp.util.NumberUtil;
 import com.l1yp.util.RequestUtils;
+import org.flowable.bpmn.constants.BpmnXMLConstants;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.bpmn.model.FlowElement;
 import org.flowable.bpmn.model.Process;
@@ -262,8 +263,8 @@ public class WorkflowInstanceServiceImpl implements IWorkflowInstanceService {
             List<WorkflowOutcomeInfo> outcomeInfos = new ArrayList<>();
             List<SequenceFlow> outgoingFlows = userTask.getOutgoingFlows();
             outgoingFlows.sort((a, b) -> {
-                String aOrder = a.getAttributeValue("http://flowable.org/bpmn", "order");
-                String bOrder = b.getAttributeValue("http://flowable.org/bpmn", "order");
+                String aOrder = a.getAttributeValue(BpmnXMLConstants.FLOWABLE_EXTENSIONS_NAMESPACE, "order");
+                String bOrder = b.getAttributeValue(BpmnXMLConstants.FLOWABLE_EXTENSIONS_NAMESPACE, "order");
                 int iOrderA = 0, iOrderB = 0;
                 if (StringUtils.isNotBlank(aOrder)) {
                     iOrderA = Integer.parseInt(aOrder);
@@ -276,7 +277,7 @@ public class WorkflowInstanceServiceImpl implements IWorkflowInstanceService {
             for (SequenceFlow outgoingFlow : outgoingFlows) {
                 var outcomeInfo = new WorkflowOutcomeInfo();
                 outcomeInfo.setName(outgoingFlow.getName());
-                String outcomeFormKey = outgoingFlow.getAttributeValue("http://flowable.org/bpmn", "formKey");
+                String outcomeFormKey = outgoingFlow.getAttributeValue(BpmnXMLConstants.FLOWABLE_EXTENSIONS_NAMESPACE, "formKey");
                 if (outcomeFormKey != null) {
                     ModelingPageView pageInfo = modelingPageService.getPageById(outcomeFormKey);
                     outcomeInfo.setPageInfo(pageInfo);

@@ -2,6 +2,7 @@ package com.l1yp.flowable.multi.instance;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.l1yp.conf.constants.process.WorkflowConstant;
+import org.flowable.bpmn.constants.BpmnXMLConstants;
 import org.flowable.bpmn.model.FlowElement;
 import org.flowable.bpmn.model.SequenceFlow;
 import org.flowable.bpmn.model.UserTask;
@@ -35,7 +36,7 @@ public class CompletionStrategy {
         Map<String, SequenceFlow> flowMap = outgoingFlows.stream().collect(Collectors.toMap(FlowElement::getName, it -> it));
         Map<String, CompletionRule> ruleMap = new HashMap<>();
         for (SequenceFlow outgoingFlow : outgoingFlows) {
-            String completionRule = outgoingFlow.getAttributeValue("http://flowable.org/bpmn", "completionRule");
+            String completionRule = outgoingFlow.getAttributeValue(BpmnXMLConstants.FLOWABLE_EXTENSIONS_NAMESPACE, "completionRule");
             if (StringUtils.isBlank(completionRule)) {
                 continue;
             }
@@ -57,7 +58,7 @@ public class CompletionStrategy {
             return nrOfInstances == nrOfCompletedInstances;
         } else if (rule == CompletionRule.dynamic) {
             SequenceFlow sequenceFlow = flowMap.get(outcome);
-            String expression = sequenceFlow.getAttributeValue("http://flowable.org/bpmn", "completionExpression");
+            String expression = sequenceFlow.getAttributeValue(BpmnXMLConstants.FLOWABLE_EXTENSIONS_NAMESPACE, "completionExpression");
             ExpressionManager expressionManager = CommandContextUtil.getProcessEngineConfiguration().getExpressionManager();
             Object value = expressionManager.createExpression(expression).getValue(execution);
             if (value instanceof Boolean bFlag) {
