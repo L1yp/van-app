@@ -1,10 +1,14 @@
 package com.l1yp.controller.workflow;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import com.l1yp.model.common.PageData;
 import com.l1yp.model.common.ResultData;
 import com.l1yp.model.param.workflow.task.WorkflowEngineTaskCompleteParam;
 import com.l1yp.model.param.workflow.task.WorkflowTaskCommentAddParam;
+import com.l1yp.model.param.workflow.task.WorkflowTaskFindParam;
+import com.l1yp.model.param.workflow.task.WorkflowTaskView;
 import com.l1yp.service.workflow.engine.impl.WorkflowEngineTaskServiceImpl;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,5 +36,14 @@ public class WorkflowEngineTaskController {
         return ResultData.OK;
     }
 
+    @GetMapping("/todo/page")
+    public ResultData<PageData<WorkflowTaskView>> listTodoTask(WorkflowTaskFindParam param) {
+        return ResultData.ok(workflowEngineService.todoTasks(param));
+    }
+
+    @GetMapping("/done/page")
+    public ResultData<PageData<WorkflowTaskView>> listDoneTask(WorkflowTaskFindParam param) {
+        return ResultData.ok(workflowEngineService.doneTasks(param));
+    }
 
 }

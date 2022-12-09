@@ -13,14 +13,34 @@ spring:
     property-naming-strategy: SNAKE_CASE
   main:
     allow-circular-references: true
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: never
+    properties:
+      org:
+        quartz:
+          scheduler:
+            # 默认主机名和时间戳生成实例ID，可以是任何字符串
+            instanceId: AUTO
+          jobStore:
+            class: org.springframework.scheduling.quartz.LocalDataSourceJobStore
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            useProperties: false
+            tablePrefix: QRTZ_
+            misfireThreshold: 60000
+            clusterCheckinInterval: 5000
+            isClustered: true
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 8
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true
 
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-  mapper-locations: classpath*:mybatis/**/*.xml
-
-mapper:
-  style: camelhumpAndLowercase
+  mapper-locations: classpath*:mapper/**/*.xml
 
 logging:
   level:

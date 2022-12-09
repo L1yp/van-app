@@ -70,7 +70,8 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     @Transactional
     @Caching(evict = {
             @CacheEvict(cacheNames = "menus", key = "'all'"),
-            @CacheEvict(cacheNames = "menu", key = "#p0.id")
+            @CacheEvict(cacheNames = "menu", key = "#p0.id"),
+            @CacheEvict(cacheNames = "user_menu", allEntries = true),
     })
     public void updateMenu(MenuUpdateParam param) {
         Long count = getBaseMapper().selectCount(Wrappers.<Menu>lambdaQuery().eq(Menu::getId, param.getId()));
@@ -89,7 +90,8 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     @Transactional
     @Caching(evict = {
             @CacheEvict(cacheNames = "menus", key = "'all'"),
-            @CacheEvict(cacheNames = "menu", key = "#p0")
+            @CacheEvict(cacheNames = "menu", key = "#p0"),
+            @CacheEvict(cacheNames = "user_menu", allEntries = true)
     })
     public void deleteMenu(String id) {
         Long count = roleMenuMapper.selectCount(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getMenuId, id));

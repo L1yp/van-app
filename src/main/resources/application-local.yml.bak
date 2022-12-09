@@ -9,7 +9,7 @@ spring:
   datasource:
     url: "jdbc:mysql://localhost:3306/van?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&nullCatalogMeansCurrent=true"
     username: debian-sys-maint
-    password: jIsCzDjUAkSEpoWB
+    password: 7tLwBd459gvpA16J
     hikari:
       maximum-pool-size: 4
       minimum-idle: 1
@@ -21,7 +21,6 @@ spring:
   redis:
     host: localhost
     port: 6379
-    password: ry-lg-redis-pass
     lettuce:
       pool:
         max-active: 8
@@ -29,11 +28,12 @@ spring:
         max-wait: -1
         min-idle: 0
     database: 2
+  cache:
 
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-  mapper-locations: classpath*:mybatis/**/*.xml
+  mapper-locations: classpath*:mapper/**/*.xml
 
 logging:
   level:
@@ -42,13 +42,9 @@ logging:
   lyp:
     name: van
     root: logs
-mapper:
-  style: camelhumpAndLowercase
 
 
 flowable:
-  cmmn:
-    enabled: false
   dmn:
     enabled: false
   idm:

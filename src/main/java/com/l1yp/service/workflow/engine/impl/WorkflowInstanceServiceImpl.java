@@ -39,6 +39,7 @@ import org.flowable.bpmn.model.Process;
 import org.flowable.bpmn.model.SequenceFlow;
 import org.flowable.bpmn.model.StartEvent;
 import org.flowable.bpmn.model.UserTask;
+import org.flowable.common.engine.impl.identity.Authentication;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.RuntimeService;
@@ -114,6 +115,7 @@ public class WorkflowInstanceServiceImpl implements IWorkflowInstanceService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public WorkflowInstanceCreateResult startWorkflowInstance(WorkflowEngineInstanceCreateParam param) {
+        String loginUserId = RequestUtils.getLoginUserId();
         WorkflowTypeDef workflowType = workflowTypeDefService.getWorkflowTypeDefByKey(param.getMkey());
         if (workflowType == null) {
             throw new VanException(400, "标识有误，不存在此流程");
@@ -126,14 +128,19 @@ public class WorkflowInstanceServiceImpl implements IWorkflowInstanceService {
         String id = (String) param.getData().get("id");
         String name = (String) param.getData().get("name");
 
+        try {
+            Authentication.setAuthenticatedUserId(loginUserId);
+            ProcessInstance processInstance = runtimeService.createProcessInstanceBuilder()
+                    .processDefinitionId(workflowType.getProcessDefinitionId())
+                    .predefineProcessInstanceId(processInstanceId)
+                    .name(name)
+                    .transientVariables(param.getData())
+                    .businessKey(id)
+                    .start();
+        } finally {
+            Authentication.setAuthenticatedUserId(null);
+        }
 
-        ProcessInstance processInstance = runtimeService.createProcessInstanceBuilder()
-                .processDefinitionId(workflowType.getProcessDefinitionId())
-                .predefineProcessInstanceId(processInstanceId)
-                .name(name)
-                .transientVariables(param.getData())
-                .businessKey(id)
-                .start();
 
         var result = new WorkflowInstanceCreateResult();
         result.setId(id);

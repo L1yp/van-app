@@ -80,6 +80,10 @@ public class PageData<T> {
         this.total = total;
     }
 
+    public void setTotal(long total) {
+        this.total = (int) total;
+    }
+
     public List<T> getData() {
         return data;
     }

@@ -33,6 +33,9 @@ public class MenuController {
 
     @PostMapping("/add")
     public ResultData<Void> addMenu(@Validated @RequestBody MenuCreateParam param) {
+        if ("preview".equals(mode)) {
+            return ResultData.err(500, "演示环境禁用此操作");
+        }
         service.createMenu(param);
         return ResultData.OK;
     }
