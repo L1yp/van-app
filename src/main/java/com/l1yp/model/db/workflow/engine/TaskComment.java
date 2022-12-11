@@ -3,6 +3,7 @@ package com.l1yp.model.db.workflow.engine;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.l1yp.model.db.workflow.engine.TaskCommentMessage.CommentType;
 import com.l1yp.model.db.workflow.typehandler.TaskCommentMessageTypeHandler;
 
 import java.util.Date;
@@ -14,7 +15,7 @@ public class TaskComment {
     private String id;
 
     @TableField("TYPE_")
-    private String type;
+    private CommentType type;
 
     @TableField("TIME_")
     private Date time;
@@ -42,11 +43,11 @@ public class TaskComment {
         this.id = id;
     }
 
-    public String getType() {
+    public CommentType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(CommentType type) {
         this.type = type;
     }
 
