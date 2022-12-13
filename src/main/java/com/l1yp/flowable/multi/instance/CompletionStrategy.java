@@ -76,6 +76,8 @@ public class CompletionStrategy {
             long count = taskComments.stream().filter(Objects::nonNull).filter(it -> it.getMessage().getOutcome().equals(outcome)).count();
             int nrOfInstances = (int) execution.getVariable("nrOfInstances");
 //            int nrOfCompletedInstances = (int) execution.getVariable("nrOfCompletedInstances"); // FIXME: 多个出口会有问题
+            // TODO: 1. 筛选当前会签已完成任务
+            // TODO: 2. 查询 HI_COMMENT 的审批列表
 
             return nrOfInstances == count;
         } else if (rule == CompletionRule.dynamic) {

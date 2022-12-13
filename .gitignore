@@ -36,3 +36,5 @@ build/
 application-local.yml
 
 logs
+
+deploy.*
