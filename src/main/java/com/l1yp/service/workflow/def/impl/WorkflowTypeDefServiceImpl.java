@@ -141,7 +141,7 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
 
         // TODO: 防止SQL注入
         String createDDL = columnDefs.stream().collect(Collectors.joining(",\n", "CREATE TABLE `" + tableName + "` (\n"  ,
-                "\n" + uniqueConstraint + "\n) COMMENT '" + param.getRemark() + "'"));
+                ",\n" + uniqueConstraint + "\n) COMMENT '" + param.getRemark() + "'"));
         log.info("create table ddl: {}", createDDL);
         modelingEntityMapper.createTable(createDDL);
 
