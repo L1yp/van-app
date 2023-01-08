@@ -5,16 +5,22 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.l1yp.conf.constants.process.WorkflowConstant;
 import com.l1yp.mapper.workflow.engine.WorkflowHiCommentMapper;
 import com.l1yp.model.db.workflow.engine.TaskComment;
+import com.l1yp.model.db.workflow.engine.TaskCommentMessage;
 import com.l1yp.model.db.workflow.engine.TaskCommentMessage.CommentType;
 import org.flowable.bpmn.constants.BpmnXMLConstants;
 import org.flowable.bpmn.model.FlowElement;
 import org.flowable.bpmn.model.SequenceFlow;
 import org.flowable.bpmn.model.UserTask;
 import org.flowable.common.engine.api.FlowableException;
+import org.flowable.common.engine.api.query.Query.NullHandlingOnOrder;
+import org.flowable.common.engine.api.query.QueryProperty;
 import org.flowable.common.engine.impl.el.ExpressionManager;
+import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.delegate.DelegateExecution;
+import org.flowable.engine.impl.ActivityInstanceQueryProperty;
 import org.flowable.engine.impl.util.CommandContextUtil;
+import org.flowable.engine.runtime.ActivityInstance;
 import org.flowable.engine.task.Comment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +40,9 @@ public class CompletionStrategy {
     TaskService taskService;
 
     @Resource
+    RuntimeService runtimeService;
+
+    @Resource
     WorkflowHiCommentMapper workflowHiCommentMapper;
 
     static final Logger log = LoggerFactory.getLogger(CompletionStrategy.class);
@@ -47,6 +56,7 @@ public class CompletionStrategy {
 
         String processInstanceId = execution.getProcessInstanceId();
 
+        String currentElemId = execution.getCurrentFlowElement().getId();
 
         UserTask userTask = (UserTask) execution.getCurrentFlowElement();
         List<SequenceFlow> outgoingFlows = userTask.getOutgoingFlows();
@@ -70,16 +80,27 @@ public class CompletionStrategy {
         if (rule == CompletionRule.any) {
             return true;
         } else if (rule == CompletionRule.all) {
-            List<TaskComment> taskComments = workflowHiCommentMapper.selectList(Wrappers.<TaskComment>lambdaQuery()
-                    .eq(TaskComment::getProcessInstanceId, processInstanceId)
-                    .eq(TaskComment::getType, CommentType.complete));
-            long count = taskComments.stream().filter(Objects::nonNull).filter(it -> it.getMessage().getOutcome().equals(outcome)).count();
-            int nrOfInstances = (int) execution.getVariable("nrOfInstances");
-//            int nrOfCompletedInstances = (int) execution.getVariable("nrOfCompletedInstances"); // FIXME: 多个出口会有问题
-            // TODO: 1. 筛选当前会签已完成任务
-            // TODO: 2. 查询 HI_COMMENT 的审批列表
-
-            return nrOfInstances == count;
+            // 获取当前节点的完成情况
+            List<ActivityInstance> list = runtimeService.createActivityInstanceQuery()
+                    .processInstanceId(processInstanceId)
+                    .activityId(currentElemId)
+                    .orderBy(ActivityInstanceQueryProperty.END, NullHandlingOnOrder.NULLS_LAST)
+                    .asc().list();
+            // 任务全部完成
+            var finished = list.stream().allMatch(activityInstance -> activityInstance.getEndTime() != null);
+            if (finished) {
+                // 查询每个任务的出口
+                List<String> taskIdList = list.stream().map(ActivityInstance::getTaskId).toList();
+                List<TaskComment> taskComments = workflowHiCommentMapper.selectList(
+                        Wrappers.<TaskComment>lambdaQuery().eq(TaskComment::getProcessInstanceId, processInstanceId)
+                                .eq(TaskComment::getType, CommentType.complete).in(TaskComment::getTaskId, taskIdList));
+                var matched = taskComments.stream().map(TaskComment::getMessage).map(TaskCommentMessage::getOutcome).allMatch(outcome::equals);
+                if (!matched) {
+                    log.error("processInstId: [{}], 会签任务全部完成, 但未匹配成功", processInstanceId);
+                }
+                return matched;
+            }
+            return false;
         } else if (rule == CompletionRule.dynamic) {
             SequenceFlow sequenceFlow = flowMap.get(outcome);
             String expression = sequenceFlow.getAttributeValue(BpmnXMLConstants.FLOWABLE_EXTENSIONS_NAMESPACE, "completionExpression");
