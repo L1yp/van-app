@@ -39,6 +39,7 @@ import org.flowable.bpmn.model.Process;
 import org.flowable.bpmn.model.SequenceFlow;
 import org.flowable.bpmn.model.StartEvent;
 import org.flowable.bpmn.model.UserTask;
+import org.flowable.common.engine.api.query.Query.NullHandlingOnOrder;
 import org.flowable.common.engine.impl.identity.Authentication;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RepositoryService;
@@ -110,6 +111,8 @@ public class WorkflowInstanceServiceImpl implements IWorkflowInstanceService {
 
     @Resource
     WorkflowHiCommentMapper workflowHiCommentMapper;
+
+    public static final String DELETE_REASON_END = "MI_END";
 
 
     @Override
@@ -298,7 +301,7 @@ public class WorkflowInstanceServiceImpl implements IWorkflowInstanceService {
 
         var list = historyService.createHistoricActivityInstanceQuery()
                 .processInstanceId(param.getInstanceId())
-                .orderBy(HistoricActivityInstanceQueryProperty.START)
+                .orderBy(HistoricActivityInstanceQueryProperty.END, NullHandlingOnOrder.NULLS_LAST)
                 .asc().list();
         list.stream().map(HistoricActivityInstance::getAssignee).filter(Objects::nonNull).forEach(userIds::add);
 
@@ -306,9 +309,13 @@ public class WorkflowInstanceServiceImpl implements IWorkflowInstanceService {
         for (HistoricActivityInstance instance : list) {
             var activity = new WorkflowActivityInfo();
             BeanCopierUtil.copy(instance, activity);
+            // FIXME: startEvent EndEvent
             activityList.add(activity);
             if (!activity.getActivityType().equals("userTask")) {
                 continue;
+            }
+            if (DELETE_REASON_END.equals(instance.getDeleteReason())) {
+                activity.setOutcome("会签结束自动删除");
             }
             List<TaskComment> commentList = taskComments.stream()
                     .filter(it -> it.getTaskId().equals(activity.getTaskId()))

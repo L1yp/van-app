@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +88,12 @@ public class CompletionStrategy {
                     .activityId(currentElemId)
                     .orderBy(ActivityInstanceQueryProperty.END, NullHandlingOnOrder.NULLS_LAST)
                     .asc().list();
+            Number nrOfInstances = (Number) execution.getVariable("nrOfInstances");
+
+            list.sort(Comparator.comparing(ActivityInstance::getStartTime));
+
+            list = list.subList(list.size() - nrOfInstances.intValue(), list.size());
+
             // 任务全部完成
             var finished = list.stream().allMatch(activityInstance -> activityInstance.getEndTime() != null);
             if (finished) {
