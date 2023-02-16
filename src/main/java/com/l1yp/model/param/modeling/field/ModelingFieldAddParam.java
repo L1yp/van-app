@@ -2,6 +2,7 @@ package com.l1yp.model.param.modeling.field;
 
 import com.l1yp.model.db.modeling.ModelingField.FieldScope;
 import com.l1yp.model.db.modeling.field.FieldScheme;
+import com.l1yp.model.db.modeling.field.FieldType;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -39,7 +40,7 @@ public class ModelingFieldAddParam {
      * 字符串
      * 数字
      */
-    private String type;
+    private FieldType type;
 
     /**
      * 字段定义
@@ -89,11 +90,11 @@ public class ModelingFieldAddParam {
         this.width = width;
     }
 
-    public String getType() {
+    public FieldType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(FieldType type) {
         this.type = type;
     }
 
