@@ -9,6 +9,7 @@ import com.l1yp.mapper.workflow.engine.WorkflowHiCommentMapper;
 import com.l1yp.model.db.modeling.ModelingField;
 import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.field.FieldType;
+import com.l1yp.model.db.system.User;
 import com.l1yp.model.db.workflow.engine.TaskComment;
 import com.l1yp.model.db.workflow.engine.TaskCommentMessage.CommentType;
 import com.l1yp.model.db.workflow.model.WorkflowTypeDef;
@@ -126,6 +127,11 @@ public class WorkflowInstanceServiceImpl implements IWorkflowInstanceService {
 
         String processInstanceId = IdWorker.getIdStr();
         param.getData().put("process_instance_id", processInstanceId);
+        Number deptId = (Number) param.getData().get("dept_id");
+        if (deptId == null) {
+            User loginUser = RequestUtils.getLoginUser();
+            param.getData().put("dept_id", loginUser.getDeptId());
+        }
 
         formService.createInstance(ModelingModule.WORKFLOW, param.getMkey(), param.getData());
         String id = (String) param.getData().get("id");
