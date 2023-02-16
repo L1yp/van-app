@@ -145,6 +145,8 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
         log.info("create table ddl: {}", createDDL);
         modelingEntityMapper.createTable(createDDL);
 
+        modelingEntityMapper.createRefTable(tableName);
+
     }
 
     @Override

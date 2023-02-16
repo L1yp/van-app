@@ -109,7 +109,8 @@ public class CompletionStrategy {
                 return matched;
             }
             return false;
-        } else if (rule == CompletionRule.dynamic) {
+        }
+        else if (rule == CompletionRule.dynamic) {
             SequenceFlow sequenceFlow = flowMap.get(outcome);
             String expression = sequenceFlow.getAttributeValue(BpmnXMLConstants.FLOWABLE_EXTENSIONS_NAMESPACE, "completionExpression");
             ExpressionManager expressionManager = CommandContextUtil.getProcessEngineConfiguration().getExpressionManager();

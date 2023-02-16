@@ -195,6 +195,9 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
         String createDDL = columnDefs.stream().collect(Collectors.joining(",\n", "CREATE TABLE `" + tableName + "` (\n"  , "\n) COMMENT '" + entity.getRemark() + "'"));
         log.info("create table ddl: {}", createDDL);
         getBaseMapper().createTable(createDDL);
+
+        getBaseMapper().createRefTable(tableName);
+
     }
 
     @Override

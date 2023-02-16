@@ -25,15 +25,15 @@ public interface ModelingEntityMapper extends BaseMapper<ModelingEntity> {
     void executeSQL(@Param("sql") String sql, @Param("args") List<Object> args);
 
     @Insert("""
-            CREATE TABLE `${module}_${mkey}_ref` (
+            CREATE TABLE `${tableName}_ref` (
                 id BIGINT UNSIGNED NOT NULL PRIMARY KEY COMMENT '主键ID',
                 field VARCHAR(64) NOT NULL COMMENT '字段名',
                 instance_id BIGINT UNSIGNED NOT NULL COMMENT '实例ID',
-                constraint ref_uidx unique (field, instance_id) comment '唯一标识'
+                value BIGINT UNSIGNED NOT NULL COMMENT '值',
+                constraint ${tableName}_ref_unidx unique (field, instance_id, value) comment '唯一标识'
             ) COMMENT '字段引用表';
             """)
-    void createRefTable(@Param("module") ModelingModule module,
-                        @Param("mkey") String mkey);
+    void createRefTable(@Param("tableName")String tableName);
 
     @Select("SELECT * FROM ${tableName} WHERE id = #{id}")
     Map<String, Object> getInstance(@Param("tableName") String tableName, @Param("id") String id);
