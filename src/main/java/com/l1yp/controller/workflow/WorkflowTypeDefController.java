@@ -37,6 +37,12 @@ public class WorkflowTypeDefController {
         return ResultData.ok(workflowTypeDefService.pageWfTypeDef(param));
     }
 
+    @GetMapping("/page/without_ver")
+    public ResultData<PageData<WorkflowTypeDefView>> pageWfTypeDefWithoutVer(WorkflowTypeDefPageParam param) {
+        return ResultData.ok(workflowTypeDefService.pageWfTypeDefWithoutVer(param));
+    }
+
+
     @PostMapping("/add")
     public ResultData<Void> add(@RequestBody @Validated WorkflowTypeDefAddParam param) {
         workflowTypeDefService.add(param);

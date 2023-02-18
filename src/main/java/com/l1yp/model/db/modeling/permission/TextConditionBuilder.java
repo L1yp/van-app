@@ -1,29 +1,29 @@
 package com.l1yp.model.db.modeling.permission;
 
 import com.l1yp.model.db.modeling.ModelingField;
-import com.l1yp.model.db.modeling.permission.FlowPermissionContent.BlockItem;
-import com.l1yp.model.db.modeling.permission.FlowPermissionContent.StrConditionModel;
-import com.l1yp.model.db.system.DeptPlain;
+import com.l1yp.model.db.modeling.permission.BlockExpressionModel.ConditionOperator;
+import com.l1yp.model.db.modeling.permission.BlockExpressionModel.TextFieldConditionModel;
+import com.l1yp.model.db.system.SimpleDept;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class StrConditionBuilder implements IFieldCondition {
+public class TextConditionBuilder implements IFieldCondition {
 
-    private final Logger log = LoggerFactory.getLogger(StrConditionBuilder.class);
+    private final Logger log = LoggerFactory.getLogger(TextConditionBuilder.class);
 
     @Override
-    public void use(StringBuilder sb, String formPrefix, ModelingField field, List<DeptPlain> dptTree, List<String> selfDptIds, List<Object> args, BlockItem blockItem) {
-        StrConditionModel strConditionModel = null;
-        String value = strConditionModel.getValue();
+    public void use(StringBuilder sb, String formPrefix, ModelingField field, List<SimpleDept> dptTree, List<String> selfDptIds, List<Object> args, BlockExpressionModel blockItem) {
+        TextFieldConditionModel textFieldConditionModel = (TextFieldConditionModel) blockItem.getValue();
+        String value = textFieldConditionModel.getText();
 
         String fieldId = field.getId();
-        if (blockItem.getOperator().equals("LIKE")) {
+        if (blockItem.getOperator() == ConditionOperator.LIKE) {
             sb.append(fieldId).append(" LIKE '%").append(escapeSql(value)).append("%'");
-        } else if (blockItem.getOperator().equals("NOT LIKE")) {
+        } else if (blockItem.getOperator() == ConditionOperator.NOT_LIKE) {
             sb.append(fieldId).append(" NOT LIKE '%").append(escapeSql(value)).append("%'");
-        } else if (blockItem.getOperator().equals("=")) {
+        } else if (blockItem.getOperator() == ConditionOperator.EQ) {
             int startIdx = args.size();
             args.add(value);
             sb.append(fieldId).append(" = #{").append(PARAM_NAME).append("[").append(startIdx).append("]}");

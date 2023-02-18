@@ -2,13 +2,13 @@ package com.l1yp.model.db.system;
 
 import java.util.List;
 
-public class DeptPlain {
+public class SimpleDept {
 
     private String id;
 
     private String pid;
 
-    private List<DeptPlain> children;
+    private List<SimpleDept> children;
 
     public String getId() {
         return id;
@@ -26,11 +26,11 @@ public class DeptPlain {
         this.pid = pid;
     }
 
-    public List<DeptPlain> getChildren() {
+    public List<SimpleDept> getChildren() {
         return children;
     }
 
-    public void setChildren(List<DeptPlain> children) {
+    public void setChildren(List<SimpleDept> children) {
         this.children = children;
     }
 }

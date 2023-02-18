@@ -8,7 +8,7 @@ public class ConditionSQLBuilderRegistry {
     public static final Map<String, IFieldCondition> registry = new HashMap<>();
 
     static {
-        registry.put("text", new StrConditionBuilder());
+        registry.put("text", new TextConditionBuilder());
         registry.put("number", new NumberConditionBuilder());
         registry.put("option", new OptionConditionBuilder());
         registry.put("user", new UserConditionBuilder());

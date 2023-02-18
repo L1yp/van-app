@@ -234,6 +234,54 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
         return pageData;
     }
 
+    @Override
+    public PageData<WorkflowTypeDefView> pageWfTypeDefWithoutVer(WorkflowTypeDefPageParam param) {
+        PageHelper.startPage(param.getPageIdx(), param.getPageSize());
+        LambdaQueryWrapper<WorkflowTypeDef> wrapper = Wrappers.<WorkflowTypeDef>lambdaQuery();
+        if (StringUtils.hasText(param.getName())) {
+            wrapper.like(WorkflowTypeDef::getName, param.getName());
+        }
+        if (StringUtils.hasText(param.getRemark())) {
+            wrapper.like(WorkflowTypeDef::getRemark, param.getRemark());
+        }
+        if (StringUtils.hasText(param.getRemark())) {
+            wrapper.like(WorkflowTypeDef::getRemark, param.getRemark());
+        }
+        if (!CollectionUtils.isEmpty(param.getUpdateBy())) {
+            wrapper.in(WorkflowTypeDef::getUpdateBy, param.getUpdateBy());
+        }
+        if (!CollectionUtils.isEmpty(param.getCreateBy())) {
+            wrapper.in(WorkflowTypeDef::getCreateBy, param.getCreateBy());
+        }
+
+        wrapper.orderByDesc(WorkflowTypeDef::getUpdateTime);
+
+        List<WorkflowTypeDef> workflowTypeDefs = getBaseMapper().selectList(wrapper);
+        if (CollectionUtils.isEmpty(workflowTypeDefs)) {
+            return PageData.empty(param);
+        }
+
+
+        PageData<WorkflowTypeDefView> pageData = new PageData<>();
+        pageData.initPage(workflowTypeDefs);
+
+        List<WorkflowTypeDefView> data = workflowTypeDefs.stream().map(WorkflowTypeDef::toView).toList();
+
+        Set<String> userIds = new HashSet<>();
+        data.forEach(it -> {
+            userIds.add(it.getUpdateBy());
+            userIds.add(it.getCreateBy());
+        });
+
+        pageData.setData(data);
+
+        List<UserView> users = userService.listUserViewByIdList(userIds);
+        Map<String, UserView> userMap = users.stream().collect(Collectors.toMap(UserView::getId, it -> it));
+        pageData.setAdditional(userMap);
+        return pageData;
+    }
+
+
     @Cacheable(cacheNames = "workflow_type", key = "'key:' + #p0", unless = "#result == null")
     @CacheResultType(WorkflowTypeDef.class)
     public WorkflowTypeDef getWorkflowTypeDefByKey(String mkey) {

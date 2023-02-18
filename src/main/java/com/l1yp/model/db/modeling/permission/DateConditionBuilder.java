@@ -1,15 +1,15 @@
 package com.l1yp.model.db.modeling.permission;
 
 import com.l1yp.model.db.modeling.ModelingField;
-import com.l1yp.model.db.modeling.permission.FlowPermissionContent.BlockItem;
-import com.l1yp.model.db.modeling.permission.FlowPermissionContent.DateConditionModel;
-import com.l1yp.model.db.system.DeptPlain;
+import com.l1yp.model.db.modeling.permission.BlockExpressionModel.DataConditionType;
+import com.l1yp.model.db.modeling.permission.BlockExpressionModel.DateFieldConditionModel;
+import com.l1yp.model.db.system.SimpleDept;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 public class DateConditionBuilder implements IFieldCondition {
@@ -17,39 +17,42 @@ public class DateConditionBuilder implements IFieldCondition {
     private final Logger log = LoggerFactory.getLogger(DateConditionBuilder.class);
 
     @Override
-    public void use(StringBuilder sb, String tableName, ModelingField field, List<DeptPlain> dptTree, List<String> selfDptIds, List<Object> args, BlockItem blockItem) {
-        DateConditionModel dateConditionModel = null;
-        String type = dateConditionModel.getType();
-        String fieldId = field.getId();
-        if (type.equals("固定")) {
-            List<String> range = dateConditionModel.getRange();
+    public void use(StringBuilder sb, String tableName, ModelingField field, List<SimpleDept> dptTree, List<String> selfDptIds, List<Object> args, BlockExpressionModel blockItem) {
+        DateFieldConditionModel dateConditionModel = (DateFieldConditionModel) blockItem.getValue();
+        DataConditionType type = dateConditionModel.getDataType();
+        String fieldName = field.getField();
+        if (type == DataConditionType.FIXED) {
+            String strRange = dateConditionModel.getRange();
+            //
+            List<String> range = List.of(strRange.split(","));
             if (range.size() != 2) {
                 log.warn("The range size must be equals 2: {}", blockItem);
                 return;
             }
-            String startDate = range.get(0) + " 00:00:00";
-            String endDate = range.get(1) + " 23:59:59";
+
+            Date startDate = new Date(Long.parseLong(range.get(0)));
+            Date endDate = new Date(Long.parseLong(range.get(1)) + 86399999L);
             int startIdx = args.size();
             args.add(startDate);
             args.add(endDate);
             sb.append(" (");
-            sb.append(fieldId).append(" >= #{").append(PARAM_NAME).append("[").append(startIdx).append("]}");
+            sb.append(fieldName).append(" >= #{").append(PARAM_NAME).append("[").append(startIdx).append("]}");
             sb.append(" AND ");
-            sb.append(fieldId).append(" <= #{").append(PARAM_NAME).append("[").append(startIdx + 1).append("]}");
+            sb.append(fieldName).append(" <= #{").append(PARAM_NAME).append("[").append(startIdx + 1).append("]}");
             sb.append(")");
         }
         // 变量模式
         else {
-            String startDate;
-            if (type.equals("今天")) {
+            LocalDate startDate;
+            if (type == DataConditionType.DAY) {
                 startDate = getCurrentDay();
-            } else if (type.equals("本周")) {
+            } else if (type == DataConditionType.WEEK) {
                 startDate = getStartDayOfCurrentWeek();
-            } else if (type.equals("本月")) {
+            } else if (type == DataConditionType.MONTH) {
                 startDate = getStartDayOfCurrentMonth();
-            } else if (type.equals("本季度")) {
+            } else if (type == DataConditionType.QUARTER) {
                 startDate = getStartDayOfCurrentQuarter();
-            } else if (type.equals("本年")) {
+            } else if (type == DataConditionType.YEAR) {
                 startDate = getStartDayOfCurrentYear();
             } else {
                 log.warn("date condition type is wrong: {}", dateConditionModel);
@@ -57,43 +60,38 @@ public class DateConditionBuilder implements IFieldCondition {
             }
             int startIdx = args.size();
             args.add(startDate);
-            sb.append(fieldId).append(" >= #{").append(PARAM_NAME).append("[").append(startIdx).append("]}");
+            sb.append(fieldName).append(" >= #{").append(PARAM_NAME).append("[").append(startIdx).append("]}");
         }
     }
 
-    private String getCurrentDay() {
-        LocalDate now = LocalDate.now();
-        return now.format(DateTimeFormatter.ISO_DATE) + " 00:00:00";
+    private LocalDate getCurrentDay() {
+        return LocalDate.now();
     }
 
-    private String getStartDayOfCurrentWeek() {
+    private LocalDate getStartDayOfCurrentWeek() {
         LocalDate now = LocalDate.now();
         DayOfWeek dayOfWeek = now.getDayOfWeek();
         int value = dayOfWeek.getValue();
-        LocalDate localDate = now.minusDays(value - 1);
-        return localDate.format(DateTimeFormatter.ISO_DATE) + " 00:00:00";
+        return now.minusDays(value - 1);
     }
 
-    private String getStartDayOfCurrentMonth() {
+    private LocalDate getStartDayOfCurrentMonth() {
         LocalDate now = LocalDate.now();
         int value = now.getDayOfMonth();
-        LocalDate localDate = now.minusDays(value - 1);
-        return localDate.format(DateTimeFormatter.ISO_DATE) + " 00:00:00";
+        return now.minusDays(value - 1);
     }
 
-    private String getStartDayOfCurrentQuarter() {
+    private LocalDate getStartDayOfCurrentQuarter() {
         LocalDate now = LocalDate.now();
         int year = now.getYear();
         int month = now.getMonth().firstMonthOfQuarter().getValue();
-        LocalDate date = LocalDate.of(year, month, 1);
-        return date.format(DateTimeFormatter.ISO_DATE) + " 00:00:00";
+        return LocalDate.of(year, month, 1);
     }
 
-    private String getStartDayOfCurrentYear() {
+    private LocalDate getStartDayOfCurrentYear() {
         LocalDate now = LocalDate.now();
         int year = now.getYear();
-        LocalDate date = LocalDate.of(year, 1, 1);
-        return date.format(DateTimeFormatter.ISO_DATE) + " 00:00:00";
+        return LocalDate.of(year, 1, 1);
     }
 //
 //    public static void main(String[] args) {

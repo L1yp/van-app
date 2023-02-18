@@ -3,9 +3,10 @@ package com.l1yp.service.system.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.l1yp.cache.CacheResultType;
 import com.l1yp.cache.type.DepartmentListType;
+import com.l1yp.cache.type.SimpleDeptListType;
 import com.l1yp.mapper.system.DepartmentMapper;
 import com.l1yp.model.db.system.Department;
-import com.l1yp.model.db.system.User;
+import com.l1yp.model.db.system.SimpleDept;
 import com.l1yp.model.param.system.dept.DeptAddParam;
 import com.l1yp.model.param.system.dept.DeptUpdateParam;
 import com.l1yp.model.view.system.DepartmentView;
@@ -15,6 +16,7 @@ import com.l1yp.util.BeanCopierUtil;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -33,7 +35,10 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     UserServiceImpl userService;
 
     @Override
-    @CacheEvict(cacheNames = "departments", key = "'all'")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "departments", key = "'all'"),
+            @CacheEvict(cacheNames = "departments", key = "'simple_all'"),
+    })
     public void add(DeptAddParam param) {
         Department department = new Department();
         BeanCopierUtil.copy(param, department);
@@ -41,7 +46,10 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     }
 
     @Override
-    @CacheEvict(cacheNames = "departments", key = "'all'")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "departments", key = "'all'"),
+            @CacheEvict(cacheNames = "departments", key = "'simple_all'"),
+    })
     public void update(DeptUpdateParam param) {
         Department department = new Department();
         BeanCopierUtil.copy(param, department);
@@ -49,13 +57,19 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     }
 
     @Override
-    @CacheEvict(cacheNames = "departments", key = "'all'")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "departments", key = "'all'"),
+            @CacheEvict(cacheNames = "departments", key = "'simple_all'"),
+    })
     public void delete(String id) {
         removeById(id);
     }
 
     @Override
-    @CacheEvict(cacheNames = "departments", key = "'all'")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "departments", key = "'all'"),
+            @CacheEvict(cacheNames = "departments", key = "'simple_all'"),
+    })
     public void deleteByIds(List<String> ids) {
         removeByIds(ids);
     }
@@ -92,6 +106,11 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
         return getBaseMapper().selectList(null);
     }
 
+    @Cacheable(cacheNames = "departments", key = "'simple_all'")
+    @CacheResultType(SimpleDeptListType.class)
+    public List<SimpleDept> getSimpleDeptList() {
+        return getBaseMapper().getAllDeptPlain();
+    }
 
     public List<Department> getDepartmentListByIds(Collection<String> idList) {
         Set<String> ids = new HashSet<>(idList);

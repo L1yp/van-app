@@ -32,6 +32,8 @@ import com.l1yp.util.BeanCopierUtil;
 import com.l1yp.util.PinyinUtil;
 import com.l1yp.util.RequestUtils;
 import org.springframework.aop.framework.AopContext;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -166,6 +168,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return users.stream().map(User::toView).toList();
     }
 
+    @Resource
+    CacheManager cacheManager;
+
     @Override
     @Transactional
     @Caching(evict = {
@@ -200,6 +205,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
             userDeptService.saveBatch(userDeptList);
         }
+
+        Cache cache = cacheManager.getCache("user_dept");
+        if (cache != null) {
+            cache.evict("id:" + param.getId());
+        }
+
 
         userRoleService.getBaseMapper().deleteByUid(param.getId());
         if (!CollectionUtils.isEmpty(param.getRoleIds())) {

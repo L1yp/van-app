@@ -1,8 +1,7 @@
 package com.l1yp.model.db.modeling.permission;
 
 import com.l1yp.model.db.modeling.ModelingField;
-import com.l1yp.model.db.modeling.permission.FlowPermissionContent.BlockItem;
-import com.l1yp.model.db.system.DeptPlain;
+import com.l1yp.model.db.system.SimpleDept;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -14,7 +13,7 @@ public interface IFieldCondition {
 
     String PARAM_NAME = "args";
 
-    void use(StringBuilder sb, String tableName, ModelingField field, List<DeptPlain> dptTree, List<String> selfDptIds, List<Object> args, BlockItem blockItem);
+    void use(StringBuilder sb, String tableName, ModelingField field, List<SimpleDept> dptTree, List<String> selfDptIds, List<Object> args, BlockExpressionModel blockItem);
 
     /**
      * 获取子树 不包含当前层级
@@ -22,19 +21,19 @@ public interface IFieldCondition {
      * @param deptIds 要查询的部门ID列表
      * @return 子树id列表
      */
-    default List<String> getDepartmentChildren(List<DeptPlain> src, List<String> deptIds) {
-        Map<String, DeptPlain> deptIdMap = src.stream().collect(Collectors.toMap(DeptPlain::getId, it -> it));
+    default List<String> getDepartmentChildren(List<SimpleDept> src, List<String> deptIds) {
+        Map<String, SimpleDept> deptIdMap = src.stream().collect(Collectors.toMap(SimpleDept::getId, it -> it));
 
-        LinkedList<DeptPlain> candidateDeptList = deptIds.stream().map(deptIdMap::get).collect(Collectors.toCollection(LinkedList::new));
+        LinkedList<SimpleDept> candidateDeptList = deptIds.stream().map(deptIdMap::get).collect(Collectors.toCollection(LinkedList::new));
 
         Set<String> result = new HashSet<>();
         while (candidateDeptList.size() > 0) {
-            DeptPlain deptPlain = candidateDeptList.pop();
-            if (CollectionUtils.isEmpty(deptPlain.getChildren())) {
+            SimpleDept simpleDept = candidateDeptList.pop();
+            if (CollectionUtils.isEmpty(simpleDept.getChildren())) {
                 continue;
             }
 
-            for (DeptPlain child : deptPlain.getChildren()) {
+            for (SimpleDept child : simpleDept.getChildren()) {
                 result.add(child.getId());
                 if (!CollectionUtils.isEmpty(child.getChildren())) {
                     candidateDeptList.add(child);
@@ -52,9 +51,9 @@ public interface IFieldCondition {
         String strArgs = IntStream.range(0, val.size()).boxed()
                 .map(it -> "#{" + PARAM_NAME + "[" + (startIdx + it) + "]}")
                 .collect(Collectors.joining(",", "(", ")"));
-        sb.append(" form_data_id IN ( ")
-                .append("SELECT form_data_id FROM ").append(tableName)
-                .append(" WHERE field_id = '").append(fieldName).append("' AND field_val IN ").append(strArgs);
+        sb.append(" id IN ( ")
+                .append("SELECT instance_id FROM ").append(tableName).append("_ref")
+                .append(" WHERE field = '").append(fieldName).append("' AND value IN ").append(strArgs);
         sb.append(")");
     }
 

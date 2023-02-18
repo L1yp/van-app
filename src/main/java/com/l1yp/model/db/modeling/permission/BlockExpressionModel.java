@@ -3,8 +3,12 @@ package com.l1yp.model.db.modeling.permission;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.l1yp.model.db.modeling.field.FieldType;
-import com.l1yp.model.db.modeling.permission.FlowPermissionContent.DateType;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class BlockExpressionModel {
@@ -22,6 +26,7 @@ public class BlockExpressionModel {
             @JsonSubTypes.Type(value = OptionFieldConditionModel.class, name = "option"),
             @JsonSubTypes.Type(value = DateFieldConditionModel.class, name = "date"),
             @JsonSubTypes.Type(value = TextFieldConditionModel.class, name = "text"),
+            @JsonSubTypes.Type(value = NumberFieldConditionModel.class, name = "number"),
     })
     public static class FieldConditionModel {
         private FieldType type;
@@ -36,6 +41,26 @@ public class BlockExpressionModel {
     }
 
     public static class UserFieldConditionModel extends FieldConditionModel {
+
+        /**
+         * 本人
+         */
+        public static final String SELF = "SELF";
+        /**
+         * 本人部门
+         */
+        public static final String SELF_DPT = "SELF_DPT";
+        /**
+         * 下级部门
+         */
+        public static final String CHILD_DPT = "CHILD_DPT";
+
+        /**
+         * 本人部门及下级部门
+         */
+        public static final String SELF_CHILD_DPT = "SELF_CHILD_DPT";
+
+        public static final Set<String> VAR_USER_OPTIONS = new HashSet<>(Arrays.asList(SELF, SELF_DPT, CHILD_DPT));
 
         /**
          * user id list
@@ -70,6 +95,21 @@ public class BlockExpressionModel {
     }
 
     public static class DeptFieldConditionModel extends FieldConditionModel {
+
+        /**
+         * 本人部门
+         */
+        public static final String SELF_DPT = "SELF_DPT";
+        /**
+         * 下级部门
+         */
+        public static final String CHILD_DPT = "CHILD_DPT";
+
+        /**
+         * 本人部门及下级部门
+         */
+        public static final String SELF_CHILD_DPT = "SELF_CHILD_DPT";
+
 
         private String deptId;
         private boolean cascader;
@@ -113,9 +153,6 @@ public class BlockExpressionModel {
     }
 
     public static class DateFieldConditionModel extends FieldConditionModel {
-        /**
-         * @see DateType
-         */
         private DataConditionType dataType;
         /**
          * yyyy-MM-dd
@@ -139,7 +176,7 @@ public class BlockExpressionModel {
         }
     }
 
-    public static class TextFieldConditionModel {
+    public static class TextFieldConditionModel extends FieldConditionModel {
         private String text;
 
         public String getText() {
@@ -150,6 +187,19 @@ public class BlockExpressionModel {
             this.text = text;
         }
     }
+
+    public static class NumberFieldConditionModel extends FieldConditionModel {
+        private BigDecimal number;
+
+        public BigDecimal getNumber() {
+            return number;
+        }
+
+        public void setNumber(BigDecimal number) {
+            this.number = number;
+        }
+    }
+
 
     public String getField() {
         return field;
@@ -181,7 +231,23 @@ public class BlockExpressionModel {
         EQ,
         LIKE,
         NOT_LIKE,
+
+        GT, GTE, LT, LTE,
+
         ;
+
+        public String getSQLOperator() {
+            return switch (this) {
+                case EQ -> "=";
+                case GT -> ">";
+                case GTE -> ">=";
+                case LT -> "<";
+                case LTE -> "<=";
+                case LIKE -> "LIKE";
+                case NOT_LIKE -> "NOT LIKE";
+                default -> "";
+            };
+        }
 
     }
 

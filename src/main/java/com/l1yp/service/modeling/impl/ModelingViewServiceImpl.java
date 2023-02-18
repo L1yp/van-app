@@ -14,6 +14,7 @@ import com.l1yp.model.db.modeling.ModelingEntity;
 import com.l1yp.model.db.modeling.ModelingField;
 import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.ModelingOptionValue;
+import com.l1yp.model.db.modeling.ModelingPermission;
 import com.l1yp.model.db.modeling.ModelingView;
 import com.l1yp.model.db.modeling.ModelingView.Collation;
 import com.l1yp.model.db.modeling.ModelingViewColumn;
@@ -22,7 +23,14 @@ import com.l1yp.model.db.modeling.field.FieldScheme;
 import com.l1yp.model.db.modeling.field.FieldType;
 import com.l1yp.model.db.modeling.field.OptionFieldScheme;
 import com.l1yp.model.db.modeling.field.UserFieldScheme;
+import com.l1yp.model.db.modeling.permission.BlockExpressionModel.DeptFieldConditionModel;
+import com.l1yp.model.db.modeling.permission.BlockExpressionModel.UserFieldConditionModel;
+import com.l1yp.model.db.modeling.permission.DeptConditionBuilder;
+import com.l1yp.model.db.modeling.permission.ExpressionModel;
+import com.l1yp.model.db.modeling.permission.IFieldCondition;
+import com.l1yp.model.db.modeling.permission.UserConditionBuilder;
 import com.l1yp.model.db.system.Department;
+import com.l1yp.model.db.system.SimpleDept;
 import com.l1yp.model.db.system.User;
 import com.l1yp.model.db.workflow.model.WorkflowTypeDef;
 import com.l1yp.model.param.modeling.entity.ModelFindPageParam;
@@ -40,6 +48,7 @@ import com.l1yp.model.view.system.DepartmentView;
 import com.l1yp.model.view.system.UserView;
 import com.l1yp.service.modeling.IModelingViewService;
 import com.l1yp.service.system.impl.DepartmentServiceImpl;
+import com.l1yp.service.system.impl.UserDeptServiceImpl;
 import com.l1yp.service.system.impl.UserServiceImpl;
 import com.l1yp.util.BeanCopierUtil;
 import com.l1yp.util.NumberUtil;
@@ -66,6 +75,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, ModelingView> implements IModelingViewService {
@@ -266,9 +276,18 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
         }
     }
 
+    /******  instance *******/
+
+    @Resource
+    ModelingPermissionServiceImpl modelingPermissionService;
+
+    @Resource
+    UserDeptServiceImpl userDeptService;
 
     @Override
     public PageData<Map<String, Object>> pageModelingInstance(ModelFindPageParam param) {
+        String loginUserId = RequestUtils.getLoginUserId();
+
         String tableName = null;
         if (param.getModule() == ModelingModule.ENTITY) {
             tableName = ModelingEntity.buildEntityTableName(param.getMkey());
@@ -287,11 +306,31 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
 
         String columns = columnNames.stream().map(it -> "`" + it + "`").collect(Collectors.joining(","));
 
+        // 部门列表
+        List<SimpleDept> departmentList = departmentService.getSimpleDeptList();
+        // 本人部门
+        List<String> selfDeptIdList = userDeptService.getDeptIdListByUid(loginUserId);
+
         List<Object> args = new ArrayList<>();
+        List<String> filterConditions = new ArrayList<>();
         // TODO: PERMISSION
 
+        List<ModelingPermission> permissionList = modelingPermissionService.getPermissionList(loginUserId, param.getModule(), param.getMkey());
+        if (CollectionUtils.isNotEmpty(permissionList)) {
+            List<ExpressionModel> expressionModels = permissionList.stream().map(ModelingPermission::getContent).filter(Objects::nonNull).flatMap(Collection::stream).toList();
+            boolean hasVarDept = modelingPermissionService.hasVarDept(expressionModels, fields);
+            if (hasVarDept) {
 
-        List<String> filterConditions = new ArrayList<>();
+                List<String> conditionList = new ArrayList<>();
+                modelingPermissionService.buildPermissionSQL(tableName, fields, departmentList, selfDeptIdList, expressionModels, conditionList, args);
+
+                String permissionCondition = String.join("", conditionList);
+                filterConditions.add(permissionCondition);
+            }
+        }
+
+
+
         for (Entry<String, String> entry : param.getConditionMap().entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
@@ -301,16 +340,98 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
             ModelingField field = fieldNameMap.get(key);
             FieldType type = field.getType();
             if (type == FieldType.user) {
-                if (value.equals("SELF")) {
-                    value = RequestUtils.getLoginUser().getId();
-                }
                 UserFieldScheme scheme = (UserFieldScheme) field.getScheme();
-                if (scheme.getMultiple()) {
-                    filterConditions.add(String.format("`%s` LIKE CONCAT('%%', #{args[%d]}, '%%')", key, args.size()));
-                } else {
-                    filterConditions.add(String.format("`%s` = #{args[%d]}", key, args.size()));
+                if (UserFieldConditionModel.SELF.equals(value)) {
+                    value = RequestUtils.getLoginUser().getId();
+                    if (scheme.getMultiple()) {
+                        filterConditions.add(String.format("`%s` LIKE CONCAT('%%', #{args[%d]}, '%%')", key, args.size()));
+                    } else {
+                        filterConditions.add(String.format("`%s` = #{args[%d]}", key, args.size()));
+                    }
+                    args.add(value);
                 }
-                args.add(value);
+                // 本人部门
+                else if (UserFieldConditionModel.SELF_DPT.equals(value)) {
+                    String conditionSQL = new UserConditionBuilder().buildUserConditionSQLByDept(tableName, args, field.getField(), selfDeptIdList);
+                    filterConditions.add(conditionSQL);
+                }
+                // 下级部门
+                else if (UserFieldConditionModel.CHILD_DPT.equals(value)) {
+                    UserConditionBuilder builder = new UserConditionBuilder();
+                    List<String> selfChildrenDeptIdList = builder.getDepartmentChildren(departmentList, selfDeptIdList);
+                    String conditionSQL = new UserConditionBuilder().buildUserConditionSQLByDept(tableName, args, field.getField(), selfChildrenDeptIdList);
+                    filterConditions.add(conditionSQL);
+                }
+                // 本人部门及下级部门
+                else if (UserFieldConditionModel.SELF_CHILD_DPT.equals(value)) {
+                    UserConditionBuilder builder = new UserConditionBuilder();
+                    List<String> selfChildrenDeptIdList = builder.getDepartmentChildren(departmentList, selfDeptIdList);
+                    List<String> deptIdList = new ArrayList<>();
+                    deptIdList.addAll(selfDeptIdList);
+                    deptIdList.addAll(selfChildrenDeptIdList);
+                    String conditionSQL = new UserConditionBuilder().buildUserConditionSQLByDept(tableName, args, field.getField(), deptIdList);
+                    filterConditions.add(conditionSQL);
+                }
+
+            }
+            else if (type == FieldType.dept) {
+                DeptFieldScheme scheme = (DeptFieldScheme) field.getScheme();
+                // 多选部门
+                if (scheme.getMultiple()) {
+                    var builder = new DeptConditionBuilder();
+                    StringBuilder sb = new StringBuilder();
+                    if (DeptFieldConditionModel.SELF_DPT.equals(value)) {
+                        builder.appendRefBlock(sb, tableName, field.getField(), selfDeptIdList, args);
+                    }
+                    else if (DeptFieldConditionModel.CHILD_DPT.equals(value)) {
+                        List<String> children = builder.getDepartmentChildren(departmentList, selfDeptIdList);
+                        builder.appendRefBlock(sb, tableName, field.getField(), children, args);
+                    }
+                    else if (DeptFieldConditionModel.SELF_CHILD_DPT.equals(value)) {
+                        List<String> children = builder.getDepartmentChildren(departmentList, selfDeptIdList);
+                        children.addAll(selfDeptIdList);
+                        builder.appendRefBlock(sb, tableName, field.getField(), children, args);
+                    } else {
+                        List<String> deptIdList = new ArrayList<>();
+                        deptIdList.add(value);
+                        builder.appendRefBlock(sb, tableName, field.getField(), deptIdList, args);
+                    }
+                    String conditionSQL = sb.toString();
+                    filterConditions.add(conditionSQL);
+
+                }
+                // 单选部门
+                else {
+                    var startIdx = args.size();
+                    String conditionSQL;
+                    if (DeptFieldConditionModel.SELF_DPT.equals(value)) {
+                        args.addAll(selfDeptIdList);
+                        conditionSQL = IntStream.range(0, selfDeptIdList.size()).boxed()
+                                .map(it -> "#{" + IFieldCondition.PARAM_NAME + "[" + (startIdx + it) + "]}")
+                                .collect(Collectors.joining(",", "`" + field.getField() + "` IN (", ")"));
+                    }
+                    else if (DeptFieldConditionModel.CHILD_DPT.equals(value)) {
+                        List<String> departmentChildren = new DeptConditionBuilder().getDepartmentChildren(departmentList, selfDeptIdList);
+                        args.addAll(departmentChildren);
+                        conditionSQL = IntStream.range(0, departmentChildren.size()).boxed()
+                                .map(it -> "#{" + IFieldCondition.PARAM_NAME + "[" + (startIdx + it) + "]}")
+                                .collect(Collectors.joining(",", "`" + field.getField() + "` IN (", ")"));
+                    }
+                    else if (DeptFieldConditionModel.SELF_CHILD_DPT.equals(value)) {
+                        List<String> departmentChildren = new DeptConditionBuilder().getDepartmentChildren(departmentList, selfDeptIdList);
+                        departmentChildren.addAll(selfDeptIdList);
+                        args.addAll(departmentChildren);
+                        conditionSQL = IntStream.range(0, departmentChildren.size()).boxed()
+                                .map(it -> "#{" + IFieldCondition.PARAM_NAME + "[" + (startIdx + it) + "]}")
+                                .collect(Collectors.joining(",", "`" + field.getField() + "` IN (", ")"));
+                    } else {
+                        conditionSQL = "`" + field.getField() + "` = #{" +
+                                IFieldCondition.PARAM_NAME + "}";
+                        filterConditions.add(conditionSQL);
+                    }
+                    filterConditions.add(conditionSQL);
+
+                }
             }
             else if (type == FieldType.text) {
                 filterConditions.add(String.format("`%s` LIKE CONCAT('%%', #{args[%d]}, '%%')", key, args.size()));

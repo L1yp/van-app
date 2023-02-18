@@ -22,4 +22,8 @@ public interface IWorkflowTypeDefService {
      * 查询流程模型及版本列表
      */
     PageData<WorkflowTypeDefView> pageWfTypeDef(WorkflowTypeDefPageParam param);
+
+    PageData<WorkflowTypeDefView> pageWfTypeDefWithoutVer(WorkflowTypeDefPageParam param);
+
+
 }
