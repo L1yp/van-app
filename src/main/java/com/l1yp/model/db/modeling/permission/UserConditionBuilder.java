@@ -65,12 +65,14 @@ public class UserConditionBuilder implements IFieldCondition {
                 }
                 candidateDptIds = new ArrayList<>(new HashSet<>(candidateDptIds));
 
-                if (!CollectionUtils.isEmpty(plainUsers)) {
-                    sb.append(" AND ");
-                }
+                if (!CollectionUtils.isEmpty(candidateDptIds)) {
 
-                String conditionSQL = buildUserConditionSQLByDept(tableName, args, fieldName, candidateDptIds);
-                sb.append(conditionSQL);
+                    if (!CollectionUtils.isEmpty(plainUsers)) {
+                        sb.append(" AND ");
+                    }
+                    String conditionSQL = buildUserConditionSQLByDept(tableName, args, fieldName, candidateDptIds);
+                    sb.append(conditionSQL);
+                }
             }
 
 

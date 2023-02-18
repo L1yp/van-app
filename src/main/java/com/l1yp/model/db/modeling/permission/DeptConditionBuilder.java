@@ -1,5 +1,6 @@
 package com.l1yp.model.db.modeling.permission;
 
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.l1yp.model.db.modeling.ModelingField;
 import com.l1yp.model.db.modeling.permission.BlockExpressionModel.DeptFieldConditionModel;
 import com.l1yp.model.db.system.SimpleDept;
@@ -33,6 +34,8 @@ public class DeptConditionBuilder implements IFieldCondition {
         }
 
         String fieldName = field.getField();
-        appendRefBlock(sb, formPrefix, fieldName, candidateIds, args);
+        if (CollectionUtils.isNotEmpty(candidateIds)) {
+            appendRefBlock(sb, formPrefix, fieldName, candidateIds, args);
+        }
     }
 }

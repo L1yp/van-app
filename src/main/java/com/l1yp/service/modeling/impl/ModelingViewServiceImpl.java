@@ -351,19 +351,22 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
                     args.add(value);
                 }
                 // 本人部门
-                else if (UserFieldConditionModel.SELF_DPT.equals(value)) {
+                else if (UserFieldConditionModel.SELF_DPT.equals(value) && CollectionUtils.isNotEmpty(selfDeptIdList)) {
                     String conditionSQL = new UserConditionBuilder().buildUserConditionSQLByDept(tableName, args, field.getField(), selfDeptIdList);
                     filterConditions.add(conditionSQL);
                 }
                 // 下级部门
-                else if (UserFieldConditionModel.CHILD_DPT.equals(value)) {
+                else if (UserFieldConditionModel.CHILD_DPT.equals(value) && CollectionUtils.isNotEmpty(selfDeptIdList)) {
                     UserConditionBuilder builder = new UserConditionBuilder();
                     List<String> selfChildrenDeptIdList = builder.getDepartmentChildren(departmentList, selfDeptIdList);
-                    String conditionSQL = new UserConditionBuilder().buildUserConditionSQLByDept(tableName, args, field.getField(), selfChildrenDeptIdList);
-                    filterConditions.add(conditionSQL);
+                    // 无下级部门时 无需过滤
+                    if (CollectionUtils.isNotEmpty(selfChildrenDeptIdList)) {
+                        String conditionSQL = new UserConditionBuilder().buildUserConditionSQLByDept(tableName, args, field.getField(), selfChildrenDeptIdList);
+                        filterConditions.add(conditionSQL);
+                    }
                 }
                 // 本人部门及下级部门
-                else if (UserFieldConditionModel.SELF_CHILD_DPT.equals(value)) {
+                else if (UserFieldConditionModel.SELF_CHILD_DPT.equals(value) && CollectionUtils.isNotEmpty(selfDeptIdList)) {
                     UserConditionBuilder builder = new UserConditionBuilder();
                     List<String> selfChildrenDeptIdList = builder.getDepartmentChildren(departmentList, selfDeptIdList);
                     List<String> deptIdList = new ArrayList<>();
@@ -372,7 +375,13 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
                     String conditionSQL = new UserConditionBuilder().buildUserConditionSQLByDept(tableName, args, field.getField(), deptIdList);
                     filterConditions.add(conditionSQL);
                 }
-
+                else {
+                    if (scheme.getMultiple()) {
+                        filterConditions.add(String.format("`%s` LIKE CONCAT('%%', #{args[%d]}, '%%')", key, args.size()));
+                    } else {
+                        filterConditions.add(String.format("`%s` = #{args[%d]}", key, args.size()));
+                    }
+                }
             }
             else if (type == FieldType.dept) {
                 DeptFieldScheme scheme = (DeptFieldScheme) field.getScheme();
@@ -380,14 +389,16 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
                 if (scheme.getMultiple()) {
                     var builder = new DeptConditionBuilder();
                     StringBuilder sb = new StringBuilder();
-                    if (DeptFieldConditionModel.SELF_DPT.equals(value)) {
+                    if (DeptFieldConditionModel.SELF_DPT.equals(value) && CollectionUtils.isNotEmpty(selfDeptIdList)) {
                         builder.appendRefBlock(sb, tableName, field.getField(), selfDeptIdList, args);
                     }
-                    else if (DeptFieldConditionModel.CHILD_DPT.equals(value)) {
+                    else if (DeptFieldConditionModel.CHILD_DPT.equals(value) && CollectionUtils.isNotEmpty(selfDeptIdList)) {
                         List<String> children = builder.getDepartmentChildren(departmentList, selfDeptIdList);
-                        builder.appendRefBlock(sb, tableName, field.getField(), children, args);
+                        if (CollectionUtils.isNotEmpty(children)) {
+                            builder.appendRefBlock(sb, tableName, field.getField(), children, args);
+                        }
                     }
-                    else if (DeptFieldConditionModel.SELF_CHILD_DPT.equals(value)) {
+                    else if (DeptFieldConditionModel.SELF_CHILD_DPT.equals(value) && CollectionUtils.isNotEmpty(selfDeptIdList)) {
                         List<String> children = builder.getDepartmentChildren(departmentList, selfDeptIdList);
                         children.addAll(selfDeptIdList);
                         builder.appendRefBlock(sb, tableName, field.getField(), children, args);
@@ -403,21 +414,23 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
                 // 单选部门
                 else {
                     var startIdx = args.size();
-                    String conditionSQL;
-                    if (DeptFieldConditionModel.SELF_DPT.equals(value)) {
+                    String conditionSQL = null;
+                    if (DeptFieldConditionModel.SELF_DPT.equals(value) && CollectionUtils.isNotEmpty(selfDeptIdList)) {
                         args.addAll(selfDeptIdList);
                         conditionSQL = IntStream.range(0, selfDeptIdList.size()).boxed()
                                 .map(it -> "#{" + IFieldCondition.PARAM_NAME + "[" + (startIdx + it) + "]}")
                                 .collect(Collectors.joining(",", "`" + field.getField() + "` IN (", ")"));
                     }
-                    else if (DeptFieldConditionModel.CHILD_DPT.equals(value)) {
+                    else if (DeptFieldConditionModel.CHILD_DPT.equals(value) && CollectionUtils.isNotEmpty(selfDeptIdList)) {
                         List<String> departmentChildren = new DeptConditionBuilder().getDepartmentChildren(departmentList, selfDeptIdList);
-                        args.addAll(departmentChildren);
-                        conditionSQL = IntStream.range(0, departmentChildren.size()).boxed()
-                                .map(it -> "#{" + IFieldCondition.PARAM_NAME + "[" + (startIdx + it) + "]}")
-                                .collect(Collectors.joining(",", "`" + field.getField() + "` IN (", ")"));
+                        if (CollectionUtils.isNotEmpty(departmentChildren)) {
+                            args.addAll(departmentChildren);
+                            conditionSQL = IntStream.range(0, departmentChildren.size()).boxed()
+                                    .map(it -> "#{" + IFieldCondition.PARAM_NAME + "[" + (startIdx + it) + "]}")
+                                    .collect(Collectors.joining(",", "`" + field.getField() + "` IN (", ")"));
+                        }
                     }
-                    else if (DeptFieldConditionModel.SELF_CHILD_DPT.equals(value)) {
+                    else if (DeptFieldConditionModel.SELF_CHILD_DPT.equals(value) && CollectionUtils.isNotEmpty(selfDeptIdList)) {
                         List<String> departmentChildren = new DeptConditionBuilder().getDepartmentChildren(departmentList, selfDeptIdList);
                         departmentChildren.addAll(selfDeptIdList);
                         args.addAll(departmentChildren);
@@ -425,11 +438,14 @@ public class ModelingViewServiceImpl extends ServiceImpl<ModelingViewMapper, Mod
                                 .map(it -> "#{" + IFieldCondition.PARAM_NAME + "[" + (startIdx + it) + "]}")
                                 .collect(Collectors.joining(",", "`" + field.getField() + "` IN (", ")"));
                     } else {
+                        args.add(value);
                         conditionSQL = "`" + field.getField() + "` = #{" +
-                                IFieldCondition.PARAM_NAME + "}";
+                                IFieldCondition.PARAM_NAME + "[" + startIdx + "]}";
                         filterConditions.add(conditionSQL);
                     }
-                    filterConditions.add(conditionSQL);
+                    if (conditionSQL != null) {
+                        filterConditions.add(conditionSQL);
+                    }
 
                 }
             }
