@@ -2,8 +2,6 @@ package com.l1yp.service.modeling.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.l1yp.cache.CacheResultType;
-import com.l1yp.cache.type.ModelingOptionValueViewListType;
 import com.l1yp.exception.VanException;
 import com.l1yp.mapper.modeling.ModelingOptionValueMapper;
 import com.l1yp.model.db.modeling.ModelingOptionValue;
@@ -35,7 +33,6 @@ public class ModelingOptionValueServiceImpl extends ServiceImpl<ModelingOptionVa
 
     @Override
     @Cacheable(cacheNames = "option_values", key = "#p0.typeId")
-    @CacheResultType(ModelingOptionValueViewListType.class)
     public List<ModelingOptionValueView> findValues(ModelingOptionValueFindParam param) {
         List<ModelingOptionValue> modelingOptionValues = getBaseMapper().selectList(Wrappers.<ModelingOptionValue>lambdaQuery().eq(ModelingOptionValue::getTypeId, param.getTypeId()));
         List<ModelingOptionValueView> result = new ArrayList<>();
@@ -119,7 +116,6 @@ public class ModelingOptionValueServiceImpl extends ServiceImpl<ModelingOptionVa
     }
 
     @Cacheable(cacheNames = "option_value", key = "#p0")
-    @CacheResultType(ModelingOptionValue.class)
     public ModelingOptionValue getValue(String valueId) {
         return getById(valueId);
     }

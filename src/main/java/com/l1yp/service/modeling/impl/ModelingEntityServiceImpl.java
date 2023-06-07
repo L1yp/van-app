@@ -2,13 +2,10 @@ package com.l1yp.service.modeling.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
-import com.l1yp.cache.CacheResultType;
-import com.l1yp.cache.type.ModelingEntityViewPageType;
 import com.l1yp.exception.VanException;
 import com.l1yp.mapper.modeling.ModelingEntityMapper;
 import com.l1yp.mapper.modeling.ModelingFieldMapper;
@@ -17,20 +14,20 @@ import com.l1yp.mapper.modeling.ModelingOptionTypeMapper;
 import com.l1yp.mapper.modeling.ModelingOptionValueMapper;
 import com.l1yp.mapper.modeling.ModelingViewColumnMapper;
 import com.l1yp.mapper.modeling.ModelingViewMapper;
-import com.l1yp.mapper.system.UserMapper;
+import com.l1yp.mapper.workflow.WorkflowTypeDefMapper;
 import com.l1yp.model.common.PageData;
 import com.l1yp.model.db.modeling.ModelingEntity;
 import com.l1yp.model.db.modeling.ModelingField;
-import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.ModelingField.FieldScope;
 import com.l1yp.model.db.modeling.ModelingFieldRef;
+import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.ModelingOptionScope;
 import com.l1yp.model.db.modeling.ModelingOptionType;
 import com.l1yp.model.db.modeling.ModelingOptionValue;
 import com.l1yp.model.db.modeling.ModelingView;
 import com.l1yp.model.db.modeling.ModelingViewColumn;
 import com.l1yp.model.db.modeling.field.FieldScheme;
-import com.l1yp.model.db.system.User;
+import com.l1yp.model.db.workflow.model.WorkflowTypeDef;
 import com.l1yp.model.param.modeling.entity.ModelingEntityAddParam;
 import com.l1yp.model.param.modeling.entity.ModelingEntityFindParam;
 import com.l1yp.model.param.modeling.entity.ModelingEntityInstanceAddParam;
@@ -45,7 +42,6 @@ import com.l1yp.service.modeling.IModelingEntityService;
 import com.l1yp.service.system.impl.UserServiceImpl;
 import com.l1yp.util.BeanCopierUtil;
 import com.l1yp.util.NumberUtil;
-import com.l1yp.util.RequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
@@ -59,14 +55,11 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper, ModelingEntity> implements IModelingEntityService {
@@ -102,7 +95,6 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
 
     @Override
     @Cacheable(cacheNames = "entity", key = "#p0")
-    @CacheResultType(ModelingEntityView.class)
     public ModelingEntityView findEntity(String id) {
         ModelingEntity entity = getById(id);
         if (entity == null) {
@@ -113,7 +105,6 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
 
     @Override
     @Cacheable(cacheNames = "entity_search", key = "#p0.offset + ',' + #p0.pageSize", condition = "#p0.key == '' and #p0.name == '' and #p0.remark == '' and #p0.createBy == '' and #p0.updateBy == '' ")
-    @CacheResultType(ModelingEntityViewPageType.class)
     public PageData<ModelingEntityView> searchEntity(ModelingEntityFindParam param) {
         LambdaQueryWrapper<ModelingEntity> wrapper = Wrappers.lambdaQuery();
         if (StringUtils.isNotBlank(param.getKey())) {
@@ -397,13 +388,30 @@ public class ModelingEntityServiceImpl extends ServiceImpl<ModelingEntityMapper,
 
     }
 
+    @Resource
+    WorkflowTypeDefMapper workflowTypeDefMapper;
+
     @Override
     public Map<String, Object> getInstance(ModelingEntityInstanceFindParam param) {
-        ModelingEntity modelingEntity = getOne(Wrappers.<ModelingEntity>lambdaQuery().eq(ModelingEntity::getMkey, param.getMkey()));
-        if (modelingEntity == null) {
-            throw new VanException(404, "实体不存在: " + param.getMkey());
+        String tableName = null;
+        if (ModelingModule.ENTITY.equals(param.getModule())) {
+            boolean flag = getBaseMapper().exists(Wrappers.<ModelingEntity>lambdaQuery().eq(ModelingEntity::getMkey, param.getMkey()));
+            if (!flag) {
+                throw new VanException(404, "实体不存在: " + param.getMkey());
+            }
+            tableName = ModelingEntity.buildEntityTableName(param.getMkey());
         }
-        String tableName = ModelingEntity.buildEntityTableName(param.getMkey());
+        else if (ModelingModule.WORKFLOW.equals(param.getModule())) {
+            boolean flag = workflowTypeDefMapper.exists(Wrappers.<WorkflowTypeDef>lambdaQuery().eq(WorkflowTypeDef::getKey, param.getMkey()));
+            if (!flag) {
+                throw new VanException(404, "流程不存在: " + param.getMkey());
+            }
+            tableName = WorkflowTypeDef.buildEntityTableName(param.getMkey());
+        }
+        if (tableName == null) {
+            throw new VanException(400, "module参数有误: " + param.getModule());
+        }
+
         Map<String, Object> instance = getBaseMapper().getInstance(tableName, param.getId());
         NumberUtil.transformBigIntToString(instance);
         return instance;

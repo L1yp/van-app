@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
-import com.l1yp.cache.CacheResultType;
 import com.l1yp.exception.VanException;
 import com.l1yp.mapper.modeling.ModelingEntityMapper;
 import com.l1yp.mapper.modeling.ModelingFieldMapper;
@@ -283,7 +282,6 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
 
 
     @Cacheable(cacheNames = "workflow_type", key = "'key:' + #p0", unless = "#result == null")
-    @CacheResultType(WorkflowTypeDef.class)
     public WorkflowTypeDef getWorkflowTypeDefByKey(String mkey) {
         WorkflowTypeDef workflowType = getBaseMapper().selectOne(Wrappers.<WorkflowTypeDef>lambdaQuery().eq(WorkflowTypeDef::getKey, mkey));
         if (workflowType != null) {
@@ -296,7 +294,6 @@ public class WorkflowTypeDefServiceImpl extends ServiceImpl<WorkflowTypeDefMappe
     }
 
     @Cacheable(cacheNames = "workflow_type", key = "'id:' + #p0", unless = "#result == null")
-    @CacheResultType(WorkflowTypeDef.class)
     public WorkflowTypeDef getWorkflowTypeDefById(String id) {
         WorkflowTypeDef workflowType = getBaseMapper().selectById(id);
         if (workflowType != null) {

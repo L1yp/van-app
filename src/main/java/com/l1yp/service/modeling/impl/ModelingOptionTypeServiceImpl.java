@@ -3,8 +3,6 @@ package com.l1yp.service.modeling.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.l1yp.cache.CacheResultType;
-import com.l1yp.cache.type.ModelingOptionTypeViewListType;
 import com.l1yp.exception.VanException;
 import com.l1yp.mapper.modeling.ModelingOptionTypeMapper;
 import com.l1yp.model.db.modeling.ModelingField;
@@ -40,7 +38,6 @@ public class ModelingOptionTypeServiceImpl extends ServiceImpl<ModelingOptionTyp
 
     @Override
     @Cacheable(cacheNames = "option_types", key = "#p0.scope + ':' + #p0.mkey")
-    @CacheResultType(ModelingOptionTypeViewListType.class)
     public List<ModelingOptionTypeView> findTypes(ModelingOptionTypeFindParam param) {
         LambdaQueryWrapper<ModelingOptionType> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(ModelingOptionType::getScope, param.getScope());

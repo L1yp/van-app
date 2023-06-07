@@ -1,9 +1,6 @@
 package com.l1yp.service.system.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.l1yp.cache.CacheResultType;
-import com.l1yp.cache.type.DepartmentListType;
-import com.l1yp.cache.type.SimpleDeptListType;
 import com.l1yp.mapper.system.DepartmentMapper;
 import com.l1yp.model.db.system.Department;
 import com.l1yp.model.db.system.SimpleDept;
@@ -101,13 +98,11 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     }
 
     @Cacheable(cacheNames = "departments", key = "'all'")
-    @CacheResultType(DepartmentListType.class)
     public List<Department> getAllDepartment() {
         return getBaseMapper().selectList(null);
     }
 
     @Cacheable(cacheNames = "departments", key = "'simple_all'")
-    @CacheResultType(SimpleDeptListType.class)
     public List<SimpleDept> getSimpleDeptList() {
         return getBaseMapper().getAllDeptPlain();
     }

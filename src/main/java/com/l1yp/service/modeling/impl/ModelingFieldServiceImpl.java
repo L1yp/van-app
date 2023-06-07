@@ -3,17 +3,15 @@ package com.l1yp.service.modeling.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.l1yp.cache.CacheResultType;
-import com.l1yp.cache.type.ModelingFieldListType;
 import com.l1yp.exception.VanException;
 import com.l1yp.mapper.modeling.ModelingFieldMapper;
 import com.l1yp.mapper.modeling.ModelingFieldRefMapper;
 import com.l1yp.mapper.modeling.ModelingViewColumnMapper;
 import com.l1yp.model.db.modeling.ModelingEntity;
 import com.l1yp.model.db.modeling.ModelingField;
-import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.ModelingField.FieldScope;
 import com.l1yp.model.db.modeling.ModelingFieldRef;
+import com.l1yp.model.db.modeling.ModelingModule;
 import com.l1yp.model.db.modeling.ModelingViewColumn;
 import com.l1yp.model.db.modeling.field.DeptFieldScheme;
 import com.l1yp.model.db.modeling.field.FieldScheme;
@@ -23,9 +21,9 @@ import com.l1yp.model.db.modeling.field.OptionFieldScheme;
 import com.l1yp.model.db.modeling.field.UserFieldScheme;
 import com.l1yp.model.db.workflow.model.WorkflowTypeDef;
 import com.l1yp.model.param.modeling.field.ModelingFieldAddParam;
-import com.l1yp.model.param.modeling.field.ModelingFieldUpdateParam;
 import com.l1yp.model.param.modeling.field.ModelingFieldFindParam;
 import com.l1yp.model.param.modeling.field.ModelingFieldRefParam;
+import com.l1yp.model.param.modeling.field.ModelingFieldUpdateParam;
 import com.l1yp.model.view.modeling.ModelingFieldDefView;
 import com.l1yp.service.modeling.IModelingFieldService;
 import com.l1yp.util.BeanCopierUtil;
@@ -77,7 +75,6 @@ public class ModelingFieldServiceImpl extends ServiceImpl<ModelingFieldMapper, M
 
     @Override
     @Cacheable(value = "modeling_field", key = "#p0.toString() + ':' + #p1", condition = "#p0 != null and #p1 != ''")
-    @CacheResultType(ModelingFieldListType.class)
     public List<ModelingField> findModelFields(ModelingModule module, String mkey) {
         ModelingFieldFindParam param = new ModelingFieldFindParam();
         param.setModule(module);
