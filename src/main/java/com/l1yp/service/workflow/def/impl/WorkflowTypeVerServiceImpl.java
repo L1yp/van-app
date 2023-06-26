@@ -46,6 +46,7 @@ public class WorkflowTypeVerServiceImpl extends ServiceImpl<WorkflowTypeVerMappe
 
         Integer maxVer = getBaseMapper().findMaxVer(workflowTypeVer.getKey());
         WorkflowTypeVer newVer = getById(param.getId());
+        newVer.setId(null);
         newVer.setKey(workflowTypeVer.getKey());
         newVer.setVer(maxVer + 1);
         newVer.setRemark(workflowTypeVer.getRemark());

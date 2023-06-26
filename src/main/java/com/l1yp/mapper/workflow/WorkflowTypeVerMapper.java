@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Update;
 
 public interface WorkflowTypeVerMapper extends BaseMapper<WorkflowTypeVer> {
 
-    @Select("SELECT IFNULL(MAX(ver), 0) ver FROM workflow_type_ver WHERE key = #{key}")
+    @Select("SELECT IFNULL(MAX(ver), 0) ver FROM workflow_type_ver WHERE `key` = #{key}")
     Integer findMaxVer(@Param("key") String key);
 
     @Update("UPDATE workflow_type_ver SET xml = #{param.xml} WHERE id = #{param.id}")
