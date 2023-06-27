@@ -4,7 +4,7 @@ import javax.validation.constraints.Pattern;
 
 public class ModelingEntityAddParam {
 
-    @Pattern(regexp = "^[a-zA-Z_][a-zA-Z0-9_]*$", message = "key必须字母或下划线开头")
+    @Pattern(regexp = "^[a-zA-Z_$][\\w$]*$", message = "key必须字母或下划线开头")
     private String mkey;
 
     private String name;

@@ -12,7 +12,7 @@ public class ModelingFieldAddParam {
     /**
      * 可选字段：是否关联流程
      */
-    @Pattern(regexp = "^[a-zA-Z_][a-zA-Z0-9_]*$", message = "key必须字母或下划线开头")
+    @Pattern(regexp = "^[a-zA-Z_$][\\w$]*$", message = "key必须字母或下划线开头")
     private String mkey;
 
     /**
