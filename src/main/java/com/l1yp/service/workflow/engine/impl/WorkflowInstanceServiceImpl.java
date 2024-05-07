@@ -127,8 +127,8 @@ public class WorkflowInstanceServiceImpl implements IWorkflowInstanceService {
 
         String processInstanceId = IdWorker.getIdStr();
         param.getData().put("process_instance_id", processInstanceId);
-        Number deptId = (Number) param.getData().get("dept_id");
-        if (deptId == null) {
+        String strDeptId = (String) param.getData().get("dept_id");
+        if (StringUtils.isBlank(strDeptId)) {
             User loginUser = RequestUtils.getLoginUser();
             param.getData().put("dept_id", loginUser.getDeptId());
         }
